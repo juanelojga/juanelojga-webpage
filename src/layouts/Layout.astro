@@ -37,53 +37,109 @@ const { title } = Astro.props;
     <Footer />
 
     <script is:inline>
-      const fadeSections = document.querySelectorAll('.fade-section');
+      const sections = document.querySelectorAll('section[id]');
+      const navLinks = document.querySelectorAll("nav a[href^='#']");
+
+      // Hero visible by default
+      if (sections.length > 0) {
+        sections[0].classList.add('active-section');
+        navLinks[0]?.classList.add('text-green-400');
+      }
 
       const observer = new IntersectionObserver(
         entries => {
           entries.forEach(entry => {
+            const target = entry.target;
+
             if (entry.isIntersecting) {
-              entry.target.classList.add('visible');
-              observer.unobserve(entry.target);
+              // Activate section
+              target.classList.add('active-section');
+
+              // Auto-navigate: update active navbar link
+              navLinks.forEach(link => {
+                const sectionId = link.getAttribute('href').replace('#', '');
+                const isActive = sectionId === target.id;
+                link.classList.toggle('text-green-400', isActive);
+              });
+
+              // Smoothly scroll to align with top (auto navigation effect)
+              history.replaceState(null, '', `#${target.id}`);
+            } else {
+              // Hide section when out of view
+              const rect = entry.boundingClientRect;
+              const fullyAbove = rect.bottom < 0;
+              const fullyBelow = rect.top > window.innerHeight;
+              if (fullyAbove || fullyBelow) {
+                target.classList.remove('active-section');
+              }
             }
           });
         },
-        { threshold: 0.2 }
+        {
+          threshold: 0.25, // Section must be at least 25% visible
+          rootMargin: '-20% 0px -20% 0px', // Better trigger for auto nav
+        }
       );
 
-      fadeSections.forEach(section => observer.observe(section));
+      sections.forEach(section => observer.observe(section));
+
+      // Enable smooth scroll for manual clicks
+      navLinks.forEach(link => {
+        link.addEventListener('click', e => {
+          e.preventDefault();
+          const href = link.getAttribute('href');
+          const section = document.querySelector(href);
+          if (section) {
+            window.scrollTo({
+              top: section.offsetTop,
+              behavior: 'smooth',
+            });
+          }
+        });
+      });
     </script>
-  </body>
+  </body><style is:global>
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      scroll-snap-type: y mandatory;
+      overflow-y: scroll;
+      height: 100vh;
+      margin: 0;
+      width: 100%;
+      min-height: 100%;
+    }
+
+    @media (min-width: 768px) {
+      body {
+        scroll-snap-type: y mandatory;
+      }
+    }
+
+    section {
+      opacity: 0;
+      pointer-events: none;
+      transform: scale(0.98);
+      transition:
+        opacity 0.8s ease,
+        transform 0.6s ease;
+      scroll-snap-align: start;
+      scroll-snap-stop: always;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      margin: 0;
+      padding: 4rem 0;
+      scroll-margin-top: 5rem; /* adjust if your navbar is taller */
+    }
+
+    section.active-section {
+      opacity: 1;
+      pointer-events: auto;
+      transform: scale(1);
+    }
+  </style>
 </html>
-
-<style>
-  html {
-    scroll-behavior: smooth;
-  }
-
-  section {
-    scroll-margin-top: 5rem; /* adjust if your navbar is taller */
-  }
-
-  html,
-  body {
-    margin: 0;
-    width: 100%;
-    min-height: 100%;
-  }
-</style>
-
-<style is:global>
-  .fade-section {
-    opacity: 0;
-    transform: translateY(40px);
-    transition:
-      opacity 0.8s ease-out,
-      transform 0.8s ease-out;
-  }
-
-  .fade-section.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-</style>
