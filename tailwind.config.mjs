@@ -12,10 +12,15 @@ export default {
           'from': { opacity: '0', transform: 'translateX(30px)' },
           'to': { opacity: '1', transform: 'translateX(0)' },
         },
+        fadeInUp: {
+          '0%': { opacity: '0', transform: 'translateY(40px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
       },
       animation: {
         'fade-in-left': 'fade-in-left 1s ease-out both',
         'fade-in-right': 'fade-in-right 1s ease-out both',
+        'fade-in-up': 'fadeInUp 0.8s ease-out forwards',
       },
     },
   },

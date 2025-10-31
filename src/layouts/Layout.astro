@@ -20,6 +20,11 @@ const { title } = Astro.props;
     />
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"
+    />
+    <link rel="stylesheet" href="/node_modules/@fortawesome/fontawesome-free/css/all.min.css" />
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
     <meta property="og:title" content="Juan Almeida | Software Engineer" />
@@ -30,18 +35,157 @@ const { title } = Astro.props;
     <Navbar />
     <main><slot /></main>
     <Footer />
-  </body>
+
+    <script is:inline>
+      const sections = document.querySelectorAll('section[id], header[id]');
+      const navLinks = document.querySelectorAll("nav a[href^='#']");
+      const footer = document.querySelector('footer');
+      let scrollTimeout;
+      let contactActive = false;
+      let lastY = window.scrollY;
+      let scrollDirection = 'down';
+
+      // Ensure Hero section visible by default
+      if (sections.length > 0) {
+        sections[0].classList.add('active-section');
+        navLinks[0]?.classList.add('text-green-400');
+      }
+
+      // Helper: is last section (Contact) in viewport?
+      function isContactActive() {
+        const lastSection = sections[sections.length - 1];
+        if (!lastSection) return false;
+        const rect = lastSection.getBoundingClientRect();
+        // At least 30% visible
+        const threshold = Math.max(0.3 * rect.height, 1);
+        return rect.top < window.innerHeight - threshold && rect.bottom > threshold;
+      }
+
+      // Intersection Observer: controls fade + nav highlight
+      const observer = new IntersectionObserver(
+        entries => {
+          entries.forEach(entry => {
+            const target = entry.target;
+            if (entry.isIntersecting) {
+              target.classList.add('active-section');
+              navLinks.forEach(link => {
+                const isActive = link.getAttribute('href').replace('#', '') === target.id;
+                link.classList.toggle('text-green-400', isActive);
+              });
+              history.replaceState(null, '', `#${target.id}`);
+              // If last section becomes active, ensure footer is visible
+              if (target === sections[sections.length - 1]) {
+                contactActive = true;
+                if (footer) {
+                  footer.style.visibility = 'visible';
+                  footer.style.opacity = '1';
+                }
+              }
+            } else {
+              const rect = entry.boundingClientRect;
+              if (rect.bottom < 0 || rect.top > window.innerHeight) {
+                target.classList.remove('active-section');
+              }
+              // If leaving last section, hide footer on snap scroll
+              if (target === sections[sections.length - 1]) {
+                contactActive = false;
+                if (footer) {
+                  footer.style.visibility = '';
+                  footer.style.opacity = '';
+                }
+              }
+            }
+          });
+        },
+        { threshold: 0.3, rootMargin: '-20% 0px -20% 0px' }
+      );
+
+      sections.forEach(section => observer.observe(section));
+
+      // Smooth scroll for navbar links
+      navLinks.forEach(link => {
+        link.addEventListener('click', e => {
+          e.preventDefault();
+          const targetId = link.getAttribute('href');
+          const target = document.querySelector(targetId);
+          if (target) target.scrollIntoView({ behavior: 'smooth' });
+        });
+      });
+
+      // Smart snap scrolling after user stops scrolling
+      window.addEventListener('scroll', () => {
+        const currentY = window.scrollY;
+        scrollDirection = currentY > lastY ? 'down' : 'up';
+        lastY = currentY;
+
+        clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(() => {
+          // If Contact is active, do nothing.
+          if (isContactActive()) {
+            if (footer) {
+              footer.style.visibility = 'visible';
+              footer.style.opacity = '1';
+            }
+            return;
+          }
+
+          // If scrolling UP and near the top, do not snap.
+          // This prevents auto-scrolling away from the Hero section.
+          const snapThreshold = 100; // px
+          if (scrollDirection === 'up' && currentY < window.innerHeight - snapThreshold) {
+            return;
+          }
+
+          let closest = null;
+          let closestDistance = Infinity;
+          const viewportCenter = window.innerHeight / 2;
+
+          sections.forEach(section => {
+            const rect = section.getBoundingClientRect();
+            const sectionCenter = rect.top + rect.height / 2;
+            const distance = Math.abs(sectionCenter - viewportCenter);
+
+            if (distance < closestDistance) {
+              closest = section;
+              closestDistance = distance;
+            }
+          });
+
+          if (closest) {
+            closest.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }, 150); // Debounce delay
+      });
+    </script>
+  </body><style is:global>
+    html {
+      scroll-behavior: smooth;
+    }
+    body {
+      overflow-y: scroll;
+      height: 100vh;
+    }
+    section {
+      scroll-snap-align: start;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transform: scale(0.98);
+      transition:
+        opacity 0.8s ease,
+        transform 0.6s ease;
+    }
+    section.active-section {
+      opacity: 1;
+      pointer-events: auto;
+      transform: scale(1);
+    }
+    /* Ensure footer is not hidden behind scroll snapping when Contact is active */
+    footer {
+      transition: opacity 0.8s;
+    }
+  </style>
 </html>
-
-<style>
-  html {
-    scroll-behavior: smooth;
-  }
-
-  html,
-  body {
-    margin: 0;
-    width: 100%;
-    min-height: 100%;
-  }
-</style>

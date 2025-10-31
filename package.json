@@ -16,7 +16,9 @@
     "@astrojs/image": "^0.18.0",
     "@astrojs/sitemap": "^3.6.0",
     "@astrojs/tailwind": "^6.0.2",
-    "astro": "^5.15.3"
+    "@fortawesome/fontawesome-free": "^7.1.0",
+    "astro": "^5.15.3",
+    "material-symbols": "^0.39.1"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.62.0",
