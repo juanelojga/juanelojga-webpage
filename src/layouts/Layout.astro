@@ -37,11 +37,13 @@ const { title } = Astro.props;
     <Footer />
 
     <script is:inline>
-      const sections = document.querySelectorAll('section[id]');
+      const sections = document.querySelectorAll('section[id], header[id]');
       const navLinks = document.querySelectorAll("nav a[href^='#']");
       const footer = document.querySelector('footer');
       let scrollTimeout;
       let contactActive = false;
+      let lastY = window.scrollY;
+      let scrollDirection = 'down';
 
       // Ensure Hero section visible by default
       if (sections.length > 0) {
@@ -112,17 +114,28 @@ const { title } = Astro.props;
 
       // Smart snap scrolling after user stops scrolling
       window.addEventListener('scroll', () => {
+        const currentY = window.scrollY;
+        scrollDirection = currentY > lastY ? 'down' : 'up';
+        lastY = currentY;
+
         clearTimeout(scrollTimeout);
         scrollTimeout = setTimeout(() => {
-          // If Contact section is visible, don't snap further; keep footer visible
+          // If Contact is active, do nothing.
           if (isContactActive()) {
-            // Ensure footer is visible (if using fade/hide effect)
             if (footer) {
               footer.style.visibility = 'visible';
               footer.style.opacity = '1';
             }
             return;
           }
+
+          // If scrolling UP and near the top, do not snap.
+          // This prevents auto-scrolling away from the Hero section.
+          const snapThreshold = 100; // px
+          if (scrollDirection === 'up' && currentY < window.innerHeight - snapThreshold) {
+            return;
+          }
+
           let closest = null;
           let closestDistance = Infinity;
           const viewportCenter = window.innerHeight / 2;
@@ -131,6 +144,7 @@ const { title } = Astro.props;
             const rect = section.getBoundingClientRect();
             const sectionCenter = rect.top + rect.height / 2;
             const distance = Math.abs(sectionCenter - viewportCenter);
+
             if (distance < closestDistance) {
               closest = section;
               closestDistance = distance;
@@ -140,7 +154,7 @@ const { title } = Astro.props;
           if (closest) {
             closest.scrollIntoView({ behavior: 'smooth', block: 'start' });
           }
-        }, 150); // delay in ms after user stops scrolling
+        }, 150); // Debounce delay
       });
     </script>
   </body><style is:global>
