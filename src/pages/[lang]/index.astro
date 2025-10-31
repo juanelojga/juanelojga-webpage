@@ -1,8 +1,10 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import Navbar from '../../components/Navbar.astro';
 import Hero from '../../components/Hero.astro';
 import About from '../../components/About.astro';
 import Projects from '../../components/Projects.astro';
+import Footer from '../../components/Footer.astro';
 
 // Provide all valid paths for [lang]
 export async function getStaticPaths() {
@@ -12,7 +14,9 @@ export async function getStaticPaths() {
 ---
 
 <Layout title="Juan Almeida | Software Engineer">
+  <Navbar />
   <Hero />
   <About />
   <Projects />
+  <Footer />
 </Layout>

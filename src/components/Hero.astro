@@ -1,36 +1,65 @@
 ---
-import { Image } from '@astrojs/image/components';
+import { Image } from 'astro:assets';
 ---
 
-<header class="relative h-screen w-full overflow-hidden bg-black text-white">
-  <!-- Animated Background (Hero-only) -->
+<header
+  class="relative flex min-h-screen w-full items-center justify-center overflow-hidden bg-black px-8 text-white"
+>
+  <!-- Matrix Animated Background -->
   <div id="matrix-bg" class="absolute inset-0 opacity-30"></div>
 
   <!-- Foreground Content -->
-  <div class="relative z-10 flex h-full flex-col items-center justify-center px-6 text-center">
-    <h1 class="animate-fade-in mb-4 text-4xl font-bold tracking-wide text-green-400 sm:text-6xl">
-      Hi, I’m Juan Almeida
-    </h1>
-    <p class="animate-slide-up mb-8 text-lg text-gray-300 sm:text-2xl">
-      Full Stack Engineer | Building modern, accessible web experiences
-    </p>
+  <div
+    class="relative z-10 flex w-full max-w-6xl flex-col-reverse items-center justify-between gap-12 lg:flex-row"
+  >
+    <!-- Left Side: Text -->
+    <div class="text-center lg:w-1/2 lg:text-left">
+      <h1 class="mb-4 text-5xl font-bold sm:text-6xl">
+        <span class="block text-gray-300">Hi, I’m</span>
+        <span class="block text-green-400 drop-shadow-[0_0_20px_#00FF80]"> Juan Almeida </span>
+      </h1>
 
-    <div class="flex flex-wrap justify-center gap-4">
-      <a
-        href="#projects"
-        class="rounded-lg bg-green-500 px-6 py-3 font-semibold text-black transition hover:bg-green-400"
+      <p class="mb-8 text-lg leading-relaxed text-gray-400 sm:text-xl">
+        Full-Stack Software Engineer passionate about AI, Frontend, and System Design. I build
+        robust and scalable applications with a focus on modern technologies and user-centric
+        design.
+      </p>
+
+      <div class="flex flex-wrap justify-center gap-4 lg:justify-start">
+        <a
+          href="#projects"
+          class="rounded-md bg-green-500 px-6 py-3 font-semibold text-black shadow-[0_0_15px_#00FF80] transition hover:bg-green-400"
+        >
+          View My Work
+        </a>
+        <a
+          href="#contact"
+          class="rounded-md border border-green-500 px-6 py-3 font-semibold text-green-400 transition hover:bg-green-400 hover:text-black"
+        >
+          Contact Me
+        </a>
+      </div>
+    </div>
+
+    <!-- Right Side: Image -->
+    <div class="flex justify-center lg:w-1/2 lg:justify-end">
+      <div
+        class="relative overflow-hidden rounded-lg p-1 shadow-[0_0_30px_#00FF80]"
+        style="box-shadow: 0 0 40px #00FF80;"
       >
-        View Projects
-      </a>
-      <a
-        href="#contact"
-        class="rounded-lg border border-green-400 px-6 py-3 text-green-400 transition hover:bg-green-400 hover:text-black"
-      >
-        Contact Me
-      </a>
+        <Image
+          src="/me.jpg"
+          alt="Portrait of Juan Almeida"
+          width={400}
+          height={400}
+          class="rounded-lg object-cover"
+          loading="eager"
+        />
+      </div>
     </div>
   </div>
 
+  <!-- Animations -->
   <style>
     @keyframes fade-in {
       from {
@@ -60,6 +89,7 @@ import { Image } from '@astrojs/image/components';
     }
   </style>
 
+  <!-- Matrix Script -->
   <script is:inline>
     function initMatrixEffect() {
       function draw(ctx, drops, columns, width, height, charArray) {
@@ -74,6 +104,7 @@ import { Image } from '@astrojs/image/components';
           drops[i]++;
         }
       }
+
       const matrixContainer = document.getElementById('matrix-bg');
       if (matrixContainer) {
         const canvas = document.createElement('canvas');
