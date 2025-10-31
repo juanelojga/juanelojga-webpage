@@ -1,0 +1,17 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+// Provide all valid paths for [lang]
+export async function getStaticPaths() {
+  const locales = ['en', 'es']; // add more if needed
+  return locales.map(lang => ({ params: { lang } }));
+}
+
+const { lang } = Astro.params;
+---
+
+<Layout title="Welcome to Astro.">
+  <main>
+    Welcome to the Portfolio! (Lang: {lang})
+  </main>
+</Layout>
