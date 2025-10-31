@@ -1,5 +1,9 @@
+---
+import { Image } from '@astrojs/image/components';
+---
+
 <header class="relative h-screen w-full overflow-hidden bg-black text-white">
-  <!-- Animated Background -->
+  <!-- Animated Background (Hero-only) -->
   <div id="matrix-bg" class="absolute inset-0 opacity-30"></div>
 
   <!-- Foreground Content -->
@@ -26,94 +30,83 @@
       </a>
     </div>
   </div>
+
+  <style>
+    @keyframes fade-in {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    @keyframes slide-up {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .animate-fade-in {
+      animation: fade-in 1.2s ease-out forwards;
+    }
+    .animate-slide-up {
+      animation: slide-up 1.5s ease-out forwards;
+    }
+  </style>
+
+  <script is:inline>
+    function initMatrixEffect() {
+      function draw(ctx, drops, columns, width, height, charArray) {
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.04)';
+        ctx.fillRect(0, 0, width, height);
+        ctx.fillStyle = '#0F0';
+        ctx.font = '15px monospace';
+        for (let i = 0; i < drops.length; i++) {
+          const text = charArray[Math.floor(Math.random() * charArray.length)];
+          ctx.fillText(text, i * 20, drops[i] * 20);
+          if (drops[i] * 20 > height && Math.random() > 0.975) drops[i] = 0;
+          drops[i]++;
+        }
+      }
+      const matrixContainer = document.getElementById('matrix-bg');
+      if (matrixContainer) {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
+        matrixContainer.appendChild(canvas);
+        let width = (canvas.width = window.innerWidth);
+        let height = (canvas.height = window.innerHeight);
+        let columns = Math.floor(width / 20);
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()';
+        const charArray = characters.split('');
+        let drops = [];
+        for (let i = 0; i < columns; i++) drops[i] = 1;
+
+        const interval = setInterval(() => {
+          draw(ctx, drops, columns, width, height, charArray);
+        }, 33);
+
+        const resizeHandler = () => {
+          width = canvas.width = window.innerWidth;
+          height = canvas.height = window.innerHeight;
+          columns = Math.floor(width / 20);
+          drops = [];
+          for (let i = 0; i < columns; i++) drops[i] = 1;
+        };
+
+        window.addEventListener('resize', resizeHandler);
+        window.addEventListener('pagehide', () => {
+          clearInterval(interval);
+          window.removeEventListener('resize', resizeHandler);
+        });
+      }
+    }
+    initMatrixEffect();
+  </script>
 </header>
-
-<style>
-  @keyframes fade-in {
-    from {
-      opacity: 0;
-      transform: translateY(10px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-  @keyframes slide-up {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-  .animate-fade-in {
-    animation: fade-in 1.2s ease-out forwards;
-  }
-  .animate-slide-up {
-    animation: slide-up 1.5s ease-out forwards;
-  }
-</style>
-
-<script is:inline>
-  function initMatrixEffect() {
-    function draw(ctx, drops, columns, width, height, charArray) {
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.04)';
-      ctx.fillRect(0, 0, width, height);
-
-      ctx.fillStyle = '#0F0';
-      ctx.font = '15px monospace';
-
-      for (let i = 0; i < drops.length; i++) {
-        const text = charArray[Math.floor(Math.random() * charArray.length)];
-        ctx.fillText(text, i * 20, drops[i] * 20);
-
-        if (drops[i] * 20 > height && Math.random() > 0.975) {
-          drops[i] = 0;
-        }
-        drops[i]++;
-      }
-    }
-
-    const matrixContainer = document.getElementById('matrix-bg');
-    if (matrixContainer) {
-      const canvas = document.createElement('canvas');
-      const ctx = canvas.getContext('2d');
-
-      if (!ctx) return;
-
-      matrixContainer.appendChild(canvas);
-
-      let width = (canvas.width = window.innerWidth);
-      let height = (canvas.height = window.innerHeight);
-      let columns = Math.floor(width / 20);
-      const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()';
-      const charArray = characters.split('');
-      let drops = [];
-
-      for (let i = 0; i < columns; i++) {
-        drops[i] = 1;
-      }
-
-      setInterval(() => {
-        draw(ctx, drops, columns, width, height, charArray);
-      }, 33);
-
-      const resizeHandler = () => {
-        width = canvas.width = window.innerWidth;
-        height = canvas.height = window.innerHeight;
-        columns = Math.floor(width / 20);
-        drops = [];
-        for (let i = 0; i < columns; i++) {
-          drops[i] = 1;
-        }
-      };
-
-      window.addEventListener('resize', resizeHandler);
-    }
-  }
-
-  initMatrixEffect();
-</script>
