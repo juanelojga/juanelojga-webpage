@@ -55,12 +55,10 @@ const { title } = Astro.props;
             const target = entry.target;
             if (entry.isIntersecting) {
               target.classList.add('active-section');
-
               navLinks.forEach(link => {
                 const isActive = link.getAttribute('href').replace('#', '') === target.id;
                 link.classList.toggle('text-green-400', isActive);
               });
-
               history.replaceState(null, '', `#${target.id}`);
             } else {
               const rect = entry.boundingClientRect;
@@ -113,13 +111,12 @@ const { title } = Astro.props;
     html {
       scroll-behavior: smooth;
     }
-
     body {
       overflow-y: scroll;
       height: 100vh;
     }
-
     section {
+      scroll-snap-align: start;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
@@ -131,7 +128,6 @@ const { title } = Astro.props;
         opacity 0.8s ease,
         transform 0.6s ease;
     }
-
     section.active-section {
       opacity: 1;
       pointer-events: auto;
