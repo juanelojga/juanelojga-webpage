@@ -39,13 +39,24 @@ const { title } = Astro.props;
     <script is:inline>
       const sections = document.querySelectorAll('section[id]');
       const navLinks = document.querySelectorAll("nav a[href^='#']");
-
+      const footer = document.querySelector('footer');
       let scrollTimeout;
+      let contactActive = false;
 
       // Ensure Hero section visible by default
       if (sections.length > 0) {
         sections[0].classList.add('active-section');
         navLinks[0]?.classList.add('text-green-400');
+      }
+
+      // Helper: is last section (Contact) in viewport?
+      function isContactActive() {
+        const lastSection = sections[sections.length - 1];
+        if (!lastSection) return false;
+        const rect = lastSection.getBoundingClientRect();
+        // At least 30% visible
+        const threshold = Math.max(0.3 * rect.height, 1);
+        return rect.top < window.innerHeight - threshold && rect.bottom > threshold;
       }
 
       // Intersection Observer: controls fade + nav highlight
@@ -60,10 +71,26 @@ const { title } = Astro.props;
                 link.classList.toggle('text-green-400', isActive);
               });
               history.replaceState(null, '', `#${target.id}`);
+              // If last section becomes active, ensure footer is visible
+              if (target === sections[sections.length - 1]) {
+                contactActive = true;
+                if (footer) {
+                  footer.style.visibility = 'visible';
+                  footer.style.opacity = '1';
+                }
+              }
             } else {
               const rect = entry.boundingClientRect;
               if (rect.bottom < 0 || rect.top > window.innerHeight) {
                 target.classList.remove('active-section');
+              }
+              // If leaving last section, hide footer on snap scroll
+              if (target === sections[sections.length - 1]) {
+                contactActive = false;
+                if (footer) {
+                  footer.style.visibility = '';
+                  footer.style.opacity = '';
+                }
               }
             }
           });
@@ -87,6 +114,15 @@ const { title } = Astro.props;
       window.addEventListener('scroll', () => {
         clearTimeout(scrollTimeout);
         scrollTimeout = setTimeout(() => {
+          // If Contact section is visible, don't snap further; keep footer visible
+          if (isContactActive()) {
+            // Ensure footer is visible (if using fade/hide effect)
+            if (footer) {
+              footer.style.visibility = 'visible';
+              footer.style.opacity = '1';
+            }
+            return;
+          }
           let closest = null;
           let closestDistance = Infinity;
           const viewportCenter = window.innerHeight / 2;
@@ -132,6 +168,10 @@ const { title } = Astro.props;
       opacity: 1;
       pointer-events: auto;
       transform: scale(1);
+    }
+    /* Ensure footer is not hidden behind scroll snapping when Contact is active */
+    footer {
+      transition: opacity 0.8s;
     }
   </style>
 </html>
