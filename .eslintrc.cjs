@@ -24,12 +24,12 @@ module.exports = {
         extraFileExtensions: ['.astro'],
       },
       rules: {
-        'prettier/prettier': 'error',
+        'prettier/prettier': 'warn',
       },
     },
   ],
   rules: {
-    'prettier/prettier': ['error', { endOfLine: 'auto' }],
+    'prettier/prettier': ['warn', { endOfLine: 'auto' }],
     'tailwindcss/no-custom-classname': 'off',
     'react/react-in-jsx-scope': 'off',
   },

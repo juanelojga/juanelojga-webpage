@@ -1,0 +1,18 @@
+[
+  {
+    "title": "AI Powered Insights",
+    "description": "A Next.js dashboard integrating GraphQL, Statsig, and Gemini CLI to analyze Upwork search data.",
+    "image": "/assets/project-ai-insights.png",
+    "tech": ["Next.js", "GraphQL", "TailwindCSS", "TypeScript"],
+    "github": "https://github.com/juanelojga/ai-powered-insights",
+    "demo": "https://ai-insights.juanelojga.com"
+  },
+  {
+    "title": "Package Handling Admin",
+    "description": "Django + Next.js admin tool for managing client shipments and consolidations with GraphQL API integration.",
+    "image": "/assets/project-package-handling.png",
+    "tech": ["Django", "GraphQL", "Next.js", "PostgreSQL"],
+    "github": "https://github.com/juanelojga/package-handling",
+    "demo": "https://package-admin.juanelojga.com"
+  }
+]

@@ -1,0 +1,143 @@
+---
+import { Image } from 'astro:assets';
+---
+
+<header
+  class="relative flex min-h-screen w-full items-center justify-center overflow-hidden bg-black px-8 text-white"
+>
+  <!-- Matrix Animated Background -->
+  <div id="matrix-bg" class="absolute inset-0 opacity-30"></div>
+
+  <!-- Foreground Content -->
+  <div
+    class="relative z-10 flex w-full max-w-6xl flex-col-reverse items-center justify-between gap-12 lg:flex-row"
+  >
+    <!-- Left Side: Text -->
+    <div class="text-center lg:w-1/2 lg:text-left">
+      <h1 class="mb-4 text-5xl font-bold sm:text-6xl">
+        <span class="block text-gray-300">Hi, I’m</span>
+        <span class="block text-green-400 drop-shadow-[0_0_20px_#00FF80]"> Juan Almeida </span>
+      </h1>
+
+      <p class="mb-8 text-lg leading-relaxed text-gray-400 sm:text-xl">
+        Full-Stack Software Engineer passionate about AI, Frontend, and System Design. I build
+        robust and scalable applications with a focus on modern technologies and user-centric
+        design.
+      </p>
+
+      <div class="flex flex-wrap justify-center gap-4 lg:justify-start">
+        <a
+          href="#projects"
+          class="rounded-md bg-green-500 px-6 py-3 font-semibold text-black shadow-[0_0_15px_#00FF80] transition hover:bg-green-400"
+        >
+          View My Work
+        </a>
+        <a
+          href="#contact"
+          class="rounded-md border border-green-500 px-6 py-3 font-semibold text-green-400 transition hover:bg-green-400 hover:text-black"
+        >
+          Contact Me
+        </a>
+      </div>
+    </div>
+
+    <!-- Right Side: Image -->
+    <div class="flex justify-center lg:w-1/2 lg:justify-end">
+      <div
+        class="relative overflow-hidden rounded-lg p-1 shadow-[0_0_30px_#00FF80]"
+        style="box-shadow: 0 0 40px #00FF80;"
+      >
+        <Image
+          src="/me.jpg"
+          alt="Portrait of Juan Almeida"
+          width={267}
+          height={400}
+          class="rounded-lg object-cover"
+          loading="eager"
+        />
+      </div>
+    </div>
+  </div>
+
+  <!-- Animations -->
+  <style>
+    @keyframes fade-in {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    @keyframes slide-up {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .animate-fade-in {
+      animation: fade-in 1.2s ease-out forwards;
+    }
+    .animate-slide-up {
+      animation: slide-up 1.5s ease-out forwards;
+    }
+  </style>
+
+  <!-- Matrix Script -->
+  <script is:inline>
+    function initMatrixEffect() {
+      function draw(ctx, drops, columns, width, height, charArray) {
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.04)';
+        ctx.fillRect(0, 0, width, height);
+        ctx.fillStyle = '#0F0';
+        ctx.font = '15px monospace';
+        for (let i = 0; i < drops.length; i++) {
+          const text = charArray[Math.floor(Math.random() * charArray.length)];
+          ctx.fillText(text, i * 20, drops[i] * 20);
+          if (drops[i] * 20 > height && Math.random() > 0.975) drops[i] = 0;
+          drops[i]++;
+        }
+      }
+
+      const matrixContainer = document.getElementById('matrix-bg');
+      if (matrixContainer) {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
+        matrixContainer.appendChild(canvas);
+        let width = (canvas.width = window.innerWidth);
+        let height = (canvas.height = window.innerHeight);
+        let columns = Math.floor(width / 20);
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()';
+        const charArray = characters.split('');
+        let drops = [];
+        for (let i = 0; i < columns; i++) drops[i] = 1;
+
+        const interval = setInterval(() => {
+          draw(ctx, drops, columns, width, height, charArray);
+        }, 33);
+
+        const resizeHandler = () => {
+          width = canvas.width = window.innerWidth;
+          height = canvas.height = window.innerHeight;
+          columns = Math.floor(width / 20);
+          drops = [];
+          for (let i = 0; i < columns; i++) drops[i] = 1;
+        };
+
+        window.addEventListener('resize', resizeHandler);
+        window.addEventListener('pagehide', () => {
+          clearInterval(interval);
+          window.removeEventListener('resize', resizeHandler);
+        });
+      }
+    }
+    initMatrixEffect();
+  </script>
+</header>
