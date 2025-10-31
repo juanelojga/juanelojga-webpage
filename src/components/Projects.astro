@@ -1,3 +1,7 @@
+---
+import projects from '../content/projects.json';
+---
+
 <section
   id="projects"
   aria-labelledby="projects-title"
@@ -13,29 +17,7 @@
 
     <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
       {
-        [
-          {
-            title: 'Project Cypher',
-            tags: ['React', 'Node.js', 'MongoDB'],
-            image:
-              'https://lh3.googleusercontent.com/aida-public/AB6AXuBhxl9PUIflREpAF6Xgp4IM3WKrWu7a6_kZHE37U4foSs9bxb2AGiJJ9iu9b7ZIBK13OQFDN8Woqtz7wCtLMd57fRX_iRV0fG_T4MHUJnonMJvpmbC4cd_cW4FLhV7SwXzV27d66vb1aL7SQQr2JJVU80ZsHua5h6TOKgCw-fX3EVXnYPjlTZc5XUFWRV3yiNF2tHDkRqOPFz82FRlKZfOk91x0NF7YGydcMqNpD8e55j2l-tDXLyXuCFH22oFus76TMc04BcgqVDY',
-            links: { live: '#', github: '#' },
-          },
-          {
-            title: 'Neural Net Visualizer',
-            tags: ['Python', 'TensorFlow', 'D3.js'],
-            image:
-              'https://lh3.googleusercontent.com/aida-public/AB6AXuB19tqZH_CE2dhJmt3YN7ly2EBJNqS4StfeZTM4Ylwm339JBt_s8FLVsDud18w4tDXOZtMXwjYxXQlbMDUkwuBi41amaZA6ah0gJwkfBfhM-Fe_IT_ioLphN2s2SwACOtZPpbawRqHEU8Uh0MOCxfEEAgtsw2uPYXh06oWqq3nrM8ICBqg-AsPjfxx8TGQZDbZH3d9uJB26Ie5p-wZXzmic4nKOuO3oGGAP3cV7lJcB_QrbbhqgTevOutiDJaMaqr93utGMWj9bk',
-            links: { live: '#', github: '#' },
-          },
-          {
-            title: 'Decentralized App',
-            tags: ['Solidity', 'Next.js', 'Ethers.js'],
-            image:
-              'https://lh3.googleusercontent.com/aida-public/AB6AXuDQ2bCshzP9RCi5RF1zhIw8Rx9I6Vc-fCpNw4CKRvIRRWRp4TEx-GdLPZTBgIFAvOUEEzCKGX43F4mQEOHM6G-FxJkkIFZk9U0YXcTb45VOsoMu8R1ZrLHSzB261nJTYh2fYeGDkc5esyaH_MSwYnw6s1B7rLIykd-81aubXGykZC_mHqwZ-YvaQSdSMZRtPIsFh_Fp8q8g5KicaJDYi00CuD3QLD2NcNdHIo9X61FtgqCXTPy_GpjxoUF9edwF4OSTqZ6ZX8xAzd4',
-            links: { live: '#', github: '#' },
-          },
-        ].map(project => (
+        projects.map(project => (
           <div class="group relative flex flex-col overflow-hidden rounded-lg border border-green-800 transition-all duration-300 hover:shadow-[0_0_15px_2px_rgba(13,242,89,0.5)]">
             <div class="absolute inset-0 z-10 bg-black/60 transition-colors group-hover:bg-black/80" />
             <img
