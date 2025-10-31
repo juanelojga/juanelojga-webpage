@@ -12,26 +12,22 @@ const { title } = Astro.props;
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="description" content="Astro description" />
+    <meta
+      name="description"
+      content="Juan Almeida – Full Stack Engineer crafting modern, accessible frontends with Astro, React, and TypeScript."
+    />
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
+    <meta property="og:title" content="Juan Almeida | Software Engineer" />
+    <meta property="og:image" content="/og-image.jpg" />
     <ViewTransitions />
   </head>
   <body>
-    <header>
-      <nav>
-        <a href="/en">Home</a>
-        <a href="/en/about">About</a>
-      </nav>
-    </header>
     <main>
       <slot />
     </main>
-    <footer>
-      <p>Learn more about me at <a href="https://github.com/juanelojga">juanelojga</a></p>
-    </footer>
   </body>
 </html>
 
