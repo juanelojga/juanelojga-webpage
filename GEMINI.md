@@ -42,3 +42,7 @@ The website must support multiple languages.
 **4. Initial Task**
 
 The raw HTML/CSS from the initial design is available. The first major task is to convert this raw structure into idiomatic, reusable Astro components that adhere to the above SEO, quality, and i18n standards.
+
+## ⚙️ GEMINI RULES
+
+1. After every change in the project, the linter (`npm run lint:fix`) and Prettier (`npm run format`) must be executed to ensure formatting and code quality consistency.
