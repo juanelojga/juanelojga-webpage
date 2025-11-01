@@ -1,29 +1,29 @@
 [
   {
-    "title": "Project Cypher",
-    "tags": ["React", "Node.js", "MongoDB"],
+    "title": "Upwork",
+    "tags": ["Vue", "Node.js", "Typescript", "GraphQL"],
     "image": "/images/project-cypher.jpg",
     "links": {
-      "live": "#",
+      "live": "https://www.upwork.com/",
       "github": "#"
     }
   },
   {
-    "title": "Neural Net Visualizer",
-    "tags": ["Python", "TensorFlow", "D3.js"],
+    "title": "Narbox",
+    "tags": ["Python", "Next.js", "GraphQL", "Django", "PostgresSQL"],
     "image": "/images/neural-net.jpg",
     "links": {
-      "live": "#",
-      "github": "#"
+      "live": "https://www.instagram.com/narboxcourier/?hl=es-la",
+      "github": "https://github.com/juanelojga/nbx-django"
     }
   },
   {
-    "title": "Decentralized App",
-    "tags": ["Solidity", "Next.js", "Ethers.js"],
+    "title": "Personal Page",
+    "tags": ["Astro", "Tailwind", "TypeScript"],
     "image": "/images/decentralized-app.jpg",
     "links": {
-      "live": "#",
-      "github": "#"
+      "live": "https://juanelojga.com/",
+      "github": "https://github.com/juanelojga/juanelojga-webpage"
     }
   }
 ]
