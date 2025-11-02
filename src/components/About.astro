@@ -1,4 +1,9 @@
 ---
+import coreTechnologies from '../content/core-technologies.json';
+import toolsPlatforms from '../content/tools-platforms.json';
+import experience from '../content/experience.json';
+import interests from '../content/interests.json';
+
 const tabs = ['Skills', 'Experience', 'Interests'];
 const activeTab = 'Skills';
 ---
@@ -13,8 +18,8 @@ const activeTab = 'Skills';
         Codex: Juan Almeida
       </h2>
       <p class="max-w-3xl text-lg text-gray-300 sm:text-xl">
-        A full-stack software engineer crafting digital realities with code. Specializing in
-        JavaScript, React, and AI-driven solutions.
+        I build scalable systems from backend to frontend, connecting strong architecture with real
+        user impact.
       </p>
     </div>
 
@@ -45,14 +50,7 @@ const activeTab = 'Skills';
           <h3 class="mb-4 text-2xl font-bold text-white">Core Technologies</h3>
           <div class="grid grid-cols-[repeat(auto-fit,minmax(180px,1fr))] gap-4">
             {
-              [
-                { icon: 'code', title: 'JavaScript', desc: 'ES6+, async/await' },
-                { icon: 'flip_to_front', title: 'React', desc: 'State management' },
-                { icon: 'web', title: 'Next.js', desc: 'Server-side rendering' },
-                { icon: 'data_object', title: 'Python', desc: 'Data analysis, scripting' },
-                { icon: 'database', title: 'Django', desc: 'REST APIs, ORM' },
-                { icon: 'neurology', title: 'AI/ML', desc: 'Neural networks' },
-              ].map(tech => (
+              coreTechnologies.map(tech => (
                 <div class="flex flex-col gap-2 rounded-lg border border-green-800 bg-green-900/10 p-4 transition-all hover:border-green-500 hover:bg-green-800/10">
                   <div class="text-2xl text-green-400">
                     <span class="material-symbols-outlined">{tech.icon}</span>
@@ -72,12 +70,7 @@ const activeTab = 'Skills';
           <h3 class="my-4 text-2xl font-bold text-white">Tools & Platforms</h3>
           <div class="grid grid-cols-[repeat(auto-fit,minmax(180px,1fr))] gap-4">
             {
-              [
-                { icon: 'terminal', title: 'Git & CLI', desc: 'Version control' },
-                { icon: 'deployed_code', title: 'Docker', desc: 'Containerization' },
-                { icon: 'cloud', title: 'AWS', desc: 'Cloud services' },
-                { icon: 'design_services', title: 'Figma', desc: 'UI/UX Design' },
-              ].map(tool => (
+              toolsPlatforms.map(tool => (
                 <div class="flex flex-col gap-2 rounded-lg border border-green-800 bg-green-900/10 p-4 transition-all hover:border-green-500 hover:bg-green-800/10">
                   <div class="text-2xl text-green-400">
                     <span class="material-symbols-outlined">{tool.icon}</span>
@@ -95,28 +88,26 @@ const activeTab = 'Skills';
 
       <!-- Placeholder for other tabs -->
       <div id="experience-panel" class="panel-fade hidden">
-        <h3 class="mb-4 text-2xl font-bold text-white">Experience</h3>
-        <ul class="space-y-4 text-gray-300">
-          <li>
-            <span class="text-green-400">Upwork</span> — Frontend Engineer, SEO Platform (React + Astro
-            Migration)
-          </li>
-          <li>
-            <span class="text-green-400">NerdWallet</span> — React Engineer building data-driven UIs
-          </li>
-          <li>
-            <span class="text-green-400">Freelance</span> — Django + GraphQL backends for SaaS clients
-          </li>
+        <ul
+          class="relative space-y-6 border-l border-green-500/30 pl-6 text-lg text-gray-300 sm:text-xl"
+        >
+          {
+            experience.map(item => (
+              <li class="relative">
+                <span class="absolute -left-[10px] top-2 size-3 rounded-full bg-green-400 shadow-[0_0_8px_#00FF80]" />
+                <div class="ml-2 flex items-baseline justify-between">
+                  <strong>{item.role}</strong>
+                  <span class="text-sm text-gray-400">({item.period})</span>
+                </div>
+                <p>{item.description}</p>
+              </li>
+            ))
+          }
         </ul>
       </div>
 
       <div id="interests-panel" class="panel-fade hidden">
-        <h3 class="mb-4 text-2xl font-bold text-white">Interests</h3>
-        <p class="text-gray-300">
-          I’m fascinated by AI-assisted development, generative interfaces, and how design systems
-          evolve with machine learning. Outside tech, I enjoy cycling, triathlon, and creating art
-          through code.
-        </p>
+        <p class="text-gray-300">{interests.text}</p>
       </div>
     </div>
   </div>

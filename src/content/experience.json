@@ -1,0 +1,22 @@
+[
+  {
+    "role": "Senior Frontend Developer – Upwork",
+    "period": "May 2022 – Present",
+    "description": "Leading Vue.js, TypeScript, and GraphQL development while migrating legacy systems and enhancing frontend scalability."
+  },
+  {
+    "role": "Freelance Full-Stack Developer",
+    "period": "– Present",
+    "description": "Building end-to-end solutions across multiple languages, frameworks, and databases for diverse global projects."
+  },
+  {
+    "role": "Senior Software Engineer – Intuit",
+    "period": "Nov 2021 – Mar 2022",
+    "description": "Built web platforms for data curation and visualization using JavaScript, Node.js, and React."
+  },
+  {
+    "role": "Software Developer – Jobsity",
+    "period": "May 2017 – Oct 2021",
+    "description": "Developed and maintained multi-stack applications, led TypeScript adoption, and enhanced data visualization tools."
+  }
+]

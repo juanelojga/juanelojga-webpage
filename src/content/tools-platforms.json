@@ -1,0 +1,22 @@
+[
+  {
+    "icon": "terminal",
+    "title": "Git & CLI",
+    "desc": "Version control"
+  },
+  {
+    "icon": "deployed_code",
+    "title": "Docker",
+    "desc": "Containerization"
+  },
+  {
+    "icon": "cloud",
+    "title": "AWS",
+    "desc": "Cloud services"
+  },
+  {
+    "icon": "smart_toy",
+    "title": "AI Tools",
+    "desc": "Gemini, Claude, Codex"
+  }
+]

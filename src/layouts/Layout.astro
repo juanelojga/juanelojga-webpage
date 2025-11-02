@@ -16,24 +16,54 @@ const { title } = Astro.props;
     <meta charset="UTF-8" />
     <meta
       name="description"
-      content="Juan Almeida – Full Stack Engineer crafting modern, accessible frontends with Astro, React, and TypeScript."
+      content="Juan Almeida – Engineer passionate about building smart, scalable, and human-centered software through full-stack development and AI innovation."
     />
     <meta name="viewport" content="width=device-width" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta
+      name="keywords"
+      content="Juan Almeida, Full Stack Engineer, AI Engineer, Software Developer, JavaScript, Python, React, Astro, Django"
+    />
+    <link rel="canonical" href="https://juanelojga.com/" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Juan Almeida | Full Stack & AI Engineer" />
+    <meta
+      name="twitter:description"
+      content="Engineer passionate about building smart, scalable, and human-centered software through full-stack development and AI innovation."
+    />
+    <meta name="twitter:image" content="https://juanelojga.com/og-image.jpg" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Juan Almeida",
+        "jobTitle": "Full Stack & AI Engineer",
+        "url": "https://juanelojga.com",
+        "sameAs": [
+          "https://www.linkedin.com/in/juan-almeida-03806367",
+          "https://github.com/juanelojga"
+        ]
+      }
+    </script>
+    <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
     <link
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"
     />
     <link rel="stylesheet" href="/node_modules/@fortawesome/fontawesome-free/css/all.min.css" />
     <meta name="generator" content={Astro.generator} />
-    <title>{title}</title>
-    <meta property="og:title" content="Juan Almeida | Software Engineer" />
+    <title>Juan Almeida | Full Stack & AI Engineer</title>
+    <meta property="og:title" content="Juan Almeida | Full Stack & AI Engineer" />
+    <meta
+      property="og:description"
+      content="Engineer passionate about building smart, scalable, and human-centered software through full-stack development and AI innovation."
+    />
     <meta property="og:image" content="/og-image.jpg" />
     <ViewTransitions />
   </head>
   <body class="bg-black text-white">
+    <a href="#main" class="sr-only focus:not-sr-only">Skip to content</a>
     <Navbar />
-    <main><slot /></main>
+    <main id="main"><slot /></main>
     <Footer />
 
     <script is:inline>

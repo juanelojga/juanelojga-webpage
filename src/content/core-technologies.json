@@ -1,0 +1,8 @@
+[
+  { "icon": "code", "title": "JavaScript", "desc": "React, Vue" },
+  { "icon": "flip_to_front", "title": "GraphQL", "desc": "API query language" },
+  { "icon": "data_array", "title": "TypeScript", "desc": "Static typing" },
+  { "icon": "data_object", "title": "Python", "desc": "Data analysis, scripting" },
+  { "icon": "database", "title": "Django", "desc": "REST APIs, ORM" },
+  { "icon": "neurology", "title": "AI/ML", "desc": "Neural networks" }
+]
