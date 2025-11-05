@@ -21,14 +21,15 @@
     },
     "coreTechnologies": "Tecnologías Clave",
     "toolsPlatforms": "Herramientas y Plataformas",
-    "interestsText": "Fuera del trabajo, disfruto del ciclismo, el entrenamiento de triatlón, el gimnasio, la música y la lectura — siempre explorando nueva tecnología y oportunidades de aprendizaje."
+    "interestsText": "Siento pasión por superar mis límites en el deporte, especialmente en el triatlón y el ciclismo, donde la disciplina y la perseverancia me impulsan a seguir progresando. La belleza de la naturaleza y los viajes me inspiran, y valoro cada aventura, desde recorridos locales hasta travesías por lugares como las Islas Galápagos. Mi comunidad —amigos, familia y compañeros de equipo— es una parte esencial de mi historia, alimentando mi crecimiento y motivación cada día. La creatividad me impulsa, ya sea explorando nuevos pasatiempos como la pintura o experimentando con la impresión 3D. Creo que el verdadero crecimiento surge al abrazar el proceso, encontrando alegría en cada desafío y lección. Por encima de todo, valoro la gratitud, la resiliencia y la creación de recuerdos significativos en el camino."
   },
   "projects": {
     "title": "Proyectos",
     "description": "Una muestra de proyectos seleccionados que demuestran mi trabajo."
   },
   "contact": {
-    "title": "Contacto",
-    "description": "Ponte en contacto — Estoy abierto a colaboraciones y nuevas oportunidades."
+    "title": "Iniciar Conexión",
+    "subtitle": "¿Tienes un proyecto en mente? Construyamos algo increíble juntos.",
+    "copyEmailAria": "Copiar correo electrónico"
   }
 }
