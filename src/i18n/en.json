@@ -18,7 +18,10 @@
       "skills": "Skills",
       "experience": "Experience",
       "interests": "Interests"
-    }
+    },
+    "coreTechnologies": "Core Technologies",
+    "toolsPlatforms": "Tools & Platforms",
+    "interestsText": "Outside of work, I enjoy cycling, triathlon training, gym sessions, music, and reading — always exploring new tech and learning opportunities."
   },
   "projects": {
     "title": "Projects",

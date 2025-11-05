@@ -18,7 +18,10 @@
       "skills": "Habilidades",
       "experience": "Experiencia",
       "interests": "Intereses"
-    }
+    },
+    "coreTechnologies": "Tecnologías Clave",
+    "toolsPlatforms": "Herramientas y Plataformas",
+    "interestsText": "Fuera del trabajo, disfruto del ciclismo, el entrenamiento de triatlón, el gimnasio, la música y la lectura — siempre explorando nueva tecnología y oportunidades de aprendizaje."
   },
   "projects": {
     "title": "Proyectos",

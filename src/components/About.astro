@@ -49,7 +49,7 @@ const activeTab = t('about.tabs.skills');
       <div id="skills-panel" class="panel-fade">
         <!-- Core Technologies -->
         <div>
-          <h3 class="mb-4 text-2xl font-bold text-white">Core Technologies</h3>
+          <h3 class="mb-4 text-2xl font-bold text-white">{t('about.coreTechnologies')}</h3>
           <div class="grid grid-cols-[repeat(auto-fit,minmax(180px,1fr))] gap-4">
             {
               coreTechnologies.map(tech => (
@@ -69,7 +69,7 @@ const activeTab = t('about.tabs.skills');
 
         <!-- Tools & Platforms -->
         <div>
-          <h3 class="my-4 text-2xl font-bold text-white">Tools & Platforms</h3>
+          <h3 class="my-4 text-2xl font-bold text-white">{t('about.toolsPlatforms')}</h3>
           <div class="grid grid-cols-[repeat(auto-fit,minmax(180px,1fr))] gap-4">
             {
               toolsPlatforms.map(tool => (
@@ -109,7 +109,7 @@ const activeTab = t('about.tabs.skills');
       </div>
 
       <div id="interests-panel" class="panel-fade hidden">
-        <p class="text-gray-300">{interests.text}</p>
+        <p class="text-gray-300">{t('about.interestsText')}</p>
       </div>
     </div>
   </div>
@@ -121,9 +121,9 @@ const activeTab = t('about.tabs.skills');
   </div>
 
   <!-- Interactivity Script -->
-  <script is:inline>
-    const allTabs = JSON.parse('{JSON.stringify(tabs)}');
-    const tabs = document.querySelectorAll('[data-tab]');
+  <script is:inline define:vars={{ tabs }}>
+    const allTabs = tabs;
+    const tabButtons = document.querySelectorAll('[data-tab]');
     const panels = {
       [allTabs[0]]: document.getElementById('skills-panel'),
       [allTabs[1]]: document.getElementById('experience-panel'),
@@ -134,7 +134,7 @@ const activeTab = t('about.tabs.skills');
     let activeTab = localStorage.getItem('activeAboutTab') || allTabs[0];
     updateTabs(activeTab);
 
-    tabs.forEach(button => {
+    tabButtons.forEach(button => {
       button.addEventListener('click', () => {
         const selectedTab = button.getAttribute('data-tab');
         if (selectedTab === activeTab) return;
@@ -146,12 +146,12 @@ const activeTab = t('about.tabs.skills');
     });
 
     function updateTabs(tab) {
-      tabs.forEach(btn => {
+      tabButtons.forEach(btn => {
         const isActive = btn.getAttribute('data-tab') === tab;
         btn.classList.toggle('text-green-400', isActive);
+        btn.classList.toggle('text-gray-400', !isActive);
         btn.classList.toggle('border-b-2', isActive);
         btn.classList.toggle('border-green-400', isActive);
-        btn.classList.toggle('text-gray-400', !isActive);
       });
 
       Object.entries(panels).forEach(([name, panel]) => {
