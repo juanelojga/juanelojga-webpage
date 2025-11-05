@@ -1,12 +1,17 @@
+---
+import { useTranslations } from '../utils/translate';
+const t = useTranslations(Astro);
+---
+
 <footer class="border-t border-green-900 bg-black py-6 text-gray-400">
   <div class="container mx-auto flex flex-col items-center justify-between px-4 md:flex-row">
-    <p class="text-sm">© {new Date().getFullYear()} Juan Almeida. All Rights Reserved.</p>
+    <p class="text-sm">© {new Date().getFullYear()} Juan Almeida. {t('footer.rights')}</p>
 
     <nav class="mt-4 flex items-center gap-8 md:mt-0">
-      <a href="#home" class="text-green-400 hover:underline">Home</a>
-      <a href="#projects" class="text-green-400 hover:underline">Projects</a>
-      <a href="#about" class="text-green-400 hover:underline">About</a>
-      <a href="#contact" class="text-green-400 hover:underline">Contact</a>
+      <a href="#home" class="text-green-400 hover:underline">{t('footer.home')}</a>
+      <a href="#projects" class="text-green-400 hover:underline">{t('footer.projects')}</a>
+      <a href="#about" class="text-green-400 hover:underline">{t('footer.about')}</a>
+      <a href="#contact" class="text-green-400 hover:underline">{t('footer.contact')}</a>
     </nav>
   </div>
 </footer>
