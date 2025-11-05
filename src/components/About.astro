@@ -7,8 +7,12 @@ import { useTranslations } from '../utils/translate';
 
 const t = useTranslations(Astro);
 
-const tabs = [t('about.tabs.skills'), t('about.tabs.experience'), t('about.tabs.interests')];
-const activeTab = t('about.tabs.skills');
+const tabs = [
+  { key: 'skills', label: t('about.tabs.skills') },
+  { key: 'experience', label: t('about.tabs.experience') },
+  { key: 'interests', label: t('about.tabs.interests') },
+];
+const activeTabKey = 'skills';
 ---
 
 <section id="about" aria-labelledby="about-title" class="fade-section bg-black text-white">
@@ -30,14 +34,14 @@ const activeTab = t('about.tabs.skills');
       {
         tabs.map(tab => (
           <button
-            data-tab={tab}
+            data-tab={tab.key}
             class={`pb-3 text-sm font-semibold tracking-wide transition ${
-              tab === activeTab
+              tab.key === activeTabKey
                 ? 'border-b-2 border-green-400 text-green-400'
                 : 'text-gray-400 hover:text-green-300'
             }`}
           >
-            {tab}
+            {tab.label}
           </button>
         ))
       }
@@ -121,17 +125,22 @@ const activeTab = t('about.tabs.skills');
   </div>
 
   <!-- Interactivity Script -->
-  <script is:inline define:vars={{ tabs }}>
-    const allTabs = tabs;
+  <script is:inline>
     const tabButtons = document.querySelectorAll('[data-tab]');
     const panels = {
-      [allTabs[0]]: document.getElementById('skills-panel'),
-      [allTabs[1]]: document.getElementById('experience-panel'),
-      [allTabs[2]]: document.getElementById('interests-panel'),
+      skills: document.getElementById('skills-panel'),
+      experience: document.getElementById('experience-panel'),
+      interests: document.getElementById('interests-panel'),
     };
 
-    // Restore from localStorage
-    let activeTab = localStorage.getItem('activeAboutTab') || allTabs[0];
+    // Restore from localStorage with fallback
+    let activeTab = localStorage.getItem('activeAboutTab') || 'skills';
+
+    // Validate that the stored tab exists, otherwise default to 'skills'
+    if (!panels[activeTab]) {
+      activeTab = 'skills';
+    }
+
     updateTabs(activeTab);
 
     tabButtons.forEach(button => {
