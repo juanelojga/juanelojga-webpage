@@ -1,0 +1,14 @@
+{
+  "navbar": {
+    "about": "About",
+    "projects": "Projects",
+    "contact": "Contact"
+  },
+  "hero": {
+    "greeting": "Hi, I'm",
+    "name": "Juan Almeida",
+    "subtitle": "Full-Stack Software Engineer passionate about AI, Frontend, Backend, Databases, and Machine Learning. I design scalable systems that combine clean architecture, performance, and intelligent user experiences.",
+    "viewWork": "View My Work",
+    "contactMe": "Contact Me"
+  }
+}

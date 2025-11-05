@@ -1,3 +1,9 @@
+---
+import { useTranslations } from '../utils/translate';
+
+const t = useTranslations(Astro);
+---
+
 <nav class="fixed left-0 top-0 z-50 w-full border-b border-green-900 bg-black text-white">
   <div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-3">
     <!-- Left: Logo -->
@@ -8,12 +14,19 @@
 
     <!-- Right: Navigation -->
     <div class="flex items-center gap-8 text-sm font-medium">
-      <a href="#about" class="transition-colors duration-200 hover:text-green-400">About</a>
-      <a href="#projects" class="transition-colors duration-200 hover:text-green-400">Projects</a>
-      <a href="#contact" class="transition-colors duration-200 hover:text-green-400">Contact</a>
+      <a href="#about" class="transition-colors duration-200 hover:text-green-400"
+        >{t('navbar.about')}</a
+      >
+      <a href="#projects" class="transition-colors duration-200 hover:text-green-400"
+        >{t('navbar.projects')}</a
+      >
+      <a href="#contact" class="transition-colors duration-200 hover:text-green-400"
+        >{t('navbar.contact')}</a
+      >
 
       <!-- Language Icon -->
       <button
+        id="language-switcher"
         aria-label="Change language"
         class="rounded-full p-2 transition hover:bg-green-900/20"
       >
@@ -26,3 +39,20 @@
     </div>
   </div>
 </nav>
+
+<script>
+  document.getElementById('language-switcher')?.addEventListener('click', () => {
+    const currentPath = window.location.pathname;
+    const pathSegments = currentPath.split('/').filter(segment => segment);
+
+    let currentLocale = 'en'; // Default locale
+    if (pathSegments.length > 0 && ['en', 'es'].includes(pathSegments[0])) {
+      currentLocale = pathSegments.shift();
+    }
+
+    const newLocale = currentLocale === 'en' ? 'es' : 'en';
+    const newPath = `/${newLocale}/${pathSegments.join('/')}`;
+
+    window.location.pathname = newPath.endsWith('/') ? newPath.slice(0, -1) : newPath;
+  });
+</script>

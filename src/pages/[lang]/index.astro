@@ -4,12 +4,6 @@ import Hero from '../../components/Hero.astro';
 import About from '../../components/About.astro';
 import Projects from '../../components/Projects.astro';
 import Contact from '../../components/Contact.astro';
-
-// Provide all valid paths for [lang]
-export async function getStaticPaths() {
-  const locales = ['en', 'es']; // add more if needed
-  return locales.map(lang => ({ params: { lang } }));
-}
 ---
 
 <Layout title="Juan Almeida | Software Engineer">
