@@ -3,9 +3,12 @@ import coreTechnologies from '../content/core-technologies.json';
 import toolsPlatforms from '../content/tools-platforms.json';
 import experience from '../content/experience.json';
 import interests from '../content/interests.json';
+import { useTranslations } from '../utils/translate';
 
-const tabs = ['Skills', 'Experience', 'Interests'];
-const activeTab = 'Skills';
+const t = useTranslations(Astro);
+
+const tabs = [t('about.tabs.skills'), t('about.tabs.experience'), t('about.tabs.interests')];
+const activeTab = t('about.tabs.skills');
 ---
 
 <section id="about" aria-labelledby="about-title" class="fade-section bg-black text-white">
@@ -15,11 +18,10 @@ const activeTab = 'Skills';
         id="about-title"
         class="text-4xl font-extrabold text-green-400 drop-shadow-[0_0_16px_#00FF80] sm:text-5xl"
       >
-        Codex: Juan Almeida
+        {t('about.title')}
       </h2>
       <p class="max-w-3xl text-lg text-gray-300 sm:text-xl">
-        I build scalable systems from backend to frontend, connecting strong architecture with real
-        user impact.
+        {t('about.description')}
       </p>
     </div>
 
@@ -120,15 +122,16 @@ const activeTab = 'Skills';
 
   <!-- Interactivity Script -->
   <script is:inline>
+    const allTabs = JSON.parse('{JSON.stringify(tabs)}');
     const tabs = document.querySelectorAll('[data-tab]');
     const panels = {
-      Skills: document.getElementById('skills-panel'),
-      Experience: document.getElementById('experience-panel'),
-      Interests: document.getElementById('interests-panel'),
+      [allTabs[0]]: document.getElementById('skills-panel'),
+      [allTabs[1]]: document.getElementById('experience-panel'),
+      [allTabs[2]]: document.getElementById('interests-panel'),
     };
 
     // Restore from localStorage
-    let activeTab = localStorage.getItem('activeAboutTab') || 'Skills';
+    let activeTab = localStorage.getItem('activeAboutTab') || allTabs[0];
     updateTabs(activeTab);
 
     tabs.forEach(button => {

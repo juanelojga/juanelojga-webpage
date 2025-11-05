@@ -10,5 +10,22 @@
     "subtitle": "Full-Stack Software Engineer passionate about AI, Frontend, Backend, Databases, and Machine Learning. I design scalable systems that combine clean architecture, performance, and intelligent user experiences.",
     "viewWork": "View My Work",
     "contactMe": "Contact Me"
+  },
+  "about": {
+    "title": "About Me",
+    "description": "I build scalable systems from backend to frontend, connecting strong architecture with real user impact.",
+    "tabs": {
+      "skills": "Skills",
+      "experience": "Experience",
+      "interests": "Interests"
+    }
+  },
+  "projects": {
+    "title": "Projects",
+    "description": "A showcase of selected projects demonstrating my work."
+  },
+  "contact": {
+    "title": "Contact",
+    "description": "Let’s get in touch — I’m open to collaborations and new opportunities."
   }
 }

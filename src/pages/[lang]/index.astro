@@ -10,11 +10,12 @@ export async function getStaticPaths() {
 }
 
 const { lang } = Astro.params;
+const t = await import(`../../i18n/${lang}.json`).then(m => m.default);
 ---
 
 <Layout title="Juan Almeida | Full Stack & AI Engineer">
   <Hero />
-  <About />
-  <Projects />
-  <Contact />
+  <About title={t.about.title} description={t.about.description} />
+  <Projects title={t.projects.title} description={t.projects.description} />
+  <Contact title={t.contact.title} description={t.contact.description} />
 </Layout>
