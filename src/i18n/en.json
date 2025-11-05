@@ -39,5 +39,10 @@
     "projects": "Projects",
     "about": "About",
     "contact": "Contact"
+  },
+  "seo": {
+    "title": "Juan Almeida | Full Stack & AI Engineer",
+    "description": "Engineer passionate about building smart, scalable, and human-centered software through full-stack development and AI innovation.",
+    "jobTitle": "Full Stack & AI Engineer"
   }
 }

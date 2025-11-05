@@ -39,5 +39,10 @@
     "projects": "Proyectos",
     "about": "Acerca de",
     "contact": "Contacto"
+  },
+  "seo": {
+    "title": "Juan Almeida | Ingeniero Full Stack y de IA",
+    "description": "Ingeniero apasionado por crear software inteligente, escalable y centrado en las personas mediante desarrollo full-stack e innovación en IA.",
+    "jobTitle": "Ingeniero Full Stack y de IA"
   }
 }
