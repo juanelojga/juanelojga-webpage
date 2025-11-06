@@ -6,7 +6,7 @@ import partytown from '@astrojs/partytown';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://juanelojga.com',
+  site: 'https://www.juanelojga.com',
   integrations: [tailwind(), sitemap(), image(), partytown({
     config: { forward: ['dataLayer.push', 'gtag'] }
   })],

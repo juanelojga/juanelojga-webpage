@@ -1,0 +1,29 @@
+# netlify.toml (root of repo)
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "20"
+  # Optional: uncomment if you use pnpm or yarn in the Netlify UI
+  # NPM_FLAGS = "--no-fund --no-audit"
+
+# Cache control for static assets (optional but nice)
+[[headers]]
+  for = "/_astro/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Also cache public folder assets
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Optional: Explicit redirect from root to default locale
+# (Your index.astro already handles this, but this can help with direct access)
+[[redirects]]
+  from = "/"
+  to = "/en/"
+  status = 302
+  force = false
