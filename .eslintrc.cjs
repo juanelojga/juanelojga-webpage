@@ -5,7 +5,7 @@ module.exports = {
     node: true,
     es2022: true,
   },
-  ignorePatterns: ['node_modules', 'dist', '.astro', '.vercel', '.netlify'],
+  ignorePatterns: ['node_modules', 'dist', '.astro', '.vercel', '.netlify', '*.css'],
   parser: '@typescript-eslint/parser',
   plugins: ['astro', '@typescript-eslint', 'tailwindcss', 'prettier'],
   extends: [

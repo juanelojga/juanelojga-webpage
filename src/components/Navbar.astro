@@ -1,10 +1,14 @@
 ---
 import { useTranslations } from '../utils/translate';
+import '../css/navbar.css';
 
 const t = useTranslations(Astro);
 ---
 
-<nav class="fixed left-0 top-0 z-50 w-full border-b border-green-900 bg-black text-white">
+<nav
+  id="navbar"
+  class="fixed left-0 top-0 z-50 w-full border-b border-green-900 bg-black text-white"
+>
   <div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-3">
     <!-- Left: Logo -->
     <div class="flex items-center gap-2">
@@ -12,8 +16,33 @@ const t = useTranslations(Astro);
       <span class="text-lg font-semibold">Juan Almeida</span>
     </div>
 
-    <!-- Right: Navigation -->
-    <div class="flex items-center gap-8 text-sm font-medium">
+    <!-- Right: Hamburger Menu (Mobile) -->
+    <div class="md:hidden">
+      <button
+        id="menu-toggle"
+        aria-label="Open navigation menu"
+        aria-controls="mobile-menu"
+        aria-expanded="false"
+        class="rounded-md p-2 text-gray-300 transition hover:bg-green-900/20 hover:text-green-400"
+      >
+        <svg
+          class="size-6"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M4 6h16M4 12h16m-7 6h7"></path>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Desktop Navigation -->
+    <div class="hidden items-center gap-8 text-sm font-medium md:flex">
       <a href="#about" class="transition-colors duration-200 hover:text-green-400"
         >{t('navbar.about')}</a
       >
@@ -23,12 +52,45 @@ const t = useTranslations(Astro);
       <a href="#contact" class="transition-colors duration-200 hover:text-green-400"
         >{t('navbar.contact')}</a
       >
-
-      <!-- Language Icon -->
       <button
-        id="language-switcher"
+        id="language-switcher-desktop"
         aria-label="Change language"
         class="rounded-full p-2 transition hover:bg-green-900/20"
+      >
+        <span
+          class="material-symbols-outlined text-2xl text-gray-300 transition hover:text-green-400"
+        >
+          language
+        </span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile Menu (Dropdown) -->
+  <div
+    id="mobile-menu"
+    class="hidden w-full bg-black transition-all duration-300 ease-in-out md:hidden"
+  >
+    <div class="flex flex-col items-center gap-4 px-6 py-4">
+      <a
+        href="#about"
+        class="block w-full text-center transition-colors duration-200 hover:text-green-400"
+        >{t('navbar.about')}</a
+      >
+      <a
+        href="#projects"
+        class="block w-full text-center transition-colors duration-200 hover:text-green-400"
+        >{t('navbar.projects')}</a
+      >
+      <a
+        href="#contact"
+        class="block w-full text-center transition-colors duration-200 hover:text-green-400"
+        >{t('navbar.contact')}</a
+      >
+      <button
+        id="language-switcher-mobile"
+        aria-label="Change language"
+        class="mt-2 rounded-full p-2 transition hover:bg-green-900/20"
       >
         <span
           class="material-symbols-outlined text-2xl text-gray-300 transition hover:text-green-400"
@@ -41,18 +103,68 @@ const t = useTranslations(Astro);
 </nav>
 
 <script>
-  document.getElementById('language-switcher')?.addEventListener('click', () => {
+  const menuToggle = document.getElementById('menu-toggle');
+  const mobileMenu = document.getElementById('mobile-menu');
+  const navbar = document.getElementById('navbar');
+
+  // Function to toggle the menu
+  const toggleMenu = () => {
+    const isExpanded = menuToggle?.getAttribute('aria-expanded') === 'true';
+    menuToggle?.setAttribute('aria-expanded', String(!isExpanded));
+    mobileMenu?.classList.toggle('hidden');
+    document.body.classList.toggle('overflow-hidden'); // Prevent scrolling when menu is open
+  };
+
+  // Toggle menu on button click
+  menuToggle?.addEventListener('click', event => {
+    event.stopPropagation();
+    toggleMenu();
+  });
+
+  // Close menu when a link is clicked
+  mobileMenu?.addEventListener('click', event => {
+    if (event.target.tagName === 'A') {
+      toggleMenu();
+    }
+  });
+
+  // Close menu when clicking outside
+  document.addEventListener('click', event => {
+    const isClickInside = navbar?.contains(event.target as Node);
+    if (!isClickInside && menuToggle?.getAttribute('aria-expanded') === 'true') {
+      toggleMenu();
+    }
+  });
+
+  // Close menu on 'Escape' key press
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && menuToggle?.getAttribute('aria-expanded') === 'true') {
+      toggleMenu();
+    }
+  });
+
+  // Language switcher logic
+  const handleLanguageSwitch = () => {
     const currentPath = window.location.pathname;
     const pathSegments = currentPath.split('/').filter(segment => segment);
 
     let currentLocale = 'en'; // Default locale
     if (pathSegments.length > 0 && ['en', 'es'].includes(pathSegments[0])) {
-      currentLocale = pathSegments.shift();
+      currentLocale = pathSegments.shift() || 'en';
     }
 
     const newLocale = currentLocale === 'en' ? 'es' : 'en';
     const newPath = `/${newLocale}/${pathSegments.join('/')}`;
 
-    window.location.pathname = newPath.endsWith('/') ? newPath.slice(0, -1) : newPath;
-  });
+    window.location.pathname = newPath.endsWith('/')
+      ? newPath.slice(0, -1)
+      : newPath || `/${newLocale}`;
+  };
+
+  document
+    .getElementById('language-switcher-desktop')
+    ?.addEventListener('click', handleLanguageSwitch);
+  document
+    .getElementById('language-switcher-mobile')
+    ?.addEventListener('click', handleLanguageSwitch);
 </script>

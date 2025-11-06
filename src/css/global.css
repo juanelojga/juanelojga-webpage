@@ -1,0 +1,47 @@
+html {
+  scroll-behavior: smooth;
+}
+
+@media (min-width: 1024px) {
+  body {
+    overflow-y: scroll;
+    height: 100vh;
+  }
+
+  section {
+    scroll-snap-align: start;
+    min-height: 100vh;
+    opacity: 0;
+    pointer-events: none;
+    transform: scale(0.98);
+    transition:
+      opacity 0.8s ease,
+      transform 0.6s ease;
+  }
+
+  section.active-section {
+    opacity: 1;
+    pointer-events: auto;
+    transform: scale(1);
+  }
+}
+
+/* On mobile, sections are always visible */
+@media (max-width: 1023px) {
+  section {
+    opacity: 1;
+    pointer-events: auto;
+    transform: scale(1);
+  }
+}
+
+section {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* Ensure footer is not hidden behind scroll snapping when Contact is active */
+footer {
+  transition: opacity 0.8s;
+}
