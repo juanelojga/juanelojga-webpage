@@ -65,124 +65,147 @@ const personSchema = {
     <Footer />
 
     <script is:inline>
-      const sections = document.querySelectorAll('section[id], header[id]');
-      const navLinks = document.querySelectorAll("nav a[href^='#']");
-      const footer = document.querySelector('footer');
-      let scrollTimeout;
-      let contactActive = false;
-      let lastY = window.scrollY;
-      let scrollDirection = 'down';
+      function initDesktopNav() {
+        const sections = document.querySelectorAll('section[id], header[id]');
+        const navLinks = document.querySelectorAll("nav a[href^='#']");
+        const footer = document.querySelector('footer');
+        let scrollTimeout;
+        let contactActive = false;
+        let lastY = window.scrollY;
+        let scrollDirection = 'down';
 
-      // Ensure Hero section visible by default
-      if (sections.length > 0) {
-        sections[0].classList.add('active-section');
-        navLinks[0]?.classList.add('text-green-400');
-      }
+        // Ensure Hero section visible by default
+        if (sections.length > 0) {
+          sections[0].classList.add('active-section');
+          navLinks[0]?.classList.add('text-green-400');
+        }
 
-      // Helper: is last section (Contact) in viewport?
-      function isContactActive() {
-        const lastSection = sections[sections.length - 1];
-        if (!lastSection) return false;
-        const rect = lastSection.getBoundingClientRect();
-        // At least 30% visible
-        const threshold = Math.max(0.3 * rect.height, 1);
-        return rect.top < window.innerHeight - threshold && rect.bottom > threshold;
-      }
+        // Helper: is last section (Contact) in viewport?
+        function isContactActive() {
+          const lastSection = sections[sections.length - 1];
+          if (!lastSection) return false;
+          const rect = lastSection.getBoundingClientRect();
+          // At least 30% visible
+          const threshold = Math.max(0.3 * rect.height, 1);
+          return rect.top < window.innerHeight - threshold && rect.bottom > threshold;
+        }
 
-      // Intersection Observer: controls fade + nav highlight
-      const observer = new IntersectionObserver(
-        entries => {
-          entries.forEach(entry => {
-            const target = entry.target;
-            if (entry.isIntersecting) {
-              target.classList.add('active-section');
-              navLinks.forEach(link => {
-                const isActive = link.getAttribute('href').replace('#', '') === target.id;
-                link.classList.toggle('text-green-400', isActive);
-              });
-              history.replaceState(null, '', `#${target.id}`);
-              // If last section becomes active, ensure footer is visible
-              if (target === sections[sections.length - 1]) {
-                contactActive = true;
-                if (footer) {
-                  footer.style.visibility = 'visible';
-                  footer.style.opacity = '1';
+        // Intersection observer setup
+        const observer = new IntersectionObserver(
+          entries => {
+            if (window.innerWidth < 1024) return;
+            entries.forEach(entry => {
+              const target = entry.target;
+              if (entry.isIntersecting) {
+                target.classList.add('active-section');
+                navLinks.forEach(link => {
+                  const isActive = link.getAttribute('href').replace('#', '') === target.id;
+                  link.classList.toggle('text-green-400', isActive);
+                });
+                history.replaceState(null, '', `#${target.id}`);
+                if (target === sections[sections.length - 1]) {
+                  contactActive = true;
+                  if (footer) {
+                    footer.style.visibility = 'visible';
+                    footer.style.opacity = '1';
+                  }
+                }
+              } else {
+                const rect = entry.boundingClientRect;
+                if (rect.bottom < 0 || rect.top > window.innerHeight) {
+                  target.classList.remove('active-section');
+                }
+                if (target === sections[sections.length - 1]) {
+                  contactActive = false;
+                  if (footer) {
+                    footer.style.visibility = '';
+                    footer.style.opacity = '';
+                  }
                 }
               }
-            } else {
-              const rect = entry.boundingClientRect;
-              if (rect.bottom < 0 || rect.top > window.innerHeight) {
-                target.classList.remove('active-section');
-              }
-              // If leaving last section, hide footer on snap scroll
-              if (target === sections[sections.length - 1]) {
-                contactActive = false;
-                if (footer) {
-                  footer.style.visibility = '';
-                  footer.style.opacity = '';
-                }
-              }
-            }
+            });
+          },
+          { threshold: 0.3, rootMargin: '-20% 0px -20% 0px' }
+        );
+
+        sections.forEach(section => observer.observe(section));
+
+        // Smooth scroll for navbar links
+        navLinks.forEach(link => {
+          link.addEventListener('click', e => {
+            if (window.innerWidth < 1024) return;
+            e.preventDefault();
+            const targetId = link.getAttribute('href');
+            const target = document.querySelector(targetId);
+            if (target) target.scrollIntoView({ behavior: 'smooth' });
           });
-        },
-        { threshold: 0.3, rootMargin: '-20% 0px -20% 0px' }
-      );
-
-      sections.forEach(section => observer.observe(section));
-
-      // Smooth scroll for navbar links
-      navLinks.forEach(link => {
-        link.addEventListener('click', e => {
-          e.preventDefault();
-          const targetId = link.getAttribute('href');
-          const target = document.querySelector(targetId);
-          if (target) target.scrollIntoView({ behavior: 'smooth' });
         });
-      });
 
-      // Smart snap scrolling after user stops scrolling
-      window.addEventListener('scroll', () => {
-        const currentY = window.scrollY;
-        scrollDirection = currentY > lastY ? 'down' : 'up';
-        lastY = currentY;
+        const handleScroll = () => {
+          if (window.innerWidth < 1024) return;
+          const currentY = window.scrollY;
+          scrollDirection = currentY > lastY ? 'down' : 'up';
+          lastY = currentY;
 
-        clearTimeout(scrollTimeout);
-        scrollTimeout = setTimeout(() => {
-          // If Contact is active, do nothing.
-          if (isContactActive()) {
-            if (footer) {
-              footer.style.visibility = 'visible';
-              footer.style.opacity = '1';
+          clearTimeout(scrollTimeout);
+          scrollTimeout = setTimeout(() => {
+            if (isContactActive()) {
+              if (footer) {
+                footer.style.visibility = 'visible';
+                footer.style.opacity = '1';
+              }
+              return;
             }
-            return;
-          }
+            const snapThreshold = 100;
+            if (scrollDirection === 'up' && currentY < window.innerHeight - snapThreshold) return;
 
-          // If scrolling UP and near the top, do not snap.
-          // This prevents auto-scrolling away from the Hero section.
-          const snapThreshold = 100; // px
-          if (scrollDirection === 'up' && currentY < window.innerHeight - snapThreshold) {
-            return;
-          }
+            let closest = null;
+            let closestDistance = Infinity;
+            const viewportCenter = window.innerHeight / 2;
 
-          let closest = null;
-          let closestDistance = Infinity;
-          const viewportCenter = window.innerHeight / 2;
+            sections.forEach(section => {
+              const rect = section.getBoundingClientRect();
+              const sectionCenter = rect.top + rect.height / 2;
+              const distance = Math.abs(sectionCenter - viewportCenter);
+              if (distance < closestDistance) {
+                closest = section;
+                closestDistance = distance;
+              }
+            });
 
-          sections.forEach(section => {
-            const rect = section.getBoundingClientRect();
-            const sectionCenter = rect.top + rect.height / 2;
-            const distance = Math.abs(sectionCenter - viewportCenter);
+            if (closest) closest.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }, 150);
+        };
 
-            if (distance < closestDistance) {
-              closest = section;
-              closestDistance = distance;
-            }
-          });
+        window.addEventListener('scroll', handleScroll);
+        window.observer = observer;
+        window.handleScroll = handleScroll;
+      }
 
-          if (closest) {
-            closest.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }
-        }, 150); // Debounce delay
+      function cleanupDesktopNav() {
+        if (window.observer) {
+          window.observer.disconnect();
+          window.observer = null;
+        }
+        if (window.handleScroll) {
+          window.removeEventListener('scroll', window.handleScroll);
+          window.handleScroll = null;
+        }
+        window.navInitialized = false;
+      }
+
+      if (window.innerWidth >= 1024) {
+        initDesktopNav();
+        window.navInitialized = true;
+      }
+
+      window.addEventListener('resize', () => {
+        const isDesktop = window.innerWidth >= 1024;
+        if (isDesktop && !window.navInitialized) {
+          initDesktopNav();
+        } else if (!isDesktop && window.navInitialized) {
+          cleanupDesktopNav();
+        }
       });
     </script>
   </body>
