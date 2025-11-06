@@ -38,7 +38,7 @@ const activeTabKey = 'skills';
         tabs.map(tab => (
           <button
             data-tab={tab.key}
-            class={`px-3 pb-2 text-xs font-semibold tracking-wide transition ${
+            class={`px-3 pb-2 text-xs font-semibold tracking-wide transition md:text-base ${
               tab.key === activeTabKey
                 ? 'border-b-2 border-green-400 text-green-400'
                 : 'text-gray-400 hover:text-green-300'
