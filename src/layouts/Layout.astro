@@ -3,6 +3,7 @@ import { ViewTransitions } from 'astro:transitions';
 import Navbar from '../components/Navbar.astro';
 import Footer from '../components/Footer.astro';
 import { useTranslations } from '../utils/translate';
+import '../css/global.css';
 const t = useTranslations(Astro);
 const { lang } = Astro.params || { lang: 'en' };
 const canonicalBase = 'https://juanelojga.com';
@@ -184,35 +185,5 @@ const personSchema = {
         }, 150); // Debounce delay
       });
     </script>
-  </body><style is:global>
-    html {
-      scroll-behavior: smooth;
-    }
-    body {
-      overflow-y: scroll;
-      height: 100vh;
-    }
-    section {
-      scroll-snap-align: start;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      opacity: 0;
-      pointer-events: none;
-      transform: scale(0.98);
-      transition:
-        opacity 0.8s ease,
-        transform 0.6s ease;
-    }
-    section.active-section {
-      opacity: 1;
-      pointer-events: auto;
-      transform: scale(1);
-    }
-    /* Ensure footer is not hidden behind scroll snapping when Contact is active */
-    footer {
-      transition: opacity 0.8s;
-    }
-  </style>
+  </body>
 </html>
