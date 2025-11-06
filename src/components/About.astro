@@ -2,10 +2,16 @@
 import coreTechnologies from '../content/core-technologies.json';
 import toolsPlatforms from '../content/tools-platforms.json';
 import experience from '../content/experience.json';
-import interests from '../content/interests.json';
+import { useTranslations } from '../utils/translate';
 
-const tabs = ['Skills', 'Experience', 'Interests'];
-const activeTab = 'Skills';
+const t = useTranslations(Astro);
+
+const tabs = [
+  { key: 'skills', label: t('about.tabs.skills') },
+  { key: 'experience', label: t('about.tabs.experience') },
+  { key: 'interests', label: t('about.tabs.interests') },
+];
+const activeTabKey = 'skills';
 ---
 
 <section id="about" aria-labelledby="about-title" class="fade-section bg-black text-white">
@@ -15,11 +21,10 @@ const activeTab = 'Skills';
         id="about-title"
         class="text-4xl font-extrabold text-green-400 drop-shadow-[0_0_16px_#00FF80] sm:text-5xl"
       >
-        Codex: Juan Almeida
+        {t('about.title')}
       </h2>
       <p class="max-w-3xl text-lg text-gray-300 sm:text-xl">
-        I build scalable systems from backend to frontend, connecting strong architecture with real
-        user impact.
+        {t('about.description')}
       </p>
     </div>
 
@@ -28,14 +33,14 @@ const activeTab = 'Skills';
       {
         tabs.map(tab => (
           <button
-            data-tab={tab}
+            data-tab={tab.key}
             class={`pb-3 text-sm font-semibold tracking-wide transition ${
-              tab === activeTab
+              tab.key === activeTabKey
                 ? 'border-b-2 border-green-400 text-green-400'
                 : 'text-gray-400 hover:text-green-300'
             }`}
           >
-            {tab}
+            {tab.label}
           </button>
         ))
       }
@@ -47,7 +52,7 @@ const activeTab = 'Skills';
       <div id="skills-panel" class="panel-fade">
         <!-- Core Technologies -->
         <div>
-          <h3 class="mb-4 text-2xl font-bold text-white">Core Technologies</h3>
+          <h3 class="mb-4 text-2xl font-bold text-white">{t('about.coreTechnologies')}</h3>
           <div class="grid grid-cols-[repeat(auto-fit,minmax(180px,1fr))] gap-4">
             {
               coreTechnologies.map(tech => (
@@ -67,7 +72,7 @@ const activeTab = 'Skills';
 
         <!-- Tools & Platforms -->
         <div>
-          <h3 class="my-4 text-2xl font-bold text-white">Tools & Platforms</h3>
+          <h3 class="my-4 text-2xl font-bold text-white">{t('about.toolsPlatforms')}</h3>
           <div class="grid grid-cols-[repeat(auto-fit,minmax(180px,1fr))] gap-4">
             {
               toolsPlatforms.map(tool => (
@@ -107,7 +112,7 @@ const activeTab = 'Skills';
       </div>
 
       <div id="interests-panel" class="panel-fade hidden">
-        <p class="text-gray-300">{interests.text}</p>
+        <p class="text-gray-300">{t('about.interestsText')}</p>
       </div>
     </div>
   </div>
@@ -120,18 +125,24 @@ const activeTab = 'Skills';
 
   <!-- Interactivity Script -->
   <script is:inline>
-    const tabs = document.querySelectorAll('[data-tab]');
+    const tabButtons = document.querySelectorAll('[data-tab]');
     const panels = {
-      Skills: document.getElementById('skills-panel'),
-      Experience: document.getElementById('experience-panel'),
-      Interests: document.getElementById('interests-panel'),
+      skills: document.getElementById('skills-panel'),
+      experience: document.getElementById('experience-panel'),
+      interests: document.getElementById('interests-panel'),
     };
 
-    // Restore from localStorage
-    let activeTab = localStorage.getItem('activeAboutTab') || 'Skills';
+    // Restore from localStorage with fallback
+    let activeTab = localStorage.getItem('activeAboutTab') || 'skills';
+
+    // Validate that the stored tab exists, otherwise default to 'skills'
+    if (!panels[activeTab]) {
+      activeTab = 'skills';
+    }
+
     updateTabs(activeTab);
 
-    tabs.forEach(button => {
+    tabButtons.forEach(button => {
       button.addEventListener('click', () => {
         const selectedTab = button.getAttribute('data-tab');
         if (selectedTab === activeTab) return;
@@ -143,12 +154,12 @@ const activeTab = 'Skills';
     });
 
     function updateTabs(tab) {
-      tabs.forEach(btn => {
+      tabButtons.forEach(btn => {
         const isActive = btn.getAttribute('data-tab') === tab;
         btn.classList.toggle('text-green-400', isActive);
+        btn.classList.toggle('text-gray-400', !isActive);
         btn.classList.toggle('border-b-2', isActive);
         btn.classList.toggle('border-green-400', isActive);
-        btn.classList.toggle('text-gray-400', !isActive);
       });
 
       Object.entries(panels).forEach(([name, panel]) => {

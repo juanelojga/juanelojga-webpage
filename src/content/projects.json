@@ -1,6 +1,6 @@
 [
   {
-    "title": "Upwork",
+    "title": "Upwork - Search & Jobs Section",
     "tags": ["Vue", "Node.js", "Typescript", "GraphQL"],
     "image": "/images/project-cypher.jpg",
     "links": {
@@ -24,6 +24,15 @@
     "links": {
       "live": "https://juanelojga.com/",
       "github": "https://github.com/juanelojga/juanelojga-webpage"
+    }
+  },
+  {
+    "title": "JuaneloJGAC Tech LLC",
+    "tags": ["Astro", "Tailwind", "TypeScript"],
+    "image": "/images/project-cypher.jpg",
+    "links": {
+      "live": "https://juanelojgac-tech.com/",
+      "github": "#"
     }
   }
 ]

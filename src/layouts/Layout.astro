@@ -2,48 +2,48 @@
 import { ViewTransitions } from 'astro:transitions';
 import Navbar from '../components/Navbar.astro';
 import Footer from '../components/Footer.astro';
+import { useTranslations } from '../utils/translate';
+const t = useTranslations(Astro);
+const { lang } = Astro.params || { lang: 'en' };
+const canonicalBase = 'https://juanelojga.com';
+const localePath = lang === 'en' ? '' : `/${lang}`;
+const canonicalUrl = `${canonicalBase}${localePath}/`;
 
-export interface Props {
-  title: string;
-}
-
-const { title } = Astro.props;
+const personSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: 'Juan Almeida',
+  jobTitle: t('seo.jobTitle'),
+  description: t('seo.description'),
+  url: canonicalUrl,
+  sameAs: ['https://www.linkedin.com/in/juan-almeida-03806367', 'https://github.com/juanelojga'],
+};
 ---
 
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta
-      name="description"
-      content="Juan Almeida – Engineer passionate about building smart, scalable, and human-centered software through full-stack development and AI innovation."
-    />
+    <meta name="description" content={t('seo.description')} />
+    <meta property="og:title" content={t('seo.title')} />
+    <meta property="og:description" content={t('seo.description')} />
+    <meta name="twitter:title" content={t('seo.title')} />
+    <meta name="twitter:description" content={t('seo.description')} />
     <meta name="viewport" content="width=device-width" />
     <meta
       name="keywords"
       content="Juan Almeida, Full Stack Engineer, AI Engineer, Software Developer, JavaScript, Python, React, Astro, Django"
     />
-    <link rel="canonical" href="https://juanelojga.com/" />
+    <link rel="canonical" href={canonicalUrl} />
+    <link rel="alternate" href="https://juanelojga.com/" hreflang="en" />
+    <link rel="alternate" href="https://juanelojga.com/es/" hreflang="es" />
+    <link rel="alternate" href="https://juanelojga.com/" hreflang="x-default" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Juan Almeida | Full Stack & AI Engineer" />
-    <meta
-      name="twitter:description"
-      content="Engineer passionate about building smart, scalable, and human-centered software through full-stack development and AI innovation."
-    />
+    <meta name="twitter:title" content={t('seo.title')} />
+    <meta name="twitter:description" content={t('seo.description')} />
     <meta name="twitter:image" content="https://juanelojga.com/og-image.jpg" />
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "Person",
-        "name": "Juan Almeida",
-        "jobTitle": "Full Stack & AI Engineer",
-        "url": "https://juanelojga.com",
-        "sameAs": [
-          "https://www.linkedin.com/in/juan-almeida-03806367",
-          "https://github.com/juanelojga"
-        ]
-      }
-    </script>
+    <script type="application/ld+json" set:html={JSON.stringify(personSchema)} />
+
     <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
     <link
       rel="stylesheet"
@@ -51,12 +51,9 @@ const { title } = Astro.props;
     />
     <link rel="stylesheet" href="/node_modules/@fortawesome/fontawesome-free/css/all.min.css" />
     <meta name="generator" content={Astro.generator} />
-    <title>Juan Almeida | Full Stack & AI Engineer</title>
-    <meta property="og:title" content="Juan Almeida | Full Stack & AI Engineer" />
-    <meta
-      property="og:description"
-      content="Engineer passionate about building smart, scalable, and human-centered software through full-stack development and AI innovation."
-    />
+    <title>{t('seo.title')}</title>
+    <meta property="og:title" content={t('seo.title')} />
+    <meta property="og:description" content={t('seo.description')} />
     <meta property="og:image" content="/og-image.jpg" />
     <ViewTransitions />
   </head>

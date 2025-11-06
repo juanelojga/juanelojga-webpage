@@ -1,15 +1,20 @@
+---
+import { useTranslations } from '../utils/translate';
+const t = useTranslations(Astro);
+---
+
 <section id="contact" class="fade-section bg-black text-white">
   <div class="container mx-auto max-w-3xl px-6 text-center">
     <!-- Title -->
     <h2
       class="mb-4 text-4xl font-extrabold text-green-400 drop-shadow-[0_0_25px_#00FF80] sm:text-5xl"
     >
-      INITIATE CONNECTION
+      {t('contact.title')}
     </h2>
 
     <!-- Subtitle -->
     <p class="mb-12 text-lg text-gray-400">
-      Have a project in mind? Let’s build something amazing together.
+      {t('contact.subtitle')}
     </p>
 
     <!-- Social Icons -->
@@ -48,7 +53,11 @@
     <!-- Email with Copy -->
     <div class="flex items-center justify-center gap-3 text-gray-300">
       <span id="email-text">juanelojga@gmail.com</span>
-      <button id="copy-email" aria-label="Copy email" class="transition hover:text-green-400">
+      <button
+        id="copy-email"
+        aria-label={t('contact.copyEmailAria')}
+        class="transition hover:text-green-400"
+      >
         <span class="material-symbols-outlined align-middle">content_copy</span>
       </button>
     </div>

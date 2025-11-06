@@ -1,0 +1,48 @@
+{
+  "navbar": {
+    "about": "About",
+    "projects": "Projects",
+    "contact": "Contact"
+  },
+  "hero": {
+    "greeting": "Hi, I'm",
+    "name": "Juan Almeida",
+    "subtitle": "Full-Stack Software Engineer passionate about AI, Frontend, Backend, Databases, and Machine Learning. I design scalable systems that combine clean architecture, performance, and intelligent user experiences.",
+    "viewWork": "View My Work",
+    "contactMe": "Contact Me"
+  },
+  "about": {
+    "title": "About Me",
+    "description": "I build scalable systems from backend to frontend, connecting strong architecture with real user impact.",
+    "tabs": {
+      "skills": "Skills",
+      "experience": "Experience",
+      "interests": "Interests"
+    },
+    "coreTechnologies": "Core Technologies",
+    "toolsPlatforms": "Tools & Platforms",
+    "interestsText": "I’m passionate about pushing my limits in sports—especially triathlon and cycling—where discipline and perseverance keep me striving for progress. The beauty of nature and travel inspires me, and I treasure every adventure, from local rides to journeys through places like the Galapagos. My community—friends, family, and teammates—are an essential part of my story, fueling my growth and motivation every day. Creativity drives me, whether I’m exploring new hobbies like painting or experimenting with 3D printing. I believe that real growth comes from embracing the process, finding joy in every challenge and lesson. Above all, I value gratitude, resilience, and making meaningful memories along the way."
+  },
+  "projects": {
+    "title": "Featured Projects:",
+    "live": "Live Preview",
+    "github": "GitHub"
+  },
+  "contact": {
+    "title": "Initiate Connection",
+    "subtitle": "Have a project in mind? Let’s build something amazing together.",
+    "copyEmailAria": "Copy email"
+  },
+  "footer": {
+    "rights": "All Rights Reserved.",
+    "home": "Home",
+    "projects": "Projects",
+    "about": "About",
+    "contact": "Contact"
+  },
+  "seo": {
+    "title": "Juan Almeida | Full Stack & AI Engineer",
+    "description": "Engineer passionate about building smart, scalable, and human-centered software through full-stack development and AI innovation.",
+    "jobTitle": "Full Stack & AI Engineer"
+  }
+}

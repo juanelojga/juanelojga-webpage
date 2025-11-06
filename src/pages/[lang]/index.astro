@@ -5,16 +5,17 @@ import About from '../../components/About.astro';
 import Projects from '../../components/Projects.astro';
 import Contact from '../../components/Contact.astro';
 
-// Provide all valid paths for [lang]
 export async function getStaticPaths() {
-  const locales = ['en', 'es']; // add more if needed
-  return locales.map(lang => ({ params: { lang } }));
+  return [{ params: { lang: 'en' } }, { params: { lang: 'es' } }];
 }
+
+const { lang } = Astro.params;
+const t = await import(`../../i18n/${lang}.json`).then(m => m.default);
 ---
 
-<Layout title="Juan Almeida | Software Engineer">
+<Layout title="Juan Almeida | Full Stack & AI Engineer">
   <Hero />
-  <About />
-  <Projects />
-  <Contact />
+  <About title={t.about.title} description={t.about.description} />
+  <Projects title={t.projects.title} description={t.projects.description} />
+  <Contact title={t.contact.title} description={t.contact.description} />
 </Layout>

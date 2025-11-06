@@ -1,0 +1,48 @@
+{
+  "navbar": {
+    "about": "Sobre mí",
+    "projects": "Proyectos",
+    "contact": "Contacto"
+  },
+  "hero": {
+    "greeting": "Hola, soy",
+    "name": "Juan Almeida",
+    "subtitle": "Ingeniero de Software Full-Stack apasionado por la IA, Frontend, Backend, Bases de Datos y Machine Learning. Diseño sistemas escalables que combinan arquitectura limpia, rendimiento y experiencias de usuario inteligentes.",
+    "viewWork": "Ver mi trabajo",
+    "contactMe": "Contáctame"
+  },
+  "about": {
+    "title": "Sobre mí",
+    "description": "Desarrollo sistemas escalables de backend a frontend, conectando una arquitectura sólida con impacto real en los usuarios.",
+    "tabs": {
+      "skills": "Habilidades",
+      "experience": "Experiencia",
+      "interests": "Intereses"
+    },
+    "coreTechnologies": "Tecnologías Clave",
+    "toolsPlatforms": "Herramientas y Plataformas",
+    "interestsText": "Siento pasión por superar mis límites en el deporte, especialmente en el triatlón y el ciclismo, donde la disciplina y la perseverancia me impulsan a seguir progresando. La belleza de la naturaleza y los viajes me inspiran, y valoro cada aventura, desde recorridos locales hasta travesías por lugares como las Islas Galápagos. Mi comunidad —amigos, familia y compañeros de equipo— es una parte esencial de mi historia, alimentando mi crecimiento y motivación cada día. La creatividad me impulsa, ya sea explorando nuevos pasatiempos como la pintura o experimentando con la impresión 3D. Creo que el verdadero crecimiento surge al abrazar el proceso, encontrando alegría en cada desafío y lección. Por encima de todo, valoro la gratitud, la resiliencia y la creación de recuerdos significativos en el camino."
+  },
+  "projects": {
+    "title": "Proyectos Destacados:",
+    "live": "Vista Previa",
+    "github": "GitHub"
+  },
+  "contact": {
+    "title": "Iniciar Conexión",
+    "subtitle": "¿Tienes un proyecto en mente? Construyamos algo increíble juntos.",
+    "copyEmailAria": "Copiar correo electrónico"
+  },
+  "footer": {
+    "rights": "Todos los derechos reservados.",
+    "home": "Inicio",
+    "projects": "Proyectos",
+    "about": "Acerca de",
+    "contact": "Contacto"
+  },
+  "seo": {
+    "title": "Juan Almeida | Ingeniero Full Stack y de IA",
+    "description": "Ingeniero apasionado por crear software inteligente, escalable y centrado en las personas mediante desarrollo full-stack e innovación en IA.",
+    "jobTitle": "Ingeniero Full Stack y de IA"
+  }
+}
