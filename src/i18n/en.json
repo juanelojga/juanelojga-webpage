@@ -75,6 +75,20 @@
     "seo": {
       "title": "Resume | Juan Almeida — Full Stack & AI Engineer",
       "description": "Explore the professional resume of Juan Almeida — full-stack and AI engineer with expertise in TypeScript, Python, React, and scalable system design."
+    },
+    "form": {
+      "heading": "Download My Resume",
+      "fullName": "Full Name",
+      "fullNamePlaceholder": "Your full name",
+      "email": "Email",
+      "emailPlaceholder": "you@example.com",
+      "submit": "Download Resume (PDF)",
+      "submitting": "Submitting…",
+      "successMessage": "Thank you! Your download will start shortly.",
+      "errorMessage": "Something went wrong. Please try again.",
+      "privacyNotice": "Your information is used only to send the resume and will not be shared with third parties.",
+      "requiredField": "This field is required.",
+      "invalidEmail": "Please enter a valid email address."
     }
   },
   "seo": {

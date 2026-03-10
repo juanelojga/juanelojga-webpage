@@ -2,6 +2,7 @@
 import Layout from '../../layouts/Layout.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import ResumePreview from '../../components/ResumePreview.astro';
+import LeadCaptureForm from '../../components/LeadCaptureForm';
 
 export async function getStaticPaths() {
   return [{ params: { lang: 'en' } }, { params: { lang: 'es' } }];
@@ -87,6 +88,11 @@ const breadcrumbSchema = {
     <!-- Resume Preview -->
     <section class="mx-auto max-w-6xl px-6 py-12 pb-20">
       <ResumePreview />
+    </section>
+
+    <!-- Lead Capture Form -->
+    <section class="mx-auto max-w-6xl px-6 pb-20">
+      <LeadCaptureForm lang={lang} labels={resume.form} client:visible />
     </section>
   </div>
 </Layout>

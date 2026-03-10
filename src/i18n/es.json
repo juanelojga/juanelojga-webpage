@@ -75,6 +75,20 @@
     "seo": {
       "title": "Currículum | Juan Almeida — Ingeniero Full Stack y de IA",
       "description": "Explora el currículum profesional de Juan Almeida — ingeniero full-stack y de IA con experiencia en TypeScript, Python, React y diseño de sistemas escalables."
+    },
+    "form": {
+      "heading": "Descargar Mi Currículum",
+      "fullName": "Nombre Completo",
+      "fullNamePlaceholder": "Tu nombre completo",
+      "email": "Correo Electrónico",
+      "emailPlaceholder": "tu@ejemplo.com",
+      "submit": "Descargar Currículum (PDF)",
+      "submitting": "Enviando…",
+      "successMessage": "¡Gracias! Tu descarga comenzará en breve.",
+      "errorMessage": "Algo salió mal. Por favor, inténtalo de nuevo.",
+      "privacyNotice": "Tu información se usa solo para enviar el currículum y no será compartida con terceros.",
+      "requiredField": "Este campo es obligatorio.",
+      "invalidEmail": "Por favor, ingresa una dirección de correo válida."
     }
   },
   "seo": {
