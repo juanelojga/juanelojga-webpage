@@ -42,13 +42,16 @@ describe('Design tokens', () => {
     });
   });
 
-  describe('removed old tokens', () => {
-    it('should not have old animation keyframes', () => {
-      expect(theme?.keyframes).toBeUndefined();
+  describe('animations', () => {
+    it('should define menu-slide-down keyframes', () => {
+      expect(theme?.keyframes?.['menu-slide-down']).toEqual({
+        '0%': { opacity: '0', transform: 'translateY(-8px)' },
+        '100%': { opacity: '1', transform: 'translateY(0)' },
+      });
     });
 
-    it('should not have old animation definitions', () => {
-      expect(theme?.animation).toBeUndefined();
+    it('should define menu-slide-down animation', () => {
+      expect(theme?.animation?.['menu-slide-down']).toBe('menu-slide-down 0.2s ease-out');
     });
   });
 });

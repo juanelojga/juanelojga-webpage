@@ -4,18 +4,26 @@ import '../css/navbar.css';
 
 const t = useTranslations(Astro);
 const lang = Astro.currentLocale === 'es' ? 'es' : 'en';
+
+const navLinks = [
+  { href: '#projects', label: t('navbar.projects') },
+  { href: '#experience', label: t('navbar.experience') },
+  { href: '#skills', label: t('navbar.skills') },
+  { href: '#vision', label: t('navbar.vision') },
+];
 ---
 
 <nav
   id="navbar"
-  class="sticky top-0 z-50 w-full border-b border-slate-200 bg-white/80 backdrop-blur-md"
+  class="sticky top-0 z-50 w-full bg-white/90 backdrop-blur-xl transition-all duration-300"
 >
   <div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-3">
     <!-- Left: Logo -->
-    <div class="flex items-center gap-2">
-      <span class="material-symbols-outlined text-2xl text-primary">terminal</span>
-      <span class="font-semibold text-slate-900">Portfolio</span>
-    </div>
+    <a href={`/${lang}/`} class="group flex items-center font-mono text-sm no-underline">
+      <span id="logo-typed" class="logo-typed" aria-hidden="true"></span>
+      <span id="logo-cursor" class="logo-cursor-hidden ml-0.5 select-none text-primary">_</span>
+      <span class="sr-only">&gt; juan.almeida</span>
+    </a>
 
     <!-- Right: Hamburger Menu (Mobile) -->
     <div class="md:hidden">
@@ -24,7 +32,7 @@ const lang = Astro.currentLocale === 'es' ? 'es' : 'en';
         aria-label="Open navigation menu"
         aria-controls="mobile-menu"
         aria-expanded="false"
-        class="rounded-md p-2 text-slate-600 transition hover:text-primary"
+        class="rounded-md p-2 text-slate-600 transition hover:text-slate-900"
       >
         <svg
           class="size-6"
@@ -43,42 +51,38 @@ const lang = Astro.currentLocale === 'es' ? 'es' : 'en';
     </div>
 
     <!-- Desktop Navigation -->
-    <div class="hidden items-center gap-8 md:flex">
-      <a
-        href="#projects"
-        class="text-sm font-medium text-slate-600 transition-colors hover:text-primary"
-        >{t('navbar.projects')}</a
+    <div class="hidden items-center gap-1 md:flex">
+      <span aria-hidden="true" class="mr-1 select-none font-mono text-xs text-slate-400">{'{'}</span
       >
-      <a
-        href="#experience"
-        class="text-sm font-medium text-slate-600 transition-colors hover:text-primary"
-        >{t('navbar.experience')}</a
+      {
+        navLinks.map(link => (
+          <a
+            href={link.href}
+            data-section={link.href.replace('#', '')}
+            class="nav-tab relative rounded px-3 py-1.5 font-mono text-sm text-slate-600 transition-colors hover:text-slate-900"
+          >
+            {link.label}
+          </a>
+        ))
+      }
+      <span aria-hidden="true" class="ml-1 select-none font-mono text-xs text-slate-400">{'}'}</span
       >
-      <a
-        href="#skills"
-        class="text-sm font-medium text-slate-600 transition-colors hover:text-primary"
-        >{t('navbar.skills')}</a
-      >
-      <a
-        href="#vision"
-        class="text-sm font-medium text-slate-600 transition-colors hover:text-primary"
-        >{t('navbar.vision')}</a
-      >
+
       <a
         href={`/${lang}/resume`}
-        class="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white transition hover:bg-primary/90"
+        class="ml-4 rounded-lg border border-primary/50 px-4 py-1.5 font-mono text-sm font-medium text-primary transition-all hover:border-primary hover:bg-primary/10 hover:shadow-[0_0_12px_rgba(19,127,236,0.25)]"
         >{t('navbar.resume')}</a
       >
+
       <button
         id="language-switcher-desktop"
         aria-label="Change language"
-        class="rounded-full p-2 transition hover:text-primary"
+        class="ml-3 flex items-center gap-1 rounded px-2 py-1.5 font-mono text-sm text-slate-500 transition-colors hover:text-slate-900"
       >
-        <span
-          class="material-symbols-outlined text-2xl text-slate-500 transition hover:text-primary"
-        >
-          language
-        </span>
+        <span aria-hidden="true" class="select-none text-slate-400">//</span>
+        <span class={lang === 'en' ? 'text-slate-800' : ''}>EN</span>
+        <span aria-hidden="true" class="select-none text-slate-400">|</span>
+        <span class={lang === 'es' ? 'text-slate-800' : ''}>ES</span>
       </button>
     </div>
   </div>
@@ -86,112 +90,259 @@ const lang = Astro.currentLocale === 'es' ? 'es' : 'en';
   <!-- Mobile Menu (Dropdown) -->
   <div
     id="mobile-menu"
-    class="hidden w-full bg-white/95 backdrop-blur-md transition-all duration-300 ease-in-out md:hidden"
+    class="hidden w-full border-t border-slate-200 bg-white/90 backdrop-blur-xl md:hidden"
   >
-    <div class="flex flex-col items-center gap-4 px-6 py-4">
-      <a
-        href="#projects"
-        class="block w-full text-center text-sm font-medium text-slate-600 transition-colors hover:text-primary"
-        >{t('navbar.projects')}</a
-      >
-      <a
-        href="#experience"
-        class="block w-full text-center text-sm font-medium text-slate-600 transition-colors hover:text-primary"
-        >{t('navbar.experience')}</a
-      >
-      <a
-        href="#skills"
-        class="block w-full text-center text-sm font-medium text-slate-600 transition-colors hover:text-primary"
-        >{t('navbar.skills')}</a
-      >
-      <a
-        href="#vision"
-        class="block w-full text-center text-sm font-medium text-slate-600 transition-colors hover:text-primary"
-        >{t('navbar.vision')}</a
-      >
+    <div class="flex animate-menu-slide-down flex-col px-6 py-4">
+      {
+        navLinks.map(link => (
+          <a
+            href={link.href}
+            class="block rounded-lg px-4 py-3 font-mono text-sm text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900"
+          >
+            {link.label}
+          </a>
+        ))
+      }
       <a
         href={`/${lang}/resume`}
-        class="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white transition hover:bg-primary/90"
+        class="mt-2 block rounded-lg border border-primary/50 px-4 py-3 text-center font-mono text-sm font-medium text-primary transition-all hover:bg-primary/10"
         >{t('navbar.resume')}</a
       >
       <button
         id="language-switcher-mobile"
         aria-label="Change language"
-        class="mt-2 rounded-full p-2 transition hover:text-primary"
+        class="mt-2 flex items-center justify-center gap-1 rounded-lg px-4 py-3 font-mono text-sm text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900"
       >
-        <span
-          class="material-symbols-outlined text-2xl text-slate-500 transition hover:text-primary"
-        >
-          language
-        </span>
+        <span aria-hidden="true" class="select-none text-slate-400">//</span>
+        <span class={lang === 'en' ? 'text-slate-800' : ''}>EN</span>
+        <span aria-hidden="true" class="select-none text-slate-400">|</span>
+        <span class={lang === 'es' ? 'text-slate-800' : ''}>ES</span>
       </button>
     </div>
   </div>
 </nav>
 
+<style>
+  .nav-tab::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 1px;
+    background: #137fec;
+    transition: all 0.2s ease;
+    transform: translateX(-50%);
+  }
+
+  .nav-tab:hover::after {
+    width: 60%;
+  }
+
+  .nav-tab-active {
+    color: rgb(15, 23, 42); /* slate-900 */
+  }
+
+  .nav-tab-active::after {
+    width: 60%;
+    background: #137fec;
+  }
+
+  #navbar::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #137fec, transparent);
+    background-size: 200% 100%;
+    animation: shimmer 8s ease-in-out infinite;
+  }
+
+  @keyframes shimmer {
+    0% {
+      background-position: -200% 0;
+    }
+    100% {
+      background-position: 200% 0;
+    }
+  }
+
+  .navbar-scrolled {
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 0 20px rgba(19, 127, 236, 0.05);
+  }
+
+  .logo-cursor-hidden {
+    opacity: 0;
+  }
+
+  .logo-cursor-visible {
+    animation: blink 1s step-end infinite;
+  }
+
+  @keyframes blink {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0;
+    }
+  }
+</style>
+
 <script>
-  const menuToggle = document.getElementById('menu-toggle');
-  const mobileMenu = document.getElementById('mobile-menu');
-  const navbar = document.getElementById('navbar');
+  document.addEventListener('astro:page-load', () => {
+    const menuToggle = document.getElementById('menu-toggle');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const navbar = document.getElementById('navbar');
 
-  // Function to toggle the menu
-  const toggleMenu = () => {
-    const isExpanded = menuToggle?.getAttribute('aria-expanded') === 'true';
-    menuToggle?.setAttribute('aria-expanded', String(!isExpanded));
-    mobileMenu?.classList.toggle('hidden');
-    document.body.classList.toggle('overflow-hidden'); // Prevent scrolling when menu is open
-  };
+    // Function to toggle the menu
+    const toggleMenu = () => {
+      const isExpanded = menuToggle?.getAttribute('aria-expanded') === 'true';
+      menuToggle?.setAttribute('aria-expanded', String(!isExpanded));
+      mobileMenu?.classList.toggle('hidden');
+      document.body.classList.toggle('overflow-hidden');
+    };
 
-  // Toggle menu on button click
-  menuToggle?.addEventListener('click', event => {
-    event.stopPropagation();
-    toggleMenu();
-  });
-
-  // Close menu when a link is clicked
-  mobileMenu?.addEventListener('click', event => {
-    if (event.target.tagName === 'A') {
+    // Toggle menu on button click
+    menuToggle?.addEventListener('click', event => {
+      event.stopPropagation();
       toggleMenu();
+    });
+
+    // Close menu when a link is clicked
+    mobileMenu?.addEventListener('click', event => {
+      if ((event.target as HTMLElement).tagName === 'A') {
+        toggleMenu();
+      }
+    });
+
+    // Close menu when clicking outside
+    document.addEventListener('click', event => {
+      const isClickInside = navbar?.contains(event.target as Node);
+      if (!isClickInside && menuToggle?.getAttribute('aria-expanded') === 'true') {
+        toggleMenu();
+      }
+    });
+
+    // Close menu on 'Escape' key press
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape' && menuToggle?.getAttribute('aria-expanded') === 'true') {
+        toggleMenu();
+      }
+    });
+
+    // Scroll listener: add scrolled class for enhanced navbar styling
+    window.addEventListener(
+      'scroll',
+      () => {
+        if (window.scrollY > 20) {
+          navbar?.classList.add('navbar-scrolled');
+        } else {
+          navbar?.classList.remove('navbar-scrolled');
+        }
+      },
+      { passive: true }
+    );
+
+    // IntersectionObserver: highlight active section's nav tab
+    const navTabs = document.querySelectorAll<HTMLAnchorElement>('.nav-tab[data-section]');
+    const sectionIds = Array.from(navTabs).map(tab => tab.dataset.section!);
+    const sections = sectionIds
+      .map(id => document.getElementById(id))
+      .filter((el): el is HTMLElement => el !== null);
+
+    if (sections.length > 0) {
+      const observer = new IntersectionObserver(
+        entries => {
+          entries.forEach(entry => {
+            const tab = document.querySelector(`.nav-tab[data-section="${entry.target.id}"]`);
+            if (entry.isIntersecting) {
+              navTabs.forEach(t => t.classList.remove('nav-tab-active'));
+              tab?.classList.add('nav-tab-active');
+            }
+          });
+        },
+        { rootMargin: '-40% 0px -55% 0px', threshold: 0 }
+      );
+
+      sections.forEach(section => observer.observe(section));
+    }
+
+    // Language switcher logic
+    const handleLanguageSwitch = () => {
+      const currentPath = window.location.pathname;
+      const pathSegments = currentPath.split('/').filter(segment => segment);
+
+      let currentLocale = 'en';
+      if (pathSegments.length > 0 && ['en', 'es'].includes(pathSegments[0])) {
+        currentLocale = pathSegments.shift() || 'en';
+      }
+
+      const newLocale = currentLocale === 'en' ? 'es' : 'en';
+      const newPath = `/${newLocale}/${pathSegments.join('/')}`;
+
+      window.location.pathname = newPath.endsWith('/')
+        ? newPath.slice(0, -1)
+        : newPath || `/${newLocale}`;
+    };
+
+    document
+      .getElementById('language-switcher-desktop')
+      ?.addEventListener('click', handleLanguageSwitch);
+    document
+      .getElementById('language-switcher-mobile')
+      ?.addEventListener('click', handleLanguageSwitch);
+
+    // Logo typing animation
+    const logoTyped = document.getElementById('logo-typed');
+    const logoCursor = document.getElementById('logo-cursor');
+
+    if (logoTyped && logoCursor) {
+      const segments: { text: string; className: string }[] = [
+        { text: '> ', className: 'select-none text-primary' },
+        { text: 'juan', className: 'font-semibold text-slate-800' },
+        { text: '.', className: 'select-none text-slate-400' },
+        { text: 'almeida', className: 'font-semibold text-primary' },
+      ];
+
+      // Clear any previous content and show cursor blinking during typing
+      logoTyped.textContent = '';
+      logoCursor.classList.remove('logo-cursor-hidden');
+      logoCursor.classList.add('logo-cursor-visible');
+
+      let segmentIndex = 0;
+      let charIndex = 0;
+      let currentSpan: HTMLSpanElement | null = null;
+
+      const typeNext = () => {
+        if (segmentIndex >= segments.length) return;
+
+        const segment = segments[segmentIndex];
+
+        if (charIndex === 0) {
+          currentSpan = document.createElement('span');
+          currentSpan.className = segment.className;
+          logoTyped.appendChild(currentSpan);
+        }
+
+        if (currentSpan && charIndex < segment.text.length) {
+          currentSpan.textContent += segment.text[charIndex];
+          charIndex++;
+          setTimeout(typeNext, 80);
+        } else {
+          segmentIndex++;
+          charIndex = 0;
+          if (segmentIndex < segments.length) {
+            setTimeout(typeNext, 80);
+          }
+        }
+      };
+
+      setTimeout(typeNext, 300);
     }
   });
-
-  // Close menu when clicking outside
-  document.addEventListener('click', event => {
-    const isClickInside = navbar?.contains(event.target as Node);
-    if (!isClickInside && menuToggle?.getAttribute('aria-expanded') === 'true') {
-      toggleMenu();
-    }
-  });
-
-  // Close menu on 'Escape' key press
-  document.addEventListener('keydown', event => {
-    if (event.key === 'Escape' && menuToggle?.getAttribute('aria-expanded') === 'true') {
-      toggleMenu();
-    }
-  });
-
-  // Language switcher logic
-  const handleLanguageSwitch = () => {
-    const currentPath = window.location.pathname;
-    const pathSegments = currentPath.split('/').filter(segment => segment);
-
-    let currentLocale = 'en'; // Default locale
-    if (pathSegments.length > 0 && ['en', 'es'].includes(pathSegments[0])) {
-      currentLocale = pathSegments.shift() || 'en';
-    }
-
-    const newLocale = currentLocale === 'en' ? 'es' : 'en';
-    const newPath = `/${newLocale}/${pathSegments.join('/')}`;
-
-    window.location.pathname = newPath.endsWith('/')
-      ? newPath.slice(0, -1)
-      : newPath || `/${newLocale}`;
-  };
-
-  document
-    .getElementById('language-switcher-desktop')
-    ?.addEventListener('click', handleLanguageSwitch);
-  document
-    .getElementById('language-switcher-mobile')
-    ?.addEventListener('click', handleLanguageSwitch);
 </script>

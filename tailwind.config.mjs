@@ -7,15 +7,26 @@ export default {
         primary: '#137fec',
         'background-light': '#f6f7f8',
         'background-dark': '#101922',
+        'nav-dark': '#0f172a',
       },
       fontFamily: {
         display: ['Inter', 'sans-serif'],
+        mono: ['JetBrains Mono', 'monospace'],
       },
       borderRadius: {
         DEFAULT: '0.25rem',
         lg: '0.5rem',
         xl: '0.75rem',
         full: '9999px',
+      },
+      keyframes: {
+        'menu-slide-down': {
+          '0%': { opacity: '0', transform: 'translateY(-8px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+      },
+      animation: {
+        'menu-slide-down': 'menu-slide-down 0.2s ease-out',
       },
     },
   },

@@ -70,3 +70,31 @@ Netlify config in `netlify.toml`: builds with `npm run build`, publishes `dist/`
 - Use `Image` from `astro:assets` with explicit width/height; hero=`loading="eager"`, others=`loading="lazy"`
 - Font Awesome icons via CDN (stylesheet in Layout.astro)
 - Material Symbols Outlined via Google Fonts
+
+## Visual Verification Workflow
+
+When asked to verify UI, always use Playwright MCP (never bash).
+
+### App
+
+- Dev server: `npm run dev` (port 4321)
+- Key pages to check: `/en/`, `/es/`
+- Root `/` redirects to `/en/`
+
+### How to verify
+
+Use Playwright MCP to open `localhost:4321`, navigate to the page that was just changed, and take a screenshot. Compare it to what was described and flag any visual issues.
+
+### Screenshot conventions
+
+- Always take full-page screenshots
+- Test at desktop (1280px) and mobile (375px) widths
+- Save to `.screenshots/` with descriptive names like `navbar-desktop.png`, `hero-mobile-es.png`
+
+### What to flag
+
+- Broken layouts or overflow issues
+- Missing or misaligned elements
+- Console errors during navigation
+- Scroll-snap sections not aligning correctly
+- i18n content missing or displaying wrong locale
