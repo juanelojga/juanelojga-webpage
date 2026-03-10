@@ -7,7 +7,7 @@ export default {
         primary: '#137fec',
         'background-light': '#f6f7f8',
         'background-dark': '#101922',
-        'nav-dark': 'rgba(15, 23, 42, 0.92)',
+        'nav-dark': '#0f172a',
       },
       fontFamily: {
         display: ['Inter', 'sans-serif'],

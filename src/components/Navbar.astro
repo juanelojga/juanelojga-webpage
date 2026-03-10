@@ -15,15 +15,15 @@ const navLinks = [
 
 <nav
   id="navbar"
-  class="sticky top-0 z-50 w-full border-b border-white/5 bg-nav-dark backdrop-blur-xl transition-all duration-300"
+  class="sticky top-0 z-50 w-full border-b border-slate-200 bg-white/90 backdrop-blur-xl transition-all duration-300"
 >
   <div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-3">
     <!-- Left: Logo -->
     <a href={`/${lang}/`} class="group flex items-center gap-1 font-mono text-sm no-underline">
       <span aria-hidden="true" class="select-none text-primary">&gt;</span>
-      <span class="font-semibold text-slate-100">juan</span><span
+      <span class="font-semibold text-slate-800">juan</span><span
         aria-hidden="true"
-        class="select-none text-slate-500">.</span
+        class="select-none text-slate-400">.</span
       ><span class="font-semibold text-primary">almeida</span>
       <span aria-hidden="true" class="ml-0.5 animate-blink select-none text-primary">_</span>
     </a>
@@ -35,7 +35,7 @@ const navLinks = [
         aria-label="Open navigation menu"
         aria-controls="mobile-menu"
         aria-expanded="false"
-        class="rounded-md p-2 text-slate-400 transition hover:text-slate-100"
+        class="rounded-md p-2 text-slate-600 transition hover:text-slate-900"
       >
         <svg
           class="size-6"
@@ -55,20 +55,20 @@ const navLinks = [
 
     <!-- Desktop Navigation -->
     <div class="hidden items-center gap-1 md:flex">
-      <span aria-hidden="true" class="mr-1 select-none font-mono text-xs text-slate-600">{'{'}</span
+      <span aria-hidden="true" class="mr-1 select-none font-mono text-xs text-slate-400">{'{'}</span
       >
       {
         navLinks.map(link => (
           <a
             href={link.href}
             data-section={link.href.replace('#', '')}
-            class="nav-tab relative rounded px-3 py-1.5 font-mono text-sm text-slate-400 transition-colors hover:text-slate-100"
+            class="nav-tab relative rounded px-3 py-1.5 font-mono text-sm text-slate-600 transition-colors hover:text-slate-900"
           >
             {link.label}
           </a>
         ))
       }
-      <span aria-hidden="true" class="ml-1 select-none font-mono text-xs text-slate-600">{'}'}</span
+      <span aria-hidden="true" class="ml-1 select-none font-mono text-xs text-slate-400">{'}'}</span
       >
 
       <a
@@ -80,12 +80,12 @@ const navLinks = [
       <button
         id="language-switcher-desktop"
         aria-label="Change language"
-        class="ml-3 flex items-center gap-1 rounded px-2 py-1.5 font-mono text-sm text-slate-500 transition-colors hover:text-slate-300"
+        class="ml-3 flex items-center gap-1 rounded px-2 py-1.5 font-mono text-sm text-slate-500 transition-colors hover:text-slate-900"
       >
-        <span aria-hidden="true" class="select-none text-slate-600">//</span>
-        <span class={lang === 'en' ? 'text-slate-200' : ''}>EN</span>
-        <span aria-hidden="true" class="select-none text-slate-600">|</span>
-        <span class={lang === 'es' ? 'text-slate-200' : ''}>ES</span>
+        <span aria-hidden="true" class="select-none text-slate-400">//</span>
+        <span class={lang === 'en' ? 'text-slate-800' : ''}>EN</span>
+        <span aria-hidden="true" class="select-none text-slate-400">|</span>
+        <span class={lang === 'es' ? 'text-slate-800' : ''}>ES</span>
       </button>
     </div>
   </div>
@@ -93,14 +93,14 @@ const navLinks = [
   <!-- Mobile Menu (Dropdown) -->
   <div
     id="mobile-menu"
-    class="hidden w-full border-t border-white/5 bg-nav-dark backdrop-blur-xl md:hidden"
+    class="hidden w-full border-t border-slate-200 bg-white/90 backdrop-blur-xl md:hidden"
   >
     <div class="flex animate-menu-slide-down flex-col px-6 py-4">
       {
         navLinks.map(link => (
           <a
             href={link.href}
-            class="block rounded-lg px-4 py-3 font-mono text-sm text-slate-400 transition-colors hover:bg-white/5 hover:text-slate-100"
+            class="block rounded-lg px-4 py-3 font-mono text-sm text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900"
           >
             {link.label}
           </a>
@@ -114,12 +114,12 @@ const navLinks = [
       <button
         id="language-switcher-mobile"
         aria-label="Change language"
-        class="mt-2 flex items-center justify-center gap-1 rounded-lg px-4 py-3 font-mono text-sm text-slate-500 transition-colors hover:bg-white/5 hover:text-slate-300"
+        class="mt-2 flex items-center justify-center gap-1 rounded-lg px-4 py-3 font-mono text-sm text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900"
       >
-        <span aria-hidden="true" class="select-none text-slate-600">//</span>
-        <span class={lang === 'en' ? 'text-slate-200' : ''}>EN</span>
-        <span aria-hidden="true" class="select-none text-slate-600">|</span>
-        <span class={lang === 'es' ? 'text-slate-200' : ''}>ES</span>
+        <span aria-hidden="true" class="select-none text-slate-400">//</span>
+        <span class={lang === 'en' ? 'text-slate-800' : ''}>EN</span>
+        <span aria-hidden="true" class="select-none text-slate-400">|</span>
+        <span class={lang === 'es' ? 'text-slate-800' : ''}>ES</span>
       </button>
     </div>
   </div>
@@ -143,7 +143,7 @@ const navLinks = [
   }
 
   .nav-tab-active {
-    color: rgb(226, 232, 240); /* slate-200 */
+    color: rgb(15, 23, 42); /* slate-900 */
   }
 
   .nav-tab-active::after {
@@ -153,7 +153,7 @@ const navLinks = [
 
   .navbar-scrolled {
     border-color: rgba(19, 127, 236, 0.15);
-    background: rgba(15, 23, 42, 0.97);
+    background: rgba(255, 255, 255, 0.95);
     box-shadow: 0 0 20px rgba(19, 127, 236, 0.05);
   }
 </style>
