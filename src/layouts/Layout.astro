@@ -90,6 +90,7 @@ const personSchema = {
     <meta name="generator" content={Astro.generator} />
     <title>{pageTitle}</title>
     <meta property="og:image" content={`${canonicalBase}${pageOgImage}`} />
+    <slot name="head" />
     <ViewTransitions />
   </head>
   <body class="bg-background-light font-display text-slate-900">

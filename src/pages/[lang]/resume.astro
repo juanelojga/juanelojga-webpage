@@ -1,0 +1,113 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+
+export async function getStaticPaths() {
+  return [{ params: { lang: 'en' } }, { params: { lang: 'es' } }];
+}
+
+const { lang } = Astro.params;
+const t = await import(`../../i18n/${lang}.json`).then(m => m.default);
+const resume = t.resume;
+
+const canonicalBase = 'https://juanelojga.com';
+const canonicalUrl = `${canonicalBase}/${lang}/resume/`;
+
+const webPageSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: resume.seo.title,
+  description: resume.seo.description,
+  url: canonicalUrl,
+  inLanguage: lang,
+  isPartOf: {
+    '@type': 'WebSite',
+    name: 'Juan Almeida Portfolio',
+    url: `${canonicalBase}/`,
+  },
+};
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: resume.breadcrumb.home,
+      item: `${canonicalBase}/${lang}/`,
+    },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: resume.breadcrumb.resume,
+    },
+  ],
+};
+---
+
+<Layout
+  title={resume.seo.title}
+  description={resume.seo.description}
+  canonicalUrl={canonicalUrl}
+  structuredData={[webPageSchema, breadcrumbSchema]}
+>
+  <Fragment slot="head">
+    <link rel="alternate" href={`${canonicalBase}/en/resume/`} hreflang="en" />
+    <link rel="alternate" href={`${canonicalBase}/es/resume/`} hreflang="es" />
+    <link rel="alternate" href={`${canonicalBase}/en/resume/`} hreflang="x-default" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:url" content={canonicalUrl} />
+  </Fragment>
+
+  <div class="bg-background-light">
+    <!-- Breadcrumbs -->
+    <div class="mx-auto max-w-6xl px-6 pt-8">
+      <Breadcrumbs
+        items={[
+          { label: resume.breadcrumb.home, href: `/${lang}/` },
+          { label: resume.breadcrumb.resume },
+        ]}
+      />
+    </div>
+
+    <!-- Page Header -->
+    <header class="mx-auto max-w-6xl px-6 pb-12 pt-4">
+      <h1 class="text-4xl font-extrabold tracking-tight text-slate-900 md:text-5xl">
+        {resume.pageTitle}
+      </h1>
+      <p class="mt-4 max-w-2xl text-lg leading-relaxed text-slate-600">
+        {resume.subtitle}
+      </p>
+    </header>
+
+    <!-- Experience placeholder -->
+    <section class="mx-auto max-w-6xl px-6 py-12">
+      <h2 class="mb-6 text-2xl font-bold text-slate-900">{resume.sections.experience}</h2>
+      <div class="rounded-2xl border border-dashed border-slate-300 bg-white p-12 text-center">
+        <span class="material-symbols-outlined mb-2 text-4xl text-slate-300">work</span>
+        <p class="text-sm text-slate-400">Coming soon</p>
+      </div>
+    </section>
+
+    <!-- Skills placeholder -->
+    <section class="mx-auto max-w-6xl px-6 py-12">
+      <h2 class="mb-6 text-2xl font-bold text-slate-900">{resume.sections.skills}</h2>
+      <div class="rounded-2xl border border-dashed border-slate-300 bg-white p-12 text-center">
+        <span class="material-symbols-outlined mb-2 text-4xl text-slate-300">code</span>
+        <p class="text-sm text-slate-400">Coming soon</p>
+      </div>
+    </section>
+
+    <!-- Education placeholder -->
+    <section class="mx-auto max-w-6xl px-6 py-12 pb-20">
+      <h2 class="mb-6 text-2xl font-bold text-slate-900">{resume.sections.education}</h2>
+      <div class="rounded-2xl border border-dashed border-slate-300 bg-white p-12 text-center">
+        <span class="material-symbols-outlined mb-2 text-4xl text-slate-300">school</span>
+        <p class="text-sm text-slate-400">Coming soon</p>
+      </div>
+    </section>
+  </div>
+</Layout>

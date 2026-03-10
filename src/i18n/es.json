@@ -63,6 +63,20 @@
       "backToPortfolio": "Volver al Portafolio"
     }
   },
+  "resume": {
+    "pageTitle": "Currículum",
+    "subtitle": "Un resumen de mi experiencia profesional, habilidades y educación.",
+    "breadcrumb": { "home": "Inicio", "resume": "Currículum" },
+    "sections": {
+      "experience": "Experiencia Profesional",
+      "skills": "Habilidades",
+      "education": "Educación"
+    },
+    "seo": {
+      "title": "Currículum | Juan Almeida — Ingeniero Full Stack y de IA",
+      "description": "Explora el currículum profesional de Juan Almeida — ingeniero full-stack y de IA con experiencia en TypeScript, Python, React y diseño de sistemas escalables."
+    }
+  },
   "seo": {
     "title": "Juan Almeida | Ingeniero Full Stack y de IA",
     "description": "Ingeniero apasionado por crear software inteligente, escalable y centrado en las personas mediante desarrollo full-stack e innovación en IA.",

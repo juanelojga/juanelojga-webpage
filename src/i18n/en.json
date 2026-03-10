@@ -63,6 +63,20 @@
       "backToPortfolio": "Back to Portfolio"
     }
   },
+  "resume": {
+    "pageTitle": "Resume",
+    "subtitle": "A summary of my professional experience, skills, and education.",
+    "breadcrumb": { "home": "Home", "resume": "Resume" },
+    "sections": {
+      "experience": "Professional Experience",
+      "skills": "Skills",
+      "education": "Education"
+    },
+    "seo": {
+      "title": "Resume | Juan Almeida — Full Stack & AI Engineer",
+      "description": "Explore the professional resume of Juan Almeida — full-stack and AI engineer with expertise in TypeScript, Python, React, and scalable system design."
+    }
+  },
   "seo": {
     "title": "Juan Almeida | Full Stack & AI Engineer",
     "description": "Engineer passionate about building smart, scalable, and human-centered software through full-stack development and AI innovation.",
