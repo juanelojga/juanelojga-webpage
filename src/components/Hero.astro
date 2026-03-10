@@ -6,7 +6,7 @@ const t = useTranslations(Astro);
 ---
 
 <header class="relative w-full overflow-hidden bg-[#050816] px-6 py-24 lg:py-36" id="home">
-  <!-- SVG Neural Network Background -->
+  <!-- SVG Software Architecture Background -->
   <svg
     class="pointer-events-none absolute inset-0 hidden size-full lg:block"
     viewBox="0 0 1200 800"
@@ -20,59 +20,81 @@ const t = useTranslations(Astro);
       </radialGradient>
     </defs>
 
-    <!-- Connecting lines with flowing dash animation -->
-    <path d="M100,200 L350,350" class="neural-line dash-flow" pathLength="1"></path>
-    <path d="M350,350 L600,180" class="neural-line dash-flow flow-delay-1" pathLength="1"></path>
-    <path d="M600,180 L850,300" class="neural-line dash-flow flow-delay-2" pathLength="1"></path>
-    <path d="M850,300 L1050,150" class="neural-line dash-flow flow-delay-3" pathLength="1"></path>
-    <path d="M200,550 L500,500" class="neural-line dash-flow flow-delay-1" pathLength="1"></path>
-    <path d="M500,500 L750,600" class="neural-line dash-flow flow-delay-2" pathLength="1"></path>
-    <path d="M750,600 L1000,450" class="neural-line dash-flow flow-delay-3" pathLength="1"></path>
-    <path d="M350,350 L500,500" class="neural-line dash-flow flow-delay-2" pathLength="1"></path>
-    <path d="M600,180 L750,600" class="neural-line dash-flow flow-delay-3" pathLength="1"></path>
-    <path d="M850,300 L1000,450" class="neural-line dash-flow" pathLength="1"></path>
+    <!-- Architecture boxes (microservices / modules) -->
+    <rect x="80" y="120" width="100" height="50" rx="4" class="arch-box float-slow"></rect>
+    <rect x="320" y="80" width="110" height="50" rx="4" class="arch-box float-medium"></rect>
+    <rect x="580" y="140" width="100" height="50" rx="4" class="arch-box float-slow"></rect>
+    <rect x="840" y="90" width="120" height="50" rx="4" class="arch-box float-medium"></rect>
+    <rect x="1020" y="160" width="100" height="50" rx="4" class="arch-box float-slow"></rect>
+    <rect x="200" y="420" width="110" height="50" rx="4" class="arch-box float-medium"></rect>
+    <rect x="500" y="500" width="100" height="50" rx="4" class="arch-box float-slow"></rect>
+    <rect x="780" y="560" width="110" height="50" rx="4" class="arch-box float-medium"></rect>
+    <rect x="1000" y="480" width="100" height="50" rx="4" class="arch-box float-slow"></rect>
 
-    <!-- Traveling data pulse particles -->
+    <!-- Architecture labels inside boxes -->
+    <text x="130" y="150" class="arch-label float-slow">API</text>
+    <text x="375" y="110" class="arch-label float-medium">Gateway</text>
+    <text x="630" y="170" class="arch-label float-slow">Auth</text>
+    <text x="900" y="120" class="arch-label float-medium">Queue</text>
+    <text x="1070" y="190" class="arch-label float-slow">Cache</text>
+    <text x="255" y="450" class="arch-label float-medium">DB</text>
+    <text x="550" y="530" class="arch-label float-slow">Worker</text>
+    <text x="835" y="590" class="arch-label float-medium">Logger</text>
+    <text x="1050" y="510" class="arch-label float-slow">Store</text>
+
+    <!-- Connection lines between architecture boxes -->
+    <path d="M180,145 L320,105" class="arch-line dash-flow" pathLength="1"></path>
+    <path d="M430,105 L580,165" class="arch-line dash-flow flow-delay-1" pathLength="1"></path>
+    <path d="M680,165 L840,115" class="arch-line dash-flow flow-delay-2" pathLength="1"></path>
+    <path d="M960,115 L1020,185" class="arch-line dash-flow flow-delay-3" pathLength="1"></path>
+    <path d="M310,445 L500,525" class="arch-line dash-flow flow-delay-1" pathLength="1"></path>
+    <path d="M600,525 L780,585" class="arch-line dash-flow flow-delay-2" pathLength="1"></path>
+    <path d="M890,585 L1000,505" class="arch-line dash-flow flow-delay-3" pathLength="1"></path>
+    <path d="M375,130 L255,420" class="arch-line dash-flow flow-delay-2" pathLength="1"></path>
+    <path d="M630,190 L550,500" class="arch-line dash-flow flow-delay-3" pathLength="1"></path>
+    <path d="M900,140 L835,560" class="arch-line dash-flow" pathLength="1"></path>
+
+    <!-- Data flow particles along architecture paths -->
     <circle r="3" class="data-pulse">
       <animateMotion
-        dur="3s"
+        dur="3.5s"
         repeatCount="indefinite"
-        path="M100,200 L350,350 L600,180 L850,300 L1050,150"></animateMotion>
+        path="M180,145 L375,105 L630,165 L900,115 L1070,185"></animateMotion>
     </circle>
     <circle r="2.5" class="data-pulse pulse-delay-1">
-      <animateMotion dur="4s" repeatCount="indefinite" path="M200,550 L500,500 L750,600 L1000,450"
+      <animateMotion dur="4s" repeatCount="indefinite" path="M255,445 L550,525 L835,585 L1050,505"
       ></animateMotion>
     </circle>
     <circle r="2" class="data-pulse pulse-delay-2">
-      <animateMotion dur="3.5s" repeatCount="indefinite" path="M350,350 L500,500 L750,600"
-      ></animateMotion>
-    </circle>
-    <circle r="2.5" class="data-pulse pulse-delay-3">
-      <animateMotion dur="5s" repeatCount="indefinite" path="M600,180 L750,600 L1000,450 L850,300"
+      <animateMotion dur="5s" repeatCount="indefinite" path="M375,130 L255,445 L550,525"
       ></animateMotion>
     </circle>
 
-    <!-- Node glow rings -->
-    <circle cx="350" cy="350" r="14" class="node-ring ring-delay-0"></circle>
-    <circle cx="600" cy="180" r="14" class="node-ring ring-delay-1"></circle>
-    <circle cx="850" cy="300" r="14" class="node-ring ring-delay-2"></circle>
-    <circle cx="500" cy="500" r="12" class="node-ring ring-delay-3"></circle>
-    <circle cx="1000" cy="450" r="12" class="node-ring ring-delay-1"></circle>
+    <!-- Terminal / console text lines (floating code snippets) -->
+    <text x="60" y="280" class="terminal-text term-line-1">$ docker compose up -d</text>
+    <text x="60" y="300" class="terminal-text term-line-2">✓ Container api-gateway started</text>
+    <text x="60" y="320" class="terminal-text term-line-3">✓ Container auth-service started</text>
 
-    <!-- Nodes (sparser left, denser right) -->
-    <circle cx="100" cy="200" r="4" class="neural-node float-slow"></circle>
-    <circle cx="200" cy="550" r="3" class="neural-node float-medium"></circle>
-    <circle cx="350" cy="350" r="5" class="neural-node pulse-node float-slow"></circle>
-    <circle cx="500" cy="500" r="3.5" class="neural-node float-medium"></circle>
-    <circle cx="600" cy="180" r="4.5" class="neural-node pulse-node float-slow"></circle>
-    <circle cx="750" cy="600" r="4" class="neural-node float-medium"></circle>
-    <circle cx="850" cy="300" r="5" class="neural-node pulse-node float-slow"></circle>
-    <circle cx="950" cy="700" r="3" class="neural-node float-medium"></circle>
-    <circle cx="1000" cy="450" r="4.5" class="neural-node float-slow"></circle>
-    <circle cx="1050" cy="150" r="3.5" class="neural-node pulse-node float-medium"></circle>
-    <circle cx="1100" cy="550" r="4" class="neural-node float-slow"></circle>
-    <circle cx="700" cy="100" r="3" class="neural-node float-medium"></circle>
-    <circle cx="900" cy="650" r="3.5" class="neural-node pulse-node float-slow"></circle>
+    <text x="720" y="350" class="terminal-text term-line-2">$ git push origin main</text>
+    <text x="720" y="370" class="terminal-text term-line-3">→ Deploy triggered</text>
+
+    <text x="400" y="680" class="terminal-text term-line-1">$ npm run build</text>
+    <text x="400" y="700" class="terminal-text term-line-3">✓ Build completed in 2.4s</text>
+
+    <text x="900" y="680" class="terminal-text term-line-2">$ kubectl get pods</text>
+    <text x="900" y="700" class="terminal-text term-line-1">Running 3/3 replicas</text>
+
+    <!-- Floating code symbols -->
+    <text x="150" y="600" class="code-symbol float-slow">{}</text>
+    <text x="480" y="260" class="code-symbol float-medium">&lt;/&gt;</text>
+    <text x="750" y="460" class="code-symbol float-slow">[ ]</text>
+    <text x="1080" y="350" class="code-symbol float-medium">( )</text>
+    <text x="300" y="350" class="code-symbol float-slow">=&gt;</text>
+    <text x="950" y="250" class="code-symbol float-medium">/**</text>
+
+    <!-- Blinking cursor indicators -->
+    <rect x="60" y="335" width="8" height="14" class="cursor-blink"></rect>
+    <rect x="720" y="385" width="8" height="14" class="cursor-blink blink-delay-1"></rect>
   </svg>
 
   <div
@@ -163,17 +185,28 @@ const t = useTranslations(Astro);
 </header>
 
 <style>
-  /* Neural network SVG styles */
-  .neural-node {
-    fill: var(--color-accent, #22d3ee);
-    opacity: 0.25;
+  /* Architecture box styles */
+  .arch-box {
+    fill: none;
+    stroke: var(--color-accent, #22d3ee);
+    stroke-width: 1.2;
+    opacity: 0.15;
   }
 
-  .neural-line {
+  .arch-label {
+    font-family: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, monospace;
+    font-size: 11px;
+    fill: var(--color-accent, #22d3ee);
+    opacity: 0.25;
+    text-anchor: middle;
+    dominant-baseline: central;
+  }
+
+  .arch-line {
     stroke: var(--color-accent, #22d3ee);
-    stroke-width: 1.5;
+    stroke-width: 1;
     fill: none;
-    opacity: 0.18;
+    opacity: 0.12;
   }
 
   /* Flowing dash animation on lines */
@@ -215,62 +248,72 @@ const t = useTranslations(Astro);
     opacity: 0.35;
   }
 
-  .pulse-delay-3 {
-    opacity: 0.45;
-  }
-
-  /* Node glow rings */
-  .node-ring {
-    fill: none;
-    stroke: var(--color-accent, #22d3ee);
-    stroke-width: 1;
+  /* Terminal text lines */
+  .terminal-text {
+    font-family: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, monospace;
+    font-size: 11px;
+    fill: var(--color-accent, #22d3ee);
     opacity: 0;
-    animation: ring-ping 3s ease-out infinite;
+    animation: term-fade-in 1s ease-out forwards;
   }
 
-  .ring-delay-0 {
-    animation-delay: 0s;
+  .term-line-1 {
+    animation-delay: 0.5s;
   }
 
-  .ring-delay-1 {
-    animation-delay: 0.8s;
+  .term-line-2 {
+    animation-delay: 1.2s;
   }
 
-  .ring-delay-2 {
-    animation-delay: 1.6s;
+  .term-line-3 {
+    animation-delay: 1.9s;
   }
 
-  .ring-delay-3 {
-    animation-delay: 2.4s;
-  }
-
-  @keyframes ring-ping {
-    0% {
-      r: 5;
-      opacity: 0.35;
-      stroke-width: 2;
-    }
-    100% {
-      r: 22;
+  @keyframes term-fade-in {
+    from {
       opacity: 0;
-      stroke-width: 0.5;
+    }
+    to {
+      opacity: 0.12;
     }
   }
 
-  /* Floating animations for nodes */
+  /* Floating code symbols */
+  .code-symbol {
+    font-family: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, monospace;
+    font-size: 18px;
+    fill: var(--color-accent, #22d3ee);
+    opacity: 0.08;
+  }
+
+  /* Blinking cursor */
+  .cursor-blink {
+    fill: var(--color-accent, #22d3ee);
+    opacity: 0.3;
+    animation: blink 1s step-end infinite;
+  }
+
+  .blink-delay-1 {
+    animation-delay: 0.5s;
+  }
+
+  @keyframes blink {
+    0%,
+    100% {
+      opacity: 0.3;
+    }
+    50% {
+      opacity: 0;
+    }
+  }
+
+  /* Floating animations */
   .float-slow {
     animation: float-slow 8s ease-in-out infinite;
   }
 
   .float-medium {
     animation: float-medium 6s ease-in-out infinite;
-  }
-
-  /* Pulse animation for select nodes */
-  .pulse-node {
-    animation:
-      pulse-node 4s ease-in-out infinite,
-      float-slow 8s ease-in-out infinite;
   }
 
   @keyframes float-slow {
@@ -290,16 +333,6 @@ const t = useTranslations(Astro);
     }
     50% {
       transform: translateY(10px);
-    }
-  }
-
-  @keyframes pulse-node {
-    0%,
-    100% {
-      opacity: 0.25;
-    }
-    50% {
-      opacity: 0.5;
     }
   }
 
@@ -350,10 +383,14 @@ const t = useTranslations(Astro);
   @media (prefers-reduced-motion: reduce) {
     .float-slow,
     .float-medium,
-    .pulse-node,
     .dash-flow,
-    .node-ring {
+    .cursor-blink {
       animation: none;
+    }
+
+    .terminal-text {
+      animation: none;
+      opacity: 0.12;
     }
 
     .data-pulse,
