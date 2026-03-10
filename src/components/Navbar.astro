@@ -19,13 +19,13 @@ const navLinks = [
 >
   <div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-3">
     <!-- Left: Logo -->
-    <a href={`/${lang}/`} class="group flex items-center gap-1 font-mono text-sm no-underline">
-      <span aria-hidden="true" class="select-none text-primary">&gt;</span>
-      <span class="font-semibold text-slate-800">juan</span><span
-        aria-hidden="true"
-        class="select-none text-slate-400">.</span
-      ><span class="font-semibold text-primary">almeida</span>
-      <span aria-hidden="true" class="ml-0.5 animate-blink select-none text-primary">_</span>
+    <a href={`/${lang}/`} class="group flex items-center font-mono text-sm no-underline">
+      <span id="logo-typed" class="logo-typed" aria-hidden="true"></span>
+      <span
+        id="logo-cursor"
+        class="logo-cursor-hidden ml-0.5 animate-blink select-none text-primary">_</span
+      >
+      <span class="sr-only">&gt; juan.almeida</span>
     </a>
 
     <!-- Right: Hamburger Menu (Mobile) -->
@@ -176,6 +176,14 @@ const navLinks = [
     background: rgba(255, 255, 255, 0.95);
     box-shadow: 0 0 20px rgba(19, 127, 236, 0.05);
   }
+
+  .logo-cursor-hidden {
+    visibility: hidden;
+  }
+
+  .logo-cursor-visible {
+    visibility: visible;
+  }
 </style>
 
 <script>
@@ -280,4 +288,51 @@ const navLinks = [
   document
     .getElementById('language-switcher-mobile')
     ?.addEventListener('click', handleLanguageSwitch);
+
+  // Logo typing animation
+  const logoTyped = document.getElementById('logo-typed');
+  const logoCursor = document.getElementById('logo-cursor');
+
+  if (logoTyped && logoCursor) {
+    const segments: { text: string; className: string }[] = [
+      { text: '> ', className: 'select-none text-primary' },
+      { text: 'juan', className: 'font-semibold text-slate-800' },
+      { text: '.', className: 'select-none text-slate-400' },
+      { text: 'almeida', className: 'font-semibold text-primary' },
+    ];
+
+    // Show cursor blinking during typing
+    logoCursor.classList.remove('logo-cursor-hidden');
+    logoCursor.classList.add('logo-cursor-visible');
+
+    let segmentIndex = 0;
+    let charIndex = 0;
+    let currentSpan: HTMLSpanElement | null = null;
+
+    const typeNext = () => {
+      if (segmentIndex >= segments.length) return;
+
+      const segment = segments[segmentIndex];
+
+      if (charIndex === 0) {
+        currentSpan = document.createElement('span');
+        currentSpan.className = segment.className;
+        logoTyped.appendChild(currentSpan);
+      }
+
+      if (currentSpan && charIndex < segment.text.length) {
+        currentSpan.textContent += segment.text[charIndex];
+        charIndex++;
+        setTimeout(typeNext, 80);
+      } else {
+        segmentIndex++;
+        charIndex = 0;
+        if (segmentIndex < segments.length) {
+          setTimeout(typeNext, 80);
+        }
+      }
+    };
+
+    setTimeout(typeNext, 300);
+  }
 </script>
