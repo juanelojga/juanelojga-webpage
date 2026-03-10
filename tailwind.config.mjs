@@ -5,12 +5,12 @@ export default {
     extend: {
       keyframes: {
         'fade-in-left': {
-          'from': { opacity: '0', transform: 'translateX(-30px)' },
-          'to': { opacity: '1', transform: 'translateX(0)' },
+          from: { opacity: '0', transform: 'translateX(-30px)' },
+          to: { opacity: '1', transform: 'translateX(0)' },
         },
         'fade-in-right': {
-          'from': { opacity: '0', transform: 'translateX(30px)' },
-          'to': { opacity: '1', transform: 'translateX(0)' },
+          from: { opacity: '0', transform: 'translateX(30px)' },
+          to: { opacity: '1', transform: 'translateX(0)' },
         },
         fadeInUp: {
           '0%': { opacity: '0', transform: 'translateY(40px)' },
