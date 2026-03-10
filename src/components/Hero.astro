@@ -141,32 +141,32 @@ const t = useTranslations(Astro);
           class="absolute -inset-6 rounded-3xl bg-gradient-to-br from-[#22d3ee]/15 to-[#22d3ee]/5 blur-2xl"
         >
         </div>
-        <div class="relative grid h-[452px] grid-cols-2 gap-3">
-          <div class="flex flex-col gap-3 pt-4">
+        <div class="relative grid h-[380px] grid-cols-[3fr_2fr] gap-3">
+          <div class="flex flex-col">
             <Image
-              src="/me-1.jpg"
+              src="/me-2.png"
               alt="Portrait of Juan Almeida"
-              width={180}
-              height={220}
-              class="min-h-0 flex-1 rounded-xl object-cover shadow-lg transition-transform duration-500 hover:scale-[1.03]"
-              loading="eager"
-            />
-            <Image
-              src="/me-3.jpg"
-              alt="Portrait of Juan Almeida"
-              width={180}
-              height={220}
-              class="min-h-0 flex-1 rounded-xl object-cover shadow-lg transition-transform duration-500 hover:scale-[1.03]"
+              width={250}
+              height={380}
+              class="h-full min-h-0 rounded-xl object-cover object-top shadow-lg transition-transform duration-500 hover:scale-[1.03]"
               loading="eager"
             />
           </div>
-          <div class="flex flex-col">
+          <div class="flex flex-col gap-3 pt-4">
             <Image
-              src="/me-2.jpg"
+              src="/me-1.png"
               alt="Portrait of Juan Almeida"
-              width={180}
-              height={452}
-              class="min-h-0 flex-1 rounded-xl object-cover shadow-lg transition-transform duration-500 hover:scale-[1.03]"
+              width={160}
+              height={180}
+              class="min-h-0 flex-1 rounded-xl object-cover object-top shadow-lg transition-transform duration-500 hover:scale-[1.03]"
+              loading="eager"
+            />
+            <Image
+              src="/me-3.png"
+              alt="Portrait of Juan Almeida"
+              width={160}
+              height={180}
+              class="min-h-0 flex-1 rounded-xl object-cover object-top shadow-lg transition-transform duration-500 hover:scale-[1.03]"
               loading="eager"
             />
           </div>
