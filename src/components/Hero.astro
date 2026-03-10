@@ -5,36 +5,73 @@ import { useTranslations } from '../utils/translate';
 const t = useTranslations(Astro);
 ---
 
-<header class="relative w-full overflow-hidden bg-background-light px-6 py-20 lg:py-32" id="home">
+<header class="relative w-full overflow-hidden bg-background-light px-6 py-24 lg:py-36" id="home">
+  <!-- SVG Neural Network Background -->
+  <svg
+    class="pointer-events-none absolute inset-0 hidden size-full lg:block"
+    viewBox="0 0 1200 800"
+    preserveAspectRatio="xMidYMid slice"
+    aria-hidden="true"
+  >
+    <!-- Connecting lines -->
+    <line x1="100" y1="200" x2="350" y2="350" class="neural-line"></line>
+    <line x1="350" y1="350" x2="600" y2="180" class="neural-line line-delay-1"></line>
+    <line x1="600" y1="180" x2="850" y2="300" class="neural-line line-delay-2"></line>
+    <line x1="850" y1="300" x2="1050" y2="150" class="neural-line"></line>
+    <line x1="200" y1="550" x2="500" y2="500" class="neural-line line-delay-1"></line>
+    <line x1="500" y1="500" x2="750" y2="600" class="neural-line line-delay-2"></line>
+    <line x1="750" y1="600" x2="1000" y2="450" class="neural-line"></line>
+    <line x1="350" y1="350" x2="500" y2="500" class="neural-line line-delay-1"></line>
+    <line x1="600" y1="180" x2="750" y2="600" class="neural-line line-delay-2"></line>
+    <line x1="850" y1="300" x2="1000" y2="450" class="neural-line"></line>
+
+    <!-- Nodes (sparser left, denser right) -->
+    <circle cx="100" cy="200" r="4" class="neural-node float-slow"></circle>
+    <circle cx="200" cy="550" r="3" class="neural-node float-medium"></circle>
+    <circle cx="350" cy="350" r="5" class="neural-node pulse-node float-slow"></circle>
+    <circle cx="500" cy="500" r="3.5" class="neural-node float-medium"></circle>
+    <circle cx="600" cy="180" r="4.5" class="neural-node pulse-node float-slow"></circle>
+    <circle cx="750" cy="600" r="4" class="neural-node float-medium"></circle>
+    <circle cx="850" cy="300" r="5" class="neural-node pulse-node float-slow"></circle>
+    <circle cx="950" cy="700" r="3" class="neural-node float-medium"></circle>
+    <circle cx="1000" cy="450" r="4.5" class="neural-node float-slow"></circle>
+    <circle cx="1050" cy="150" r="3.5" class="neural-node pulse-node float-medium"></circle>
+    <circle cx="1100" cy="550" r="4" class="neural-node float-slow"></circle>
+    <circle cx="700" cy="100" r="3" class="neural-node float-medium"></circle>
+    <circle cx="900" cy="650" r="3.5" class="neural-node pulse-node float-slow"></circle>
+  </svg>
+
   <div
     class="relative z-10 mx-auto flex w-full max-w-6xl flex-col-reverse items-center gap-12 lg:flex-row lg:justify-between"
   >
     <!-- Left Side: Text -->
     <div class="text-center lg:w-1/2 lg:text-left">
       <span
-        class="mb-4 inline-block rounded-full bg-primary/10 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-primary"
+        class="hero-stagger-1 mb-4 inline-block rounded-full bg-primary/10 px-4 py-1.5 font-mono text-xs font-bold uppercase tracking-widest text-primary"
       >
         {t('hero.subtitleTag')}
       </span>
 
-      <h1 class="mb-6 text-4xl font-extrabold leading-tight text-slate-900 md:text-5xl lg:text-6xl">
+      <h1
+        class="hero-stagger-2 mb-6 text-4xl font-extrabold leading-tight tracking-tight text-slate-900 md:text-5xl lg:text-6xl"
+      >
         {t('hero.headline')}
       </h1>
 
-      <p class="mb-8 max-w-xl text-base leading-relaxed text-slate-600 md:text-lg">
+      <p class="hero-stagger-3 mb-8 max-w-xl text-base leading-relaxed text-slate-600 md:text-lg">
         {t('hero.description')}
       </p>
 
-      <div class="flex flex-wrap justify-center gap-4 lg:justify-start">
+      <div class="hero-stagger-4 flex flex-wrap justify-center gap-4 lg:justify-start">
         <a
           href="#contact"
-          class="rounded-lg bg-primary px-6 py-3 font-semibold text-white shadow-lg transition hover:bg-primary/90"
+          class="rounded-lg bg-primary px-6 py-3 font-semibold text-white shadow-lg transition-all duration-200 hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-xl"
         >
           {t('hero.ctaPrimary')}
         </a>
         <a
           href="#projects"
-          class="rounded-lg border border-slate-300 bg-white px-6 py-3 font-semibold text-slate-700 transition hover:border-primary hover:text-primary"
+          class="rounded-lg border border-slate-300 bg-white px-6 py-3 font-semibold text-slate-700 transition-all duration-200 hover:-translate-y-0.5 hover:border-primary hover:text-primary hover:shadow-xl"
         >
           {t('hero.ctaSecondary')}
         </a>
@@ -42,7 +79,7 @@ const t = useTranslations(Astro);
     </div>
 
     <!-- Right Side: Image -->
-    <div class="flex justify-center lg:w-1/2 lg:justify-end">
+    <div class="hero-stagger-image flex justify-center lg:w-1/2 lg:justify-end">
       <div class="relative">
         <div
           class="absolute -inset-4 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 blur-2xl"
@@ -53,10 +90,154 @@ const t = useTranslations(Astro);
           alt="Portrait of Juan Almeida"
           width={320}
           height={480}
-          class="relative rounded-2xl object-cover shadow-xl"
+          class="relative rounded-2xl object-cover shadow-xl transition-transform duration-500 hover:scale-[1.02]"
           loading="eager"
         />
       </div>
     </div>
   </div>
 </header>
+
+<style>
+  /* Neural network SVG styles */
+  .neural-node {
+    fill: var(--color-primary, #10b981);
+    opacity: 0.25;
+  }
+
+  .neural-line {
+    stroke: var(--color-primary, #10b981);
+    stroke-width: 1.5;
+    opacity: 0.18;
+  }
+
+  /* Floating animations for nodes */
+  .float-slow {
+    animation: float-slow 8s ease-in-out infinite;
+  }
+
+  .float-medium {
+    animation: float-medium 6s ease-in-out infinite;
+  }
+
+  /* Pulse animation for select nodes */
+  .pulse-node {
+    animation:
+      pulse-node 4s ease-in-out infinite,
+      float-slow 8s ease-in-out infinite;
+  }
+
+  /* Line pulse animation */
+  .neural-line {
+    animation: line-pulse 5s ease-in-out infinite;
+  }
+
+  .line-delay-1 {
+    animation-delay: 1.5s;
+  }
+
+  .line-delay-2 {
+    animation-delay: 3s;
+  }
+
+  @keyframes float-slow {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-12px);
+    }
+  }
+
+  @keyframes float-medium {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(8px);
+    }
+  }
+
+  @keyframes pulse-node {
+    0%,
+    100% {
+      opacity: 0.08;
+    }
+    50% {
+      opacity: 0.16;
+    }
+  }
+
+  @keyframes line-pulse {
+    0%,
+    100% {
+      opacity: 0.06;
+    }
+    50% {
+      opacity: 0.12;
+    }
+  }
+
+  /* Entrance animations */
+  @keyframes fade-in-up {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fade-in-scale {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  .hero-stagger-1 {
+    animation: fade-in-up 0.7s ease-out 0.1s both;
+  }
+
+  .hero-stagger-2 {
+    animation: fade-in-up 0.7s ease-out 0.25s both;
+  }
+
+  .hero-stagger-3 {
+    animation: fade-in-up 0.7s ease-out 0.4s both;
+  }
+
+  .hero-stagger-4 {
+    animation: fade-in-up 0.7s ease-out 0.55s both;
+  }
+
+  .hero-stagger-image {
+    animation: fade-in-scale 0.8s ease-out 0.3s both;
+  }
+
+  /* Respect reduced motion preferences */
+  @media (prefers-reduced-motion: reduce) {
+    .float-slow,
+    .float-medium,
+    .pulse-node,
+    .neural-line {
+      animation: none;
+    }
+
+    .hero-stagger-1,
+    .hero-stagger-2,
+    .hero-stagger-3,
+    .hero-stagger-4,
+    .hero-stagger-image {
+      animation: none;
+    }
+  }
+</style>
