@@ -5,6 +5,7 @@ import ResumePreview from '../../components/ResumePreview.astro';
 import ResumeSkillsGrid from '../../components/ResumeSkillsGrid.astro';
 import LeadCaptureForm from '../../components/LeadCaptureForm';
 import skills from '../../content/skills.json';
+import { skillCategoryKeyMap } from '../../utils/skills';
 
 export async function getStaticPaths() {
   return [{ params: { lang: 'en' } }, { params: { lang: 'es' } }];
@@ -14,16 +15,9 @@ const { lang } = Astro.params;
 const t = await import(`../../i18n/${lang}.json`).then(m => m.default);
 const resume = t.resume;
 
-const categoryKeyMap: Record<string, string> = {
-  Frameworks: 'frameworks',
-  Languages: 'languages',
-  Deployment: 'deployment',
-  Specialization: 'specialization',
-};
-
 const skillCategories = skills.map(group => ({
   icon: group.icon,
-  label: resume.skillCategories[categoryKeyMap[group.category]] || group.category,
+  label: resume.skillCategories[skillCategoryKeyMap[group.category]] || group.category,
   skills: group.skills,
 }));
 

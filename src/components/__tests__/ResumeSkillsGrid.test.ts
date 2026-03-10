@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import skills from '../../content/skills.json';
 import enJson from '../../i18n/en.json';
 import esJson from '../../i18n/es.json';
+import { skillCategoryKeyMap } from '../../utils/skills';
 
 describe('ResumeSkillsGrid data', () => {
   const categoryKeys = ['frameworks', 'languages', 'deployment', 'specialization'];
@@ -33,34 +34,20 @@ describe('ResumeSkillsGrid data', () => {
   });
 
   it('should have a category key mapping for every skills.json category', () => {
-    const categoryKeyMap: Record<string, string> = {
-      Frameworks: 'frameworks',
-      Languages: 'languages',
-      Deployment: 'deployment',
-      Specialization: 'specialization',
-    };
-
     for (const group of skills) {
-      expect(categoryKeyMap).toHaveProperty(group.category);
-      const key = categoryKeyMap[group.category] as keyof typeof enJson.resume.skillCategories;
+      expect(skillCategoryKeyMap).toHaveProperty(group.category);
+      const key = skillCategoryKeyMap[group.category] as keyof typeof enJson.resume.skillCategories;
       expect(enJson.resume.skillCategories[key]).toBeTruthy();
       expect(esJson.resume.skillCategories[key]).toBeTruthy();
     }
   });
 
   it('should produce valid category data for the component', () => {
-    const categoryKeyMap: Record<string, string> = {
-      Frameworks: 'frameworks',
-      Languages: 'languages',
-      Deployment: 'deployment',
-      Specialization: 'specialization',
-    };
-
     const categories = skills.map(group => ({
       icon: group.icon,
       label:
         enJson.resume.skillCategories[
-          categoryKeyMap[group.category] as keyof typeof enJson.resume.skillCategories
+          skillCategoryKeyMap[group.category] as keyof typeof enJson.resume.skillCategories
         ] || group.category,
       skills: group.skills,
     }));
