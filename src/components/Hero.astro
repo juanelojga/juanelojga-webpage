@@ -13,17 +13,51 @@ const t = useTranslations(Astro);
     preserveAspectRatio="xMidYMid slice"
     aria-hidden="true"
   >
-    <!-- Connecting lines -->
-    <line x1="100" y1="200" x2="350" y2="350" class="neural-line"></line>
-    <line x1="350" y1="350" x2="600" y2="180" class="neural-line line-delay-1"></line>
-    <line x1="600" y1="180" x2="850" y2="300" class="neural-line line-delay-2"></line>
-    <line x1="850" y1="300" x2="1050" y2="150" class="neural-line"></line>
-    <line x1="200" y1="550" x2="500" y2="500" class="neural-line line-delay-1"></line>
-    <line x1="500" y1="500" x2="750" y2="600" class="neural-line line-delay-2"></line>
-    <line x1="750" y1="600" x2="1000" y2="450" class="neural-line"></line>
-    <line x1="350" y1="350" x2="500" y2="500" class="neural-line line-delay-1"></line>
-    <line x1="600" y1="180" x2="750" y2="600" class="neural-line line-delay-2"></line>
-    <line x1="850" y1="300" x2="1000" y2="450" class="neural-line"></line>
+    <defs>
+      <radialGradient id="node-glow">
+        <stop offset="0%" stop-color="var(--color-primary, #10b981)" stop-opacity="0.6"></stop>
+        <stop offset="100%" stop-color="var(--color-primary, #10b981)" stop-opacity="0"></stop>
+      </radialGradient>
+    </defs>
+
+    <!-- Connecting lines with flowing dash animation -->
+    <path d="M100,200 L350,350" class="neural-line dash-flow" pathLength="1"></path>
+    <path d="M350,350 L600,180" class="neural-line dash-flow flow-delay-1" pathLength="1"></path>
+    <path d="M600,180 L850,300" class="neural-line dash-flow flow-delay-2" pathLength="1"></path>
+    <path d="M850,300 L1050,150" class="neural-line dash-flow flow-delay-3" pathLength="1"></path>
+    <path d="M200,550 L500,500" class="neural-line dash-flow flow-delay-1" pathLength="1"></path>
+    <path d="M500,500 L750,600" class="neural-line dash-flow flow-delay-2" pathLength="1"></path>
+    <path d="M750,600 L1000,450" class="neural-line dash-flow flow-delay-3" pathLength="1"></path>
+    <path d="M350,350 L500,500" class="neural-line dash-flow flow-delay-2" pathLength="1"></path>
+    <path d="M600,180 L750,600" class="neural-line dash-flow flow-delay-3" pathLength="1"></path>
+    <path d="M850,300 L1000,450" class="neural-line dash-flow" pathLength="1"></path>
+
+    <!-- Traveling data pulse particles -->
+    <circle r="3" class="data-pulse">
+      <animateMotion
+        dur="3s"
+        repeatCount="indefinite"
+        path="M100,200 L350,350 L600,180 L850,300 L1050,150"></animateMotion>
+    </circle>
+    <circle r="2.5" class="data-pulse pulse-delay-1">
+      <animateMotion dur="4s" repeatCount="indefinite" path="M200,550 L500,500 L750,600 L1000,450"
+      ></animateMotion>
+    </circle>
+    <circle r="2" class="data-pulse pulse-delay-2">
+      <animateMotion dur="3.5s" repeatCount="indefinite" path="M350,350 L500,500 L750,600"
+      ></animateMotion>
+    </circle>
+    <circle r="2.5" class="data-pulse pulse-delay-3">
+      <animateMotion dur="5s" repeatCount="indefinite" path="M600,180 L750,600 L1000,450 L850,300"
+      ></animateMotion>
+    </circle>
+
+    <!-- Node glow rings -->
+    <circle cx="350" cy="350" r="14" class="node-ring ring-delay-0"></circle>
+    <circle cx="600" cy="180" r="14" class="node-ring ring-delay-1"></circle>
+    <circle cx="850" cy="300" r="14" class="node-ring ring-delay-2"></circle>
+    <circle cx="500" cy="500" r="12" class="node-ring ring-delay-3"></circle>
+    <circle cx="1000" cy="450" r="12" class="node-ring ring-delay-1"></circle>
 
     <!-- Nodes (sparser left, denser right) -->
     <circle cx="100" cy="200" r="4" class="neural-node float-slow"></circle>
@@ -108,7 +142,89 @@ const t = useTranslations(Astro);
   .neural-line {
     stroke: var(--color-primary, #10b981);
     stroke-width: 1.5;
+    fill: none;
     opacity: 0.18;
+  }
+
+  /* Flowing dash animation on lines */
+  .dash-flow {
+    stroke-dasharray: 0.08 0.06;
+    animation: dash-scroll 4s linear infinite;
+  }
+
+  .flow-delay-1 {
+    animation-delay: -1s;
+  }
+
+  .flow-delay-2 {
+    animation-delay: -2s;
+  }
+
+  .flow-delay-3 {
+    animation-delay: -3s;
+  }
+
+  @keyframes dash-scroll {
+    to {
+      stroke-dashoffset: -1;
+    }
+  }
+
+  /* Traveling data pulse particles */
+  .data-pulse {
+    fill: var(--color-primary, #10b981);
+    opacity: 0.5;
+    filter: url(#node-glow);
+  }
+
+  .pulse-delay-1 {
+    opacity: 0.4;
+  }
+
+  .pulse-delay-2 {
+    opacity: 0.35;
+  }
+
+  .pulse-delay-3 {
+    opacity: 0.45;
+  }
+
+  /* Node glow rings */
+  .node-ring {
+    fill: none;
+    stroke: var(--color-primary, #10b981);
+    stroke-width: 1;
+    opacity: 0;
+    animation: ring-ping 3s ease-out infinite;
+  }
+
+  .ring-delay-0 {
+    animation-delay: 0s;
+  }
+
+  .ring-delay-1 {
+    animation-delay: 0.8s;
+  }
+
+  .ring-delay-2 {
+    animation-delay: 1.6s;
+  }
+
+  .ring-delay-3 {
+    animation-delay: 2.4s;
+  }
+
+  @keyframes ring-ping {
+    0% {
+      r: 5;
+      opacity: 0.35;
+      stroke-width: 2;
+    }
+    100% {
+      r: 22;
+      opacity: 0;
+      stroke-width: 0.5;
+    }
   }
 
   /* Floating animations for nodes */
@@ -127,26 +243,13 @@ const t = useTranslations(Astro);
       float-slow 8s ease-in-out infinite;
   }
 
-  /* Line pulse animation */
-  .neural-line {
-    animation: line-pulse 5s ease-in-out infinite;
-  }
-
-  .line-delay-1 {
-    animation-delay: 1.5s;
-  }
-
-  .line-delay-2 {
-    animation-delay: 3s;
-  }
-
   @keyframes float-slow {
     0%,
     100% {
       transform: translateY(0);
     }
     50% {
-      transform: translateY(-12px);
+      transform: translateY(-15px);
     }
   }
 
@@ -156,7 +259,7 @@ const t = useTranslations(Astro);
       transform: translateY(0);
     }
     50% {
-      transform: translateY(8px);
+      transform: translateY(10px);
     }
   }
 
@@ -166,17 +269,7 @@ const t = useTranslations(Astro);
       opacity: 0.25;
     }
     50% {
-      opacity: 0.45;
-    }
-  }
-
-  @keyframes line-pulse {
-    0%,
-    100% {
-      opacity: 0.18;
-    }
-    50% {
-      opacity: 0.32;
+      opacity: 0.5;
     }
   }
 
@@ -228,8 +321,14 @@ const t = useTranslations(Astro);
     .float-slow,
     .float-medium,
     .pulse-node,
-    .neural-line {
+    .dash-flow,
+    .node-ring {
       animation: none;
+    }
+
+    .data-pulse,
+    .data-pulse > animateMotion {
+      display: none;
     }
 
     .hero-stagger-1,
