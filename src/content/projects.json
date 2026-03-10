@@ -9,6 +9,65 @@
     "links": {
       "live": "https://www.upwork.com/nx/search/jobs",
       "github": "#"
+    },
+    "heroImage": "/images/project-cypher.jpg",
+    "metadata": {
+      "role": "Senior Frontend Engineer",
+      "duration": "2+ Years",
+      "techStack": ["Vue.js", "TypeScript", "GraphQL", "Node.js", "Webpack", "Jest"],
+      "target": "Freelancers & Clients worldwide"
+    },
+    "challenge": [
+      "Upwork's job search experience needed a complete overhaul to handle millions of listings while maintaining sub-second response times. The existing search infrastructure was built on legacy patterns that made it difficult to iterate on new features.",
+      "The team faced challenges with inconsistent UI states across search filters, pagination, and real-time updates. Search result rendering was slow on lower-end devices, and the lack of type safety across the GraphQL layer led to frequent runtime errors.",
+      "Additionally, the search needed to support complex filtering logic including skill matching, budget ranges, client history, and job freshness — all while providing instant feedback to users."
+    ],
+    "solution": {
+      "narrative": [
+        "I architected a modular Vue.js component system with TypeScript that decomposed the search experience into independently testable units. Each search facet (filters, results, pagination, sorting) was encapsulated as a self-contained module with its own state management.",
+        "The GraphQL integration was rebuilt with strongly-typed queries and automatic code generation, eliminating an entire category of runtime errors. I implemented optimistic UI updates and request deduplication to make the interface feel instantaneous."
+      ],
+      "features": [
+        {
+          "title": "Smart Filter System",
+          "description": "Composable filter architecture that syncs URL state, GraphQL variables, and UI components bidirectionally with zero lag."
+        },
+        {
+          "title": "Virtualized Results Grid",
+          "description": "Custom virtual scrolling implementation that renders only visible job cards, reducing DOM nodes by 90% on large result sets."
+        },
+        {
+          "title": "Type-Safe GraphQL Layer",
+          "description": "End-to-end type generation from GraphQL schema to Vue components, catching data contract issues at compile time."
+        },
+        {
+          "title": "Progressive Search Enhancement",
+          "description": "Server-rendered initial results with client-side hydration for instant first paint and seamless interactive filtering."
+        }
+      ]
+    },
+    "implementation": {
+      "description": "The search architecture uses a centralized store pattern with Vue's Composition API, where each search facet subscribes to relevant state slices. GraphQL queries are composed dynamically based on active filters.",
+      "techPills": [
+        { "label": "Vue 3 Composition API", "color": "#42b883" },
+        { "label": "TypeScript Strict", "color": "#3178c6" },
+        { "label": "GraphQL Code Gen", "color": "#e535ab" },
+        { "label": "Webpack Module Federation", "color": "#8dd6f9" },
+        { "label": "Jest + Testing Library", "color": "#c21325" },
+        { "label": "Vuex Store Modules", "color": "#42b883" }
+      ],
+      "codeSnippet": {
+        "language": "typescript",
+        "code": "// Composable search filter with GraphQL sync\nfunction useSearchFilters() {\n  const route = useRoute();\n  const filters = reactive<SearchFilters>({\n    query: route.query.q as string ?? '',\n    skills: parseArray(route.query.skills),\n    budget: parseBudgetRange(route.query.budget),\n    sortBy: (route.query.sort as SortOption) ?? 'relevance',\n  });\n\n  const { result, loading } = useQuery<SearchResult>(\n    SEARCH_JOBS_QUERY,\n    () => toGraphQLVariables(filters),\n    { debounce: 300 }\n  );\n\n  watch(filters, (newFilters) => {\n    router.replace({ query: toURLParams(newFilters) });\n  }, { deep: true });\n\n  return { filters, result, loading };\n}"
+      }
+    },
+    "results": {
+      "metrics": [
+        { "value": "40%", "label": "Faster search response times" },
+        { "value": "90%", "label": "Reduction in DOM nodes via virtualization" },
+        { "value": "0", "label": "Runtime type errors post-migration" }
+      ],
+      "narrative": "The rebuilt search experience significantly improved both performance metrics and developer velocity. The type-safe GraphQL integration eliminated an entire class of bugs, while the modular architecture allowed the team to ship new search features in days instead of weeks."
     }
   },
   {
@@ -21,6 +80,65 @@
     "links": {
       "live": "https://www.instagram.com/narboxcourier/?hl=es-la",
       "github": "https://github.com/juanelojga/nbx-django"
+    },
+    "heroImage": "/images/neural-net.jpg",
+    "metadata": {
+      "role": "Full-Stack Lead & Co-Founder",
+      "duration": "1.5 Years",
+      "techStack": ["Python", "Django", "Next.js", "GraphQL", "PostgreSQL", "Redis"],
+      "target": "Local businesses & courier drivers"
+    },
+    "challenge": [
+      "Local courier services in the region relied on phone calls and manual dispatch, leading to inefficient routing, lost packages, and zero visibility for customers. There was no affordable tech solution tailored to small and mid-size courier operations.",
+      "The platform needed to handle real-time GPS tracking, dynamic route optimization, and multi-tenant business accounts — all while running on minimal infrastructure to keep costs low for small business operators.",
+      "Driver onboarding and reliability were critical pain points. The system needed to verify drivers, manage their availability windows, and automatically assign deliveries based on proximity and capacity."
+    ],
+    "solution": {
+      "narrative": [
+        "I designed and built Narbox as a full-stack platform with a Django backend serving a GraphQL API and a Next.js customer-facing application. The architecture prioritized real-time capabilities and cost efficiency.",
+        "The backend uses Django Channels for WebSocket connections, enabling live tracking updates pushed directly to customers. A custom dispatch algorithm assigns deliveries based on driver proximity, current load, and historical reliability scores."
+      ],
+      "features": [
+        {
+          "title": "Real-Time Tracking Dashboard",
+          "description": "Live map view for both customers and dispatchers showing driver positions, ETAs, and delivery status updates via WebSockets."
+        },
+        {
+          "title": "Smart Dispatch Engine",
+          "description": "Automated delivery assignment algorithm considering driver proximity, capacity, reliability score, and route optimization."
+        },
+        {
+          "title": "Multi-Tenant Business Portal",
+          "description": "White-label dashboard for business clients to manage shipments, view analytics, and configure delivery preferences."
+        },
+        {
+          "title": "Driver Mobile Experience",
+          "description": "Responsive PWA for drivers with offline-capable route navigation, delivery confirmation, and proof-of-delivery capture."
+        }
+      ]
+    },
+    "implementation": {
+      "description": "The system is built on a Django backend with Graphene for the GraphQL API layer. PostgreSQL handles transactional data while Redis manages real-time state and caching. The Next.js frontend uses Apollo Client for data fetching.",
+      "techPills": [
+        { "label": "Django + Graphene", "color": "#092e20" },
+        { "label": "Next.js Pages Router", "color": "#000000" },
+        { "label": "PostgreSQL + PostGIS", "color": "#336791" },
+        { "label": "Redis Pub/Sub", "color": "#dc382d" },
+        { "label": "Django Channels", "color": "#092e20" },
+        { "label": "Apollo Client", "color": "#311c87" }
+      ],
+      "codeSnippet": {
+        "language": "python",
+        "code": "# Smart dispatch algorithm\nclass DispatchEngine:\n    def find_optimal_driver(\n        self, delivery: Delivery\n    ) -> Optional[Driver]:\n        available = Driver.objects.filter(\n            status=DriverStatus.AVAILABLE,\n            current_load__lt=F('max_capacity'),\n        )\n        scored = []\n        for driver in available:\n            distance = calc_distance(\n                driver.location, delivery.pickup\n            )\n            score = (\n                (1 / max(distance, 0.1)) * 0.5\n                + driver.reliability_score * 0.3\n                + (1 - driver.current_load\n                   / driver.max_capacity) * 0.2\n            )\n            scored.append((driver, score))\n\n        scored.sort(key=lambda x: x[1], reverse=True)\n        return scored[0][0] if scored else None"
+      }
+    },
+    "results": {
+      "metrics": [
+        { "value": "3x", "label": "Faster delivery dispatch vs manual" },
+        { "value": "200+", "label": "Deliveries processed weekly" },
+        { "value": "95%", "label": "On-time delivery rate" }
+      ],
+      "narrative": "Narbox transformed local courier operations from phone-based chaos into a streamlined digital platform. Business clients gained full visibility into their shipments, drivers received optimized routes, and end customers could track deliveries in real time — all running on cost-effective infrastructure."
     }
   },
   {
@@ -33,6 +151,65 @@
     "links": {
       "live": "https://juanelojga.com/",
       "github": "https://github.com/juanelojga/juanelojga-webpage"
+    },
+    "heroImage": "/images/decentralized-app.jpg",
+    "metadata": {
+      "role": "Designer & Developer",
+      "duration": "Ongoing",
+      "techStack": ["Astro", "Tailwind CSS", "TypeScript", "Netlify"],
+      "target": "Recruiters, clients & collaborators"
+    },
+    "challenge": [
+      "I needed a personal portfolio that could effectively showcase my work to both English and Spanish-speaking audiences while maintaining perfect performance scores. Most portfolio templates felt generic and didn't reflect a technical engineer's attention to detail.",
+      "The site needed to support full internationalization without duplicating content or components. It also had to load instantly, score 100 on Lighthouse, and be easy to maintain as projects and experience evolved.",
+      "SEO was critical — the site needed proper structured data, hreflang tags, and social media previews to maximize discoverability across search engines and social platforms."
+    ],
+    "solution": {
+      "narrative": [
+        "I chose Astro for its zero-JS-by-default philosophy, ensuring the fastest possible page loads. The architecture uses a dual i18n pattern: self-contained components with a translation utility for navigation elements, and prop-driven translations for content sections.",
+        "Content is managed through plain JSON files for maximum simplicity — no CMS overhead, no build-time content processing. The design system uses Tailwind CSS with custom theme tokens for consistent branding across all pages."
+      ],
+      "features": [
+        {
+          "title": "Dual i18n Architecture",
+          "description": "Self-contained translations for global components and prop-driven translations for content sections, supporting English and Spanish."
+        },
+        {
+          "title": "Zero-JS Default",
+          "description": "Astro's island architecture ensures pages ship zero JavaScript unless explicitly needed for interactivity."
+        },
+        {
+          "title": "Automated SEO Pipeline",
+          "description": "JSON-LD structured data, hreflang alternates, OG tags, and Twitter cards generated automatically for every page."
+        },
+        {
+          "title": "Scroll-Snap Navigation",
+          "description": "Desktop experience uses CSS scroll-snap with IntersectionObserver for section-based navigation with smooth transitions."
+        }
+      ]
+    },
+    "implementation": {
+      "description": "Built with Astro 5 and deployed on Netlify with automatic builds. The component architecture follows Astro's recommended patterns with frontmatter logic, Tailwind templates, and scoped styles.",
+      "techPills": [
+        { "label": "Astro 5", "color": "#ff5d01" },
+        { "label": "Tailwind CSS 3", "color": "#06b6d4" },
+        { "label": "TypeScript Strict", "color": "#3178c6" },
+        { "label": "Netlify Edge", "color": "#00c7b7" },
+        { "label": "View Transitions API", "color": "#ff5d01" },
+        { "label": "Partytown (Analytics)", "color": "#8b5cf6" }
+      ],
+      "codeSnippet": {
+        "language": "typescript",
+        "code": "// Dual i18n pattern\n// 1. Self-contained: useTranslations utility\nconst t = useTranslations(Astro);\nconst label = t('navbar.projects');\n\n// 2. Prop-driven: page imports locale JSON\nconst { lang } = Astro.params;\nconst t = await import(`../../i18n/${lang}.json`)\n  .then(m => m.default);\n\n// Pass translated strings as props\n<FeaturedProjects\n  title={t.projects.title}\n  lang={lang}\n/>"
+      }
+    },
+    "results": {
+      "metrics": [
+        { "value": "100", "label": "Lighthouse performance score" },
+        { "value": "0kb", "label": "JavaScript shipped by default" },
+        { "value": "2", "label": "Languages fully supported" }
+      ],
+      "narrative": "The portfolio achieves perfect Lighthouse scores while supporting full bilingual content. The Astro-based architecture makes adding new projects and sections straightforward, and the automated SEO pipeline ensures maximum visibility across search engines."
     }
   },
   {

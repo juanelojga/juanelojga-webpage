@@ -1,0 +1,25 @@
+---
+interface Metric {
+  value: string;
+  label: string;
+}
+
+interface Props {
+  metrics: Metric[];
+  narrative: string;
+}
+
+const { metrics, narrative } = Astro.props;
+---
+
+<div class="grid gap-8 md:grid-cols-3">
+  {
+    metrics.map(metric => (
+      <div class="text-center">
+        <div class="text-4xl font-extrabold text-primary">{metric.value}</div>
+        <div class="mt-2 text-sm text-slate-600">{metric.label}</div>
+      </div>
+    ))
+  }
+</div>
+<p class="mt-8 leading-relaxed text-slate-600">{narrative}</p>

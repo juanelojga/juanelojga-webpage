@@ -42,6 +42,27 @@
     "github": "GitHub",
     "twitter": "Twitter"
   },
+  "caseStudy": {
+    "breadcrumb": { "home": "Inicio", "projects": "Proyectos" },
+    "sections": {
+      "challenge": "El Desafío",
+      "solution": "La Solución",
+      "implementation": "Implementación Técnica",
+      "results": "Resultados e Impacto"
+    },
+    "metadata": {
+      "role": "Rol",
+      "duration": "Duración",
+      "techStack": "Stack Técnico",
+      "target": "Objetivo"
+    },
+    "hero": { "livePreview": "Vista Previa", "viewSource": "Ver Código" },
+    "cta": {
+      "headline": "¿Tienes un proyecto similar en mente?",
+      "getInTouch": "Contáctame",
+      "backToPortfolio": "Volver al Portafolio"
+    }
+  },
   "seo": {
     "title": "Juan Almeida | Ingeniero Full Stack y de IA",
     "description": "Ingeniero apasionado por crear software inteligente, escalable y centrado en las personas mediante desarrollo full-stack e innovación en IA.",
