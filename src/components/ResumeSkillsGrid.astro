@@ -1,0 +1,39 @@
+---
+interface Category {
+  icon: string;
+  label: string;
+  skills: string[];
+}
+
+interface Props {
+  title: string;
+  categories: Category[];
+}
+
+const { title, categories } = Astro.props;
+---
+
+<section class="mx-auto max-w-6xl px-6 pb-20">
+  <h2 class="mb-2 text-3xl font-extrabold text-slate-900 sm:text-4xl">{title}</h2>
+  <div class="mb-10 h-1 w-16 rounded-full bg-primary"></div>
+
+  <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+    {
+      categories.map(cat => (
+        <div class="rounded-xl border border-slate-200 bg-white p-6 transition-shadow hover:shadow-lg">
+          <div class="mb-4 flex items-center gap-3">
+            <span class="material-symbols-outlined text-2xl text-primary">{cat.icon}</span>
+            <h3 class="text-sm font-bold uppercase tracking-wide text-slate-900">{cat.label}</h3>
+          </div>
+          <ul class="flex flex-wrap gap-2">
+            {cat.skills.map(skill => (
+              <li class="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700">
+                {skill}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))
+    }
+  </div>
+</section>

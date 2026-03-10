@@ -2,7 +2,10 @@
 import Layout from '../../layouts/Layout.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import ResumePreview from '../../components/ResumePreview.astro';
+import ResumeSkillsGrid from '../../components/ResumeSkillsGrid.astro';
 import LeadCaptureForm from '../../components/LeadCaptureForm';
+import skills from '../../content/skills.json';
+import { skillCategoryKeyMap } from '../../utils/skills';
 
 export async function getStaticPaths() {
   return [{ params: { lang: 'en' } }, { params: { lang: 'es' } }];
@@ -11,6 +14,12 @@ export async function getStaticPaths() {
 const { lang } = Astro.params;
 const t = await import(`../../i18n/${lang}.json`).then(m => m.default);
 const resume = t.resume;
+
+const skillCategories = skills.map(group => ({
+  icon: group.icon,
+  label: resume.skillCategories[skillCategoryKeyMap[group.category]] || group.category,
+  skills: group.skills,
+}));
 
 const canonicalBase = 'https://juanelojga.com';
 const canonicalUrl = `${canonicalBase}/${lang}/resume/`;
@@ -89,6 +98,9 @@ const breadcrumbSchema = {
     <section class="mx-auto max-w-6xl px-6 py-12 pb-20">
       <ResumePreview />
     </section>
+
+    <!-- Skills Grid -->
+    <ResumeSkillsGrid title={resume.sections.skills} categories={skillCategories} />
 
     <!-- Lead Capture Form -->
     <section class="mx-auto max-w-6xl px-6 pb-20">
