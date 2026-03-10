@@ -1,6 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import ResumePreview from '../../components/ResumePreview.astro';
 
 export async function getStaticPaths() {
   return [{ params: { lang: 'en' } }, { params: { lang: 'es' } }];
@@ -83,31 +84,9 @@ const breadcrumbSchema = {
       </p>
     </header>
 
-    <!-- Experience placeholder -->
-    <section class="mx-auto max-w-6xl px-6 py-12">
-      <h2 class="mb-6 text-2xl font-bold text-slate-900">{resume.sections.experience}</h2>
-      <div class="rounded-2xl border border-dashed border-slate-300 bg-white p-12 text-center">
-        <span class="material-symbols-outlined mb-2 text-4xl text-slate-300">work</span>
-        <p class="text-sm text-slate-400">Coming soon</p>
-      </div>
-    </section>
-
-    <!-- Skills placeholder -->
-    <section class="mx-auto max-w-6xl px-6 py-12">
-      <h2 class="mb-6 text-2xl font-bold text-slate-900">{resume.sections.skills}</h2>
-      <div class="rounded-2xl border border-dashed border-slate-300 bg-white p-12 text-center">
-        <span class="material-symbols-outlined mb-2 text-4xl text-slate-300">code</span>
-        <p class="text-sm text-slate-400">Coming soon</p>
-      </div>
-    </section>
-
-    <!-- Education placeholder -->
+    <!-- Resume Preview -->
     <section class="mx-auto max-w-6xl px-6 py-12 pb-20">
-      <h2 class="mb-6 text-2xl font-bold text-slate-900">{resume.sections.education}</h2>
-      <div class="rounded-2xl border border-dashed border-slate-300 bg-white p-12 text-center">
-        <span class="material-symbols-outlined mb-2 text-4xl text-slate-300">school</span>
-        <p class="text-sm text-slate-400">Coming soon</p>
-      </div>
+      <ResumePreview />
     </section>
   </div>
 </Layout>
