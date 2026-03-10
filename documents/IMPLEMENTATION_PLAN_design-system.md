@@ -15,7 +15,7 @@ Complete visual redesign of juanelojga.com from green-on-black hacker theme to a
 
 **Goal:** Set up Vitest, testing libraries, and React integration so every subsequent phase can include unit tests from day one.
 
-**Status:** Not Started
+**Status:** Complete
 
 ### Tasks
 
@@ -40,7 +40,7 @@ Complete visual redesign of juanelojga.com from green-on-black hacker theme to a
 
 **Goal:** Replace all green-on-black design tokens with the blue/white professional theme. Update Tailwind config, global CSS, and font loading. No component rewrites yet — just the foundation.
 
-**Status:** Not Started
+**Status:** Complete
 
 ### Tasks
 
@@ -77,38 +77,38 @@ Complete visual redesign of juanelojga.com from green-on-black hacker theme to a
 
 **Goal:** Replace dark-themed Navbar and Footer with the new professional blue/white design matching the wireframe. Update i18n keys for new nav structure.
 
-**Status:** Not Started
+**Status:** Complete
 
 ### Tasks
 
-- [ ] Rewrite `src/components/Navbar.astro`:
-  - [ ] Sticky header: `bg-white/80 backdrop-blur-md border-b border-slate-200`
-  - [ ] Logo: primary-colored `terminal` Material Symbol icon + "Portfolio" text
-  - [ ] Desktop nav links: Projects, Experience, Skills, Vision (homepage anchors)
-  - [ ] "Resume" CTA button: `bg-primary text-white rounded-lg`
-  - [ ] Language switcher: keep existing EN/ES toggle with Material Symbols icon
-  - [ ] Mobile hamburger menu: preserve toggle behavior, update styling to white/blue
-  - [ ] Remove all `text-green-*`, `bg-black`, `border-green-*` classes
-  - [ ] Remove scroll-snap related JS (section activation, snap-to-section)
-- [ ] Rewrite `src/components/Footer.astro`:
-  - [ ] Background: `bg-slate-50 border-t border-slate-200`
-  - [ ] Layout: logo + social links (LinkedIn, GitHub, Twitter) + copyright
-  - [ ] Social links use Material Symbols or simple SVG icons
-  - [ ] Remove all dark theme classes and green accents
-- [ ] Update `src/i18n/en.json`:
-  - [ ] Update `navbar` keys: rename `about` → `experience`, add `skills`, `vision`, `resume`
-  - [ ] Update `footer` keys: add social link labels, update nav link names
-- [ ] Update `src/i18n/es.json`: mirror all key changes from `en.json`
-- [ ] Create `src/components/__tests__/Navbar.test.ts`
-- [ ] Create `src/components/__tests__/Footer.test.ts`
+- [x] Rewrite `src/components/Navbar.astro`:
+  - [x] Sticky header: `bg-white/80 backdrop-blur-md border-b border-slate-200`
+  - [x] Logo: primary-colored `terminal` Material Symbol icon + "Portfolio" text
+  - [x] Desktop nav links: Projects, Experience, Skills, Vision (homepage anchors)
+  - [x] "Resume" CTA button: `bg-primary text-white rounded-lg`
+  - [x] Language switcher: keep existing EN/ES toggle with Material Symbols icon
+  - [x] Mobile hamburger menu: preserve toggle behavior, update styling to white/blue
+  - [x] Remove all `text-green-*`, `bg-black`, `border-green-*` classes
+  - [x] Remove scroll-snap related JS (section activation, snap-to-section)
+- [x] Rewrite `src/components/Footer.astro`:
+  - [x] Background: `bg-slate-50 border-t border-slate-200`
+  - [x] Layout: logo + social links (LinkedIn, GitHub, Twitter) + copyright
+  - [x] Social links use Material Symbols or simple SVG icons
+  - [x] Remove all dark theme classes and green accents
+- [x] Update `src/i18n/en.json`:
+  - [x] Update `navbar` keys: rename `about` → `experience`, add `skills`, `vision`, `resume`
+  - [x] Update `footer` keys: add social link labels, update nav link names
+- [x] Update `src/i18n/es.json`: mirror all key changes from `en.json`
+- [x] Create `src/components/__tests__/Navbar.test.ts`
+- [x] Create `src/components/__tests__/Footer.test.ts`
 
 ### Quality Gates
 
-- [ ] Tests passing (`npm run test`)
-- [ ] Linter passing (`npm run lint`)
-- [ ] Type checker passing
-- [ ] Build passing (`npm run build`)
-- [ ] Manual testing: navbar renders correctly on desktop and mobile in both en/es
+- [x] Tests passing (`npm run test`)
+- [x] Linter passing (`npm run lint`)
+- [x] Type checker passing
+- [x] Build passing (`npm run build`)
+- [x] Manual testing: navbar renders correctly on desktop and mobile in both en/es
 
 ---
 
