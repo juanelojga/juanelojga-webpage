@@ -1,0 +1,22 @@
+[
+  {
+    "icon": "code",
+    "category": "Frameworks",
+    "skills": ["React", "Vue.js", "Astro", "Next.js", "Django", "Express"]
+  },
+  {
+    "icon": "terminal",
+    "category": "Languages",
+    "skills": ["TypeScript", "JavaScript", "Python", "SQL", "HTML", "CSS"]
+  },
+  {
+    "icon": "cloud_upload",
+    "category": "Deployment",
+    "skills": ["AWS", "Docker", "Netlify", "Vercel", "CI/CD", "GitHub Actions"]
+  },
+  {
+    "icon": "psychology",
+    "category": "Specialization",
+    "skills": ["AI/ML", "GraphQL", "REST APIs", "PostgreSQL", "MongoDB", "System Design"]
+  }
+]

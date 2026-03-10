@@ -1,8 +1,11 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import Hero from '../../components/Hero.astro';
-import About from '../../components/About.astro';
-import Projects from '../../components/Projects.astro';
+import Philosophy from '../../components/Philosophy.astro';
+import Vision from '../../components/Vision.astro';
+import FeaturedProjects from '../../components/FeaturedProjects.astro';
+import SkillGrid from '../../components/SkillGrid.astro';
+import Timeline from '../../components/Timeline.astro';
 import Contact from '../../components/Contact.astro';
 
 export async function getStaticPaths() {
@@ -15,7 +18,14 @@ const t = await import(`../../i18n/${lang}.json`).then(m => m.default);
 
 <Layout title="Juan Almeida | Full Stack & AI Engineer">
   <Hero />
-  <About title={t.about.title} description={t.about.description} />
-  <Projects title={t.projects.title} description={t.projects.description} />
-  <Contact title={t.contact.title} description={t.contact.description} />
+  <Philosophy />
+  <Vision />
+  <FeaturedProjects title={t.projects.title} lang={lang} />
+  <section class="bg-background-light px-6 py-20 lg:py-28">
+    <div class="mx-auto grid max-w-6xl gap-12 lg:grid-cols-2">
+      <SkillGrid />
+      <Timeline />
+    </div>
+  </section>
+  <Contact />
 </Layout>

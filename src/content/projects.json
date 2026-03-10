@@ -1,6 +1,9 @@
 [
   {
     "title": "Upwork - Search & Jobs Section",
+    "slug": "upwork-search-jobs",
+    "description": "Led Vue.js and TypeScript development for Upwork's search and jobs section, building scalable frontend architecture with GraphQL integration.",
+    "category": "Frontend",
     "tags": ["Vue", "Node.js", "Typescript", "GraphQL"],
     "image": "/images/project-cypher.jpg",
     "links": {
@@ -10,6 +13,9 @@
   },
   {
     "title": "Narbox",
+    "slug": "narbox",
+    "description": "Full-stack courier platform built with Python, Django, and Next.js featuring real-time tracking and GraphQL APIs.",
+    "category": "Full-Stack",
     "tags": ["Python", "Next.js", "GraphQL", "Django", "PostgresSQL"],
     "image": "/images/neural-net.jpg",
     "links": {
@@ -19,6 +25,9 @@
   },
   {
     "title": "Personal Page",
+    "slug": "personal-page",
+    "description": "Multilingual portfolio website built with Astro, Tailwind CSS, and TypeScript with i18n support and modern design.",
+    "category": "Frontend",
     "tags": ["Astro", "Tailwind", "TypeScript"],
     "image": "/images/decentralized-app.jpg",
     "links": {
@@ -28,6 +37,9 @@
   },
   {
     "title": "JuaneloJGAC Tech LLC",
+    "slug": "juanelojgac-tech",
+    "description": "Company website for JuaneloJGAC Tech LLC built with Astro and Tailwind CSS, showcasing services and portfolio.",
+    "category": "Frontend",
     "tags": ["Astro", "Tailwind", "TypeScript"],
     "image": "/images/project-cypher.jpg",
     "links": {

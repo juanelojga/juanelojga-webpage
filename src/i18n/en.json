@@ -7,11 +7,11 @@
     "resume": "Resume"
   },
   "hero": {
-    "greeting": "Hi, I'm",
-    "name": "Juan Almeida",
-    "subtitle": "Full-Stack Software Engineer passionate about AI, Frontend, Backend, Databases, and Machine Learning. I design scalable systems that combine clean architecture, performance, and intelligent user experiences.",
-    "viewWork": "View My Work",
-    "contactMe": "Contact Me"
+    "subtitleTag": "AI SYSTEMS ARCHITECT",
+    "headline": "Designing the Future of AI",
+    "description": "Full-Stack Software Engineer passionate about AI, Frontend, Backend, Databases, and Machine Learning. I design scalable systems that combine clean architecture, performance, and intelligent user experiences.",
+    "ctaPrimary": "Get in Touch",
+    "ctaSecondary": "View Projects"
   },
   "about": {
     "title": "About Me",
@@ -26,12 +26,13 @@
     "interestsText": "I’m passionate about pushing my limits in sports—especially triathlon and cycling—where discipline and perseverance keep me striving for progress. The beauty of nature and travel inspires me, and I treasure every adventure, from local rides to journeys through places like the Galapagos. My community—friends, family, and teammates—are an essential part of my story, fueling my growth and motivation every day. Creativity drives me, whether I’m exploring new hobbies like painting or experimenting with 3D printing. I believe that real growth comes from embracing the process, finding joy in every challenge and lesson. Above all, I value gratitude, resilience, and making meaningful memories along the way."
   },
   "projects": {
-    "title": "Featured Projects:",
+    "title": "Featured Projects",
+    "viewCaseStudy": "View Case Study",
     "live": "Live Preview",
     "github": "GitHub"
   },
   "contact": {
-    "title": "Initiate Connection",
+    "title": "Get in Touch",
     "subtitle": "Have a project in mind? Let’s build something amazing together.",
     "copyEmailAria": "Copy email"
   },

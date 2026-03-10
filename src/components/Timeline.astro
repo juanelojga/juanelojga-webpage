@@ -1,0 +1,28 @@
+---
+import experience from '../content/experience.json';
+---
+
+<div id="experience">
+  <h2 class="mb-2 text-3xl font-extrabold text-slate-900 sm:text-4xl">Recent Work</h2>
+  <div class="mb-8 h-1 w-16 rounded-full bg-primary"></div>
+
+  <ol class="relative border-l-2 border-slate-200 pl-6">
+    {
+      experience.map((item, index) => (
+        <li class="mb-8 last:mb-0">
+          <span
+            class:list={[
+              'absolute -left-[9px] mt-1.5 size-4 rounded-full border-2 border-white',
+              index === 0 ? 'bg-primary' : 'bg-slate-200',
+            ]}
+          />
+          <time class="mb-1 block text-xs font-medium text-slate-500" datetime={item.period}>
+            {item.period}
+          </time>
+          <h3 class="text-sm font-bold text-slate-900">{item.role}</h3>
+          <p class="mt-1 text-sm leading-relaxed text-slate-600">{item.description}</p>
+        </li>
+      ))
+    }
+  </ol>
+</div>
