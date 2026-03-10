@@ -21,10 +21,7 @@ const navLinks = [
     <!-- Left: Logo -->
     <a href={`/${lang}/`} class="group flex items-center font-mono text-sm no-underline">
       <span id="logo-typed" class="logo-typed" aria-hidden="true"></span>
-      <span
-        id="logo-cursor"
-        class="logo-cursor-hidden ml-0.5 animate-blink select-none text-primary">_</span
-      >
+      <span id="logo-cursor" class="logo-cursor-hidden ml-0.5 select-none text-primary">_</span>
       <span class="sr-only">&gt; juan.almeida</span>
     </a>
 
@@ -178,11 +175,21 @@ const navLinks = [
   }
 
   .logo-cursor-hidden {
-    visibility: hidden;
+    opacity: 0;
   }
 
   .logo-cursor-visible {
-    visibility: visible;
+    animation: blink 1s step-end infinite;
+  }
+
+  @keyframes blink {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0;
+    }
   }
 </style>
 
