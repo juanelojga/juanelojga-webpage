@@ -1,8 +1,10 @@
 {
   "navbar": {
-    "about": "Sobre mí",
     "projects": "Proyectos",
-    "contact": "Contacto"
+    "experience": "Experiencia",
+    "skills": "Habilidades",
+    "vision": "Visión",
+    "resume": "Currículum"
   },
   "hero": {
     "greeting": "Hola, soy",
@@ -35,10 +37,9 @@
   },
   "footer": {
     "rights": "Todos los derechos reservados.",
-    "home": "Inicio",
-    "projects": "Proyectos",
-    "about": "Acerca de",
-    "contact": "Contacto"
+    "linkedin": "LinkedIn",
+    "github": "GitHub",
+    "twitter": "Twitter"
   },
   "seo": {
     "title": "Juan Almeida | Ingeniero Full Stack y de IA",
