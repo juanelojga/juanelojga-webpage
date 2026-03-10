@@ -1,0 +1,110 @@
+---
+interface Props {
+  filename?: string;
+}
+
+const { filename = 'resume.pdf' } = Astro.props;
+---
+
+<div class="mx-auto w-full max-w-2xl px-4 sm:px-6">
+  <div class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-2xl">
+    <!-- macOS Window Chrome -->
+    <div
+      class="flex items-center gap-2 border-b border-slate-200 bg-gradient-to-b from-slate-100 to-slate-50 px-4 py-3"
+    >
+      <!-- Traffic-light dots -->
+      <div class="flex gap-1.5" aria-hidden="true">
+        <span class="inline-block size-3 rounded-full bg-[#FF5F57]"></span>
+        <span class="inline-block size-3 rounded-full bg-[#FEBC2E]"></span>
+        <span class="inline-block size-3 rounded-full bg-[#28C840]"></span>
+      </div>
+      <span class="ml-2 text-xs font-medium text-slate-500">{filename}</span>
+    </div>
+
+    <!-- Mock Resume Content -->
+    <div class="relative">
+      <div class="space-y-6 p-6 sm:p-8">
+        <!-- Name header block -->
+        <div class="text-center">
+          <div class="mx-auto mb-2 h-5 w-48 rounded bg-slate-800 sm:h-6 sm:w-56"></div>
+          <div class="mx-auto h-3 w-36 rounded bg-primary/60 sm:w-40"></div>
+        </div>
+
+        <!-- Contact info row -->
+        <div class="flex flex-wrap justify-center gap-3">
+          <div class="h-2.5 w-24 rounded bg-slate-200"></div>
+          <div class="h-2.5 w-20 rounded bg-slate-200"></div>
+          <div class="h-2.5 w-28 rounded bg-slate-200"></div>
+        </div>
+
+        <!-- Divider -->
+        <div class="border-t border-slate-200"></div>
+
+        <!-- Experience section -->
+        <div>
+          <div class="mb-3 h-3.5 w-36 rounded bg-slate-700"></div>
+          <div class="space-y-4">
+            <!-- Job 1 -->
+            <div>
+              <div class="mb-1.5 flex items-center justify-between gap-2">
+                <div class="h-3 w-40 rounded bg-slate-600 sm:w-48"></div>
+                <div class="h-2.5 w-20 rounded bg-slate-300 sm:w-24"></div>
+              </div>
+              <div class="h-2.5 w-28 rounded bg-primary/40 sm:w-32"></div>
+              <div class="mt-2 space-y-1.5">
+                <div class="h-2 w-full rounded bg-slate-100"></div>
+                <div class="h-2 w-11/12 rounded bg-slate-100"></div>
+                <div class="h-2 w-4/5 rounded bg-slate-100"></div>
+              </div>
+            </div>
+            <!-- Job 2 -->
+            <div>
+              <div class="mb-1.5 flex items-center justify-between gap-2">
+                <div class="h-3 w-36 rounded bg-slate-600 sm:w-44"></div>
+                <div class="h-2.5 w-20 rounded bg-slate-300 sm:w-24"></div>
+              </div>
+              <div class="h-2.5 w-24 rounded bg-primary/40 sm:w-28"></div>
+              <div class="mt-2 space-y-1.5">
+                <div class="h-2 w-full rounded bg-slate-100"></div>
+                <div class="h-2 w-10/12 rounded bg-slate-100"></div>
+                <div class="h-2 w-3/4 rounded bg-slate-100"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Skills section -->
+        <div>
+          <div class="mb-3 h-3.5 w-20 rounded bg-slate-700"></div>
+          <div class="flex flex-wrap gap-2">
+            <div class="h-5 w-16 rounded-full bg-slate-100"></div>
+            <div class="h-5 w-20 rounded-full bg-slate-100"></div>
+            <div class="h-5 w-14 rounded-full bg-slate-100"></div>
+            <div class="w-18 h-5 rounded-full bg-slate-100"></div>
+            <div class="h-5 w-16 rounded-full bg-slate-100"></div>
+            <div class="w-22 h-5 rounded-full bg-slate-100"></div>
+          </div>
+        </div>
+
+        <!-- Education section -->
+        <div>
+          <div class="mb-3 h-3.5 w-28 rounded bg-slate-700"></div>
+          <div>
+            <div class="mb-1.5 flex items-center justify-between gap-2">
+              <div class="h-3 w-44 rounded bg-slate-600 sm:w-52"></div>
+              <div class="h-2.5 w-16 rounded bg-slate-300 sm:w-20"></div>
+            </div>
+            <div class="h-2.5 w-32 rounded bg-primary/40 sm:w-36"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Gradient Fade Overlay -->
+      <div
+        class="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-white to-transparent sm:h-40"
+        aria-hidden="true"
+      >
+      </div>
+    </div>
+  </div>
+</div>
