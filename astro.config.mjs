@@ -7,11 +7,11 @@ import partytown from '@astrojs/partytown';
 export default defineConfig({
   site: 'https://www.juanelojga.com',
   integrations: [
-    tailwind(), 
-    sitemap(), 
+    tailwind(),
+    sitemap(),
     partytown({
-      config: { forward: ['dataLayer.push', 'gtag'] }
-    })
+      config: { forward: ['dataLayer.push', 'gtag'] },
+    }),
   ],
   i18n: {
     defaultLocale: 'en',
