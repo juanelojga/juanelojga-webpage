@@ -1,4 +1,4 @@
-import { describe, it, expect, afterEach } from 'vitest';
+import { describe, it, expect, afterEach, vi } from 'vitest';
 import { render, screen, fireEvent, waitFor, cleanup } from '@testing-library/react';
 import LeadCaptureForm, { type LeadCaptureFormLabels } from '../LeadCaptureForm';
 
@@ -20,6 +20,7 @@ const mockLabels: LeadCaptureFormLabels = {
 describe('LeadCaptureForm', () => {
   afterEach(() => {
     cleanup();
+    vi.restoreAllMocks();
   });
 
   it('should render the form heading', () => {
@@ -113,5 +114,66 @@ describe('LeadCaptureForm', () => {
     render(<LeadCaptureForm lang="en" labels={mockLabels} />);
     const recaptcha = document.querySelector('[data-netlify-recaptcha="true"]');
     expect(recaptcha).toBeTruthy();
+  });
+
+  it('should show submitting text while loading', async () => {
+    // Mock fetch to hang so we can observe the loading state
+    globalThis.fetch = vi.fn(() => new Promise(() => {}));
+
+    render(<LeadCaptureForm lang="en" labels={mockLabels} />);
+    const nameInput = screen.getByLabelText('Full Name');
+    const emailInput = screen.getByLabelText('Email');
+
+    fireEvent.change(nameInput, { target: { value: 'John Doe' } });
+    fireEvent.change(emailInput, { target: { value: 'john@example.com' } });
+
+    const submitButton = screen.getByRole('button', { name: 'Download Resume (PDF)' });
+    fireEvent.click(submitButton);
+
+    await waitFor(() => {
+      expect(screen.getByText('Submitting…')).toBeTruthy();
+      expect(screen.getByRole('button').hasAttribute('disabled')).toBe(true);
+    });
+  });
+
+  it('should render success state after successful submission', async () => {
+    globalThis.fetch = vi.fn(() => Promise.resolve(new Response('', { status: 200 })));
+
+    render(<LeadCaptureForm lang="en" labels={mockLabels} />);
+    const nameInput = screen.getByLabelText('Full Name');
+    const emailInput = screen.getByLabelText('Email');
+
+    fireEvent.change(nameInput, { target: { value: 'John Doe' } });
+    fireEvent.change(emailInput, { target: { value: 'john@example.com' } });
+
+    const submitButton = screen.getByRole('button', { name: 'Download Resume (PDF)' });
+    fireEvent.click(submitButton);
+
+    await waitFor(() => {
+      expect(screen.getByText('Thank you! Your download will start shortly.')).toBeTruthy();
+    });
+
+    // Success message should have an alert role
+    expect(screen.getByRole('alert')).toBeTruthy();
+  });
+
+  it('should render error state after failed submission', async () => {
+    globalThis.fetch = vi.fn(() => Promise.resolve(new Response('', { status: 500 })));
+
+    render(<LeadCaptureForm lang="en" labels={mockLabels} />);
+    const nameInput = screen.getByLabelText('Full Name');
+    const emailInput = screen.getByLabelText('Email');
+
+    fireEvent.change(nameInput, { target: { value: 'John Doe' } });
+    fireEvent.change(emailInput, { target: { value: 'john@example.com' } });
+
+    const submitButton = screen.getByRole('button', { name: 'Download Resume (PDF)' });
+    fireEvent.click(submitButton);
+
+    await waitFor(() => {
+      expect(screen.getByText('Something went wrong. Please try again.')).toBeTruthy();
+    });
+
+    expect(screen.getByRole('alert')).toBeTruthy();
   });
 });

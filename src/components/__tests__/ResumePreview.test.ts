@@ -1,4 +1,8 @@
 import { describe, it, expect } from 'vitest';
+import { readFileSync } from 'fs';
+import { resolve } from 'path';
+
+const componentSource = readFileSync(resolve(__dirname, '../ResumePreview.astro'), 'utf-8');
 
 describe('ResumePreview component contract', () => {
   const defaultFilename = 'resume.pdf';
@@ -18,5 +22,21 @@ describe('ResumePreview component contract', () => {
   it('should have a default filename', () => {
     expect(defaultFilename).toBe('resume.pdf');
     expect(defaultFilename).toBeTruthy();
+  });
+
+  it('should contain traffic-light dot elements in template', () => {
+    for (const color of trafficLightColors) {
+      expect(componentSource).toContain(`bg-[${color}]`);
+    }
+  });
+
+  it('should render the filename in template', () => {
+    expect(componentSource).toContain('{filename}');
+  });
+
+  it('should contain a gradient overlay element', () => {
+    expect(componentSource).toContain('bg-gradient-to-t');
+    expect(componentSource).toContain('from-white');
+    expect(componentSource).toContain('to-transparent');
   });
 });
