@@ -1,0 +1,204 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import Breadcrumbs from '../../../components/Breadcrumbs.astro';
+import CaseStudyHero from '../../../components/CaseStudyHero.astro';
+import CaseStudySection from '../../../components/CaseStudySection.astro';
+import TechPills from '../../../components/TechPills.astro';
+import CodeBlock from '../../../components/CodeBlock.astro';
+import MetricsGrid from '../../../components/MetricsGrid.astro';
+import projects from '../../../content/projects.json';
+
+export async function getStaticPaths() {
+  const langs = ['en', 'es'];
+  const caseStudyProjects = projects.filter(p => 'metadata' in p);
+
+  return langs.flatMap(lang =>
+    caseStudyProjects.map(project => ({
+      params: { lang, slug: project.slug },
+      props: { project },
+    }))
+  );
+}
+
+const { lang, slug } = Astro.params;
+const { project } = Astro.props;
+const t = await import(`../../../i18n/${lang}.json`).then(m => m.default);
+const cs = t.caseStudy;
+
+const canonicalBase = 'https://juanelojga.com';
+const canonicalUrl = `${canonicalBase}/${lang}/projects/${slug}/`;
+
+const techArticleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'TechArticle',
+  headline: project.title,
+  description: project.description,
+  image: `${canonicalBase}${project.heroImage}`,
+  author: {
+    '@type': 'Person',
+    name: 'Juan Almeida',
+    url: canonicalBase,
+  },
+  proficiencyLevel: 'Expert',
+  dependencies: project.metadata.techStack.join(', '),
+};
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: cs.breadcrumb.home,
+      item: `${canonicalBase}/${lang}/`,
+    },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: cs.breadcrumb.projects,
+      item: `${canonicalBase}/${lang}/#projects`,
+    },
+    {
+      '@type': 'ListItem',
+      position: 3,
+      name: project.title,
+    },
+  ],
+};
+---
+
+<Layout
+  title={`${project.title} | Juan Almeida`}
+  description={project.description}
+  canonicalUrl={canonicalUrl}
+  ogImage={project.heroImage}
+  structuredData={[techArticleSchema, breadcrumbSchema]}
+>
+  <div class="bg-background-light">
+    <!-- Breadcrumbs -->
+    <div class="mx-auto max-w-6xl px-6 pt-8">
+      <Breadcrumbs
+        items={[
+          { label: cs.breadcrumb.home, href: `/${lang}/` },
+          { label: cs.breadcrumb.projects, href: `/${lang}/#projects` },
+          { label: project.title },
+        ]}
+      />
+    </div>
+
+    <!-- Hero -->
+    <CaseStudyHero
+      category={project.category}
+      title={project.title}
+      description={project.description}
+      heroImage={project.heroImage}
+      liveLink={project.links.live}
+      githubLink={project.links.github}
+      liveLabel={cs.hero.livePreview}
+      sourceLabel={cs.hero.viewSource}
+    />
+
+    <!-- Metadata Bar -->
+    <div class="mx-auto max-w-6xl px-6 py-8">
+      <div class="grid gap-6 rounded-2xl border border-slate-200 bg-white p-8 md:grid-cols-4">
+        <div>
+          <div class="text-xs font-bold uppercase tracking-wider text-slate-400">
+            {cs.metadata.role}
+          </div>
+          <div class="mt-1 font-semibold text-slate-900">{project.metadata.role}</div>
+        </div>
+        <div>
+          <div class="text-xs font-bold uppercase tracking-wider text-slate-400">
+            {cs.metadata.duration}
+          </div>
+          <div class="mt-1 font-semibold text-slate-900">{project.metadata.duration}</div>
+        </div>
+        <div>
+          <div class="text-xs font-bold uppercase tracking-wider text-slate-400">
+            {cs.metadata.techStack}
+          </div>
+          <div class="mt-1 font-semibold text-slate-900">
+            {project.metadata.techStack.join(', ')}
+          </div>
+        </div>
+        <div>
+          <div class="text-xs font-bold uppercase tracking-wider text-slate-400">
+            {cs.metadata.target}
+          </div>
+          <div class="mt-1 font-semibold text-slate-900">{project.metadata.target}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Challenge -->
+    <CaseStudySection icon="flag" title={cs.sections.challenge}>
+      <div class="space-y-4">
+        {
+          project.challenge.map((paragraph: string) => (
+            <p class="leading-relaxed text-slate-600">{paragraph}</p>
+          ))
+        }
+      </div>
+    </CaseStudySection>
+
+    <!-- Solution -->
+    <CaseStudySection icon="lightbulb" title={cs.sections.solution}>
+      <div class="space-y-4">
+        {
+          project.solution.narrative.map((paragraph: string) => (
+            <p class="leading-relaxed text-slate-600">{paragraph}</p>
+          ))
+        }
+      </div>
+      <div class="mt-10 grid gap-6 md:grid-cols-2">
+        {
+          project.solution.features.map((feature: { title: string; description: string }) => (
+            <div class="rounded-xl border border-slate-200 bg-white p-6">
+              <h3 class="mb-2 text-lg font-bold text-slate-900">{feature.title}</h3>
+              <p class="text-sm leading-relaxed text-slate-600">{feature.description}</p>
+            </div>
+          ))
+        }
+      </div>
+    </CaseStudySection>
+
+    <!-- Implementation -->
+    <CaseStudySection icon="code" title={cs.sections.implementation}>
+      <p class="mb-6 leading-relaxed text-slate-600">{project.implementation.description}</p>
+      <div class="mb-8">
+        <TechPills pills={project.implementation.techPills} />
+      </div>
+      <CodeBlock
+        language={project.implementation.codeSnippet.language}
+        code={project.implementation.codeSnippet.code}
+      />
+    </CaseStudySection>
+
+    <!-- Results -->
+    <CaseStudySection icon="trending_up" title={cs.sections.results}>
+      <MetricsGrid metrics={project.results.metrics} narrative={project.results.narrative} />
+    </CaseStudySection>
+
+    <!-- Footer CTA -->
+    <section class="px-6 py-20 text-center lg:py-28">
+      <div class="mx-auto max-w-2xl">
+        <h2 class="mb-8 text-3xl font-extrabold text-slate-900">{cs.cta.headline}</h2>
+        <div class="flex flex-wrap justify-center gap-4">
+          <a
+            href={`/${lang}/#contact`}
+            class="rounded-lg bg-primary px-6 py-3 font-semibold text-white shadow-lg transition hover:bg-primary/90"
+          >
+            {cs.cta.getInTouch}
+          </a>
+          <a
+            href={`/${lang}/`}
+            class="rounded-lg border border-slate-300 bg-white px-6 py-3 font-semibold text-slate-700 transition hover:border-primary hover:text-primary"
+          >
+            {cs.cta.backToPortfolio}
+          </a>
+        </div>
+      </div>
+    </section>
+  </div>
+</Layout>

@@ -1,0 +1,81 @@
+---
+interface Props {
+  category: string;
+  title: string;
+  description: string;
+  heroImage: string;
+  liveLink?: string;
+  githubLink?: string;
+  liveLabel: string;
+  sourceLabel: string;
+}
+
+const { category, title, description, heroImage, liveLink, githubLink, liveLabel, sourceLabel } =
+  Astro.props;
+---
+
+<header class="relative w-full overflow-hidden bg-background-light px-6 py-20 lg:py-32">
+  <div
+    class="relative z-10 mx-auto flex w-full max-w-6xl flex-col-reverse items-center gap-12 lg:flex-row lg:justify-between"
+  >
+    <div class="text-center lg:w-1/2 lg:text-left">
+      <span
+        class="mb-4 inline-block rounded-full bg-primary/10 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-primary"
+      >
+        {category}
+      </span>
+
+      <h1 class="mb-6 text-4xl font-extrabold leading-tight text-slate-900 md:text-5xl lg:text-6xl">
+        {title}
+      </h1>
+
+      <p class="mb-8 max-w-xl text-base leading-relaxed text-slate-600 md:text-lg">
+        {description}
+      </p>
+
+      <div class="flex flex-wrap justify-center gap-4 lg:justify-start">
+        {
+          liveLink && liveLink !== '#' && (
+            <a
+              href={liveLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="rounded-lg bg-primary px-6 py-3 font-semibold text-white shadow-lg transition hover:bg-primary/90"
+            >
+              {liveLabel}
+            </a>
+          )
+        }
+        {
+          githubLink && githubLink !== '#' && (
+            <a
+              href={githubLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="rounded-lg border border-slate-300 bg-white px-6 py-3 font-semibold text-slate-700 transition hover:border-primary hover:text-primary"
+            >
+              {sourceLabel}
+            </a>
+          )
+        }
+      </div>
+    </div>
+
+    <div class="flex justify-center lg:w-1/2 lg:justify-end">
+      <div class="relative">
+        <div
+          class="absolute -inset-4 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 blur-2xl"
+        >
+        </div>
+        <img
+          src={heroImage}
+          alt={title}
+          width="560"
+          height="400"
+          class="relative rounded-2xl object-cover shadow-xl"
+          loading="eager"
+        />
+      </div>
+    </div>
+  </div>
+</header>

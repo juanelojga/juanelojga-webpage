@@ -1,0 +1,23 @@
+---
+interface TechPill {
+  label: string;
+  color: string;
+}
+
+interface Props {
+  pills: TechPill[];
+}
+
+const { pills } = Astro.props;
+---
+
+<div class="flex flex-wrap gap-3">
+  {
+    pills.map(pill => (
+      <span class="flex items-center gap-2 rounded-full bg-slate-100 px-3 py-1.5 text-xs font-medium text-slate-700">
+        <span class="size-2 rounded-full" style={`background-color: ${pill.color}`} />
+        {pill.label}
+      </span>
+    ))
+  }
+</div>

@@ -42,6 +42,27 @@
     "github": "GitHub",
     "twitter": "Twitter"
   },
+  "caseStudy": {
+    "breadcrumb": { "home": "Home", "projects": "Projects" },
+    "sections": {
+      "challenge": "The Challenge",
+      "solution": "The Solution",
+      "implementation": "Technical Implementation",
+      "results": "Results & Impact"
+    },
+    "metadata": {
+      "role": "Role",
+      "duration": "Duration",
+      "techStack": "Tech Stack",
+      "target": "Target"
+    },
+    "hero": { "livePreview": "Live Preview", "viewSource": "View Source" },
+    "cta": {
+      "headline": "Have a similar project in mind?",
+      "getInTouch": "Get in Touch",
+      "backToPortfolio": "Back to Portfolio"
+    }
+  },
   "seo": {
     "title": "Juan Almeida | Full Stack & AI Engineer",
     "description": "Engineer passionate about building smart, scalable, and human-centered software through full-stack development and AI innovation.",

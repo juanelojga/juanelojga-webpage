@@ -1,0 +1,20 @@
+---
+interface Props {
+  icon: string;
+  title: string;
+}
+
+const { icon, title } = Astro.props;
+---
+
+<section class="px-6 py-16 lg:py-20">
+  <div class="mx-auto max-w-6xl">
+    <div class="mb-10 flex items-center gap-4">
+      <div class="flex size-12 items-center justify-center rounded-lg bg-primary/10">
+        <span class="material-symbols-outlined text-2xl text-primary">{icon}</span>
+      </div>
+      <h2 class="text-2xl font-extrabold text-slate-900 sm:text-3xl">{title}</h2>
+    </div>
+    <slot />
+  </div>
+</section>
