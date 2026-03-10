@@ -1,0 +1,45 @@
+---
+const cards = [
+  {
+    icon: 'school',
+    title: 'Self-Learner',
+    description:
+      'Constantly expanding my skill set through hands-on experimentation, open-source contributions, and deep dives into emerging technologies.',
+  },
+  {
+    icon: 'explore',
+    title: 'Curiosity-Driven',
+    description:
+      'I approach every problem with genuine curiosity, asking "why" before "how" to uncover solutions that address root causes, not just symptoms.',
+  },
+  {
+    icon: 'shield',
+    title: 'Responsible Developer',
+    description:
+      'I believe in writing code that is maintainable, accessible, and ethical — building software that serves people and stands the test of time.',
+  },
+] as const;
+---
+
+<section id="philosophy" class="bg-background-light px-6 py-20 lg:py-28">
+  <div class="mx-auto max-w-6xl">
+    <h2 class="mb-2 text-3xl font-extrabold text-slate-900 sm:text-4xl">
+      Philosophy &amp; Outlook
+    </h2>
+    <div class="mb-12 h-1 w-16 rounded-full bg-primary"></div>
+
+    <div class="grid gap-8 md:grid-cols-3">
+      {
+        cards.map(card => (
+          <div class="rounded-xl border border-slate-100 bg-slate-50/50 p-8 transition hover:border-primary/30 hover:shadow-xl">
+            <div class="mb-4 flex size-12 items-center justify-center rounded-full bg-primary/10">
+              <span class="material-symbols-outlined text-2xl text-primary">{card.icon}</span>
+            </div>
+            <h3 class="mb-2 text-lg font-bold text-slate-900">{card.title}</h3>
+            <p class="text-sm leading-relaxed text-slate-600">{card.description}</p>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>

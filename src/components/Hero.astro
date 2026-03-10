@@ -5,140 +5,58 @@ import { useTranslations } from '../utils/translate';
 const t = useTranslations(Astro);
 ---
 
-<header
-  class="fade-section relative flex min-h-screen w-full items-center justify-center overflow-hidden bg-black px-8 text-white"
-  id="home"
->
-  <!-- Matrix Animated Background -->
-  <div id="matrix-bg" class="absolute inset-0 opacity-30"></div>
-
-  <!-- Foreground Content -->
+<header class="relative w-full overflow-hidden bg-background-light px-6 py-20 lg:py-32" id="home">
   <div
-    class="relative z-10 flex w-full max-w-6xl flex-col-reverse items-center justify-between gap-8 md:gap-12 lg:flex-row"
+    class="relative z-10 mx-auto flex w-full max-w-6xl flex-col-reverse items-center gap-12 lg:flex-row lg:justify-between"
   >
     <!-- Left Side: Text -->
     <div class="text-center lg:w-1/2 lg:text-left">
-      <h1 class="mb-4 text-4xl font-bold md:text-6xl">
-        <span class="block text-gray-300">{t('hero.greeting')}</span>
-        <span class="block text-green-400 drop-shadow-[0_0_20px_#00FF80]"> {t('hero.name')} </span>
+      <span
+        class="mb-4 inline-block rounded-full bg-primary/10 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-primary"
+      >
+        {t('hero.subtitleTag')}
+      </span>
+
+      <h1 class="mb-6 text-4xl font-extrabold leading-tight text-slate-900 md:text-5xl lg:text-6xl">
+        {t('hero.headline')}
       </h1>
 
-      <p class="mb-6 text-base leading-relaxed text-gray-400 md:mb-8 md:text-xl">
-        {t('hero.subtitle')}
+      <p class="mb-8 max-w-xl text-base leading-relaxed text-slate-600 md:text-lg">
+        {t('hero.description')}
       </p>
 
       <div class="flex flex-wrap justify-center gap-4 lg:justify-start">
         <a
-          href="#projects"
-          class="rounded-md bg-green-500 px-6 py-3 font-semibold text-black shadow-[0_0_15px_#00FF80] transition hover:bg-green-400"
+          href="#contact"
+          class="rounded-lg bg-primary px-6 py-3 font-semibold text-white shadow-lg transition hover:bg-primary/90"
         >
-          {t('hero.viewWork')}
+          {t('hero.ctaPrimary')}
         </a>
         <a
-          href="#contact"
-          class="rounded-md border border-green-500 px-6 py-3 font-semibold text-green-400 transition hover:bg-green-400 hover:text-black"
+          href="#projects"
+          class="rounded-lg border border-slate-300 bg-white px-6 py-3 font-semibold text-slate-700 transition hover:border-primary hover:text-primary"
         >
-          {t('hero.contactMe')}
+          {t('hero.ctaSecondary')}
         </a>
       </div>
     </div>
 
     <!-- Right Side: Image -->
     <div class="flex justify-center lg:w-1/2 lg:justify-end">
-      <div
-        class="relative w-[200px] overflow-hidden rounded-lg p-1 shadow-[0_0_20px_#00FF80] md:w-[267px] md:shadow-[0_0_40px_#00FF80]"
-      >
+      <div class="relative">
+        <div
+          class="absolute -inset-4 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 blur-2xl"
+        >
+        </div>
         <Image
           src="/me.jpg"
           alt="Portrait of Juan Almeida"
-          width={267}
-          height={400}
-          class="rounded-lg object-cover"
+          width={320}
+          height={480}
+          class="relative rounded-2xl object-cover shadow-xl"
           loading="eager"
         />
       </div>
     </div>
   </div>
-
-  <!-- Animations -->
-  <style>
-    @keyframes fade-in {
-      from {
-        opacity: 0;
-        transform: translateY(10px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-    @keyframes slide-up {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-    .animate-fade-in {
-      animation: fade-in 1.2s ease-out forwards;
-    }
-    .animate-slide-up {
-      animation: slide-up 1.5s ease-out forwards;
-    }
-  </style>
-
-  <!-- Matrix Script -->
-  <script is:inline>
-    function initMatrixEffect() {
-      function draw(ctx, drops, columns, width, height, charArray) {
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.04)';
-        ctx.fillRect(0, 0, width, height);
-        ctx.fillStyle = '#0F0';
-        ctx.font = '15px monospace';
-        for (let i = 0; i < drops.length; i++) {
-          const text = charArray[Math.floor(Math.random() * charArray.length)];
-          ctx.fillText(text, i * 20, drops[i] * 20);
-          if (drops[i] * 20 > height && Math.random() > 0.975) drops[i] = 0;
-          drops[i]++;
-        }
-      }
-
-      const matrixContainer = document.getElementById('matrix-bg');
-      if (matrixContainer) {
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-        if (!ctx) return;
-        matrixContainer.appendChild(canvas);
-        let width = (canvas.width = window.innerWidth);
-        let height = (canvas.height = window.innerHeight);
-        let columns = Math.floor(width / 20);
-        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()';
-        const charArray = characters.split('');
-        let drops = [];
-        for (let i = 0; i < columns; i++) drops[i] = 1;
-
-        const interval = setInterval(() => {
-          draw(ctx, drops, columns, width, height, charArray);
-        }, 33);
-
-        const resizeHandler = () => {
-          width = canvas.width = window.innerWidth;
-          height = canvas.height = window.innerHeight;
-          columns = Math.floor(width / 20);
-          drops = [];
-          for (let i = 0; i < columns; i++) drops[i] = 1;
-        };
-
-        window.addEventListener('resize', resizeHandler);
-        window.addEventListener('pagehide', () => {
-          clearInterval(interval);
-          window.removeEventListener('resize', resizeHandler);
-        });
-      }
-    }
-    initMatrixEffect();
-  </script>
 </header>
