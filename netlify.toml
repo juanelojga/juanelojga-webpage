@@ -4,7 +4,7 @@
   publish = "dist"
 
 [build.environment]
-  NODE_VERSION = "20"
+  NODE_VERSION = "24"
   # Optional: uncomment if you use pnpm or yarn in the Netlify UI
   # NPM_FLAGS = "--no-fund --no-audit"
 

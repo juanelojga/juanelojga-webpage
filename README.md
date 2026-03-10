@@ -89,7 +89,7 @@ This approach enables easy content updates without modifying component code.
 The site is configured for deployment on **Netlify** with:
 
 - Automatic builds on push
-- Node.js 20 environment
+- Node.js 24 environment
 - Optimized caching for static assets
 - Automatic redirects for i18n routing
 
@@ -99,7 +99,7 @@ Deploy configuration is in `netlify.toml`.
 
 ### Prerequisites
 
-- **Node.js 20** (specified in `.nvmrc`)
+- **Node.js 24** (specified in `.nvmrc`)
 - npm package manager
 
 ### Local Development
