@@ -5,7 +5,7 @@ import { useTranslations } from '../utils/translate';
 const t = useTranslations(Astro);
 ---
 
-<header class="relative w-full overflow-hidden bg-background-light px-6 py-24 lg:py-36" id="home">
+<header class="relative w-full overflow-hidden bg-[#050816] px-6 py-24 lg:py-36" id="home">
   <!-- SVG Neural Network Background -->
   <svg
     class="pointer-events-none absolute inset-0 hidden size-full lg:block"
@@ -15,8 +15,8 @@ const t = useTranslations(Astro);
   >
     <defs>
       <radialGradient id="node-glow">
-        <stop offset="0%" stop-color="var(--color-primary, #10b981)" stop-opacity="0.6"></stop>
-        <stop offset="100%" stop-color="var(--color-primary, #10b981)" stop-opacity="0"></stop>
+        <stop offset="0%" stop-color="var(--color-accent, #22d3ee)" stop-opacity="0.6"></stop>
+        <stop offset="100%" stop-color="var(--color-accent, #22d3ee)" stop-opacity="0"></stop>
       </radialGradient>
     </defs>
 
@@ -81,31 +81,31 @@ const t = useTranslations(Astro);
     <!-- Left Side: Text -->
     <div class="text-center lg:w-1/2 lg:text-left">
       <span
-        class="hero-stagger-1 mb-4 inline-block rounded-full bg-primary/10 px-4 py-1.5 font-mono text-xs font-bold uppercase tracking-widest text-primary"
+        class="hero-stagger-1 mb-4 inline-block rounded-full bg-[#22d3ee]/10 px-4 py-1.5 font-mono text-xs font-bold uppercase tracking-widest text-[#22d3ee]"
       >
         {t('hero.subtitleTag')}
       </span>
 
       <h1
-        class="hero-stagger-2 mb-6 text-4xl font-extrabold leading-tight tracking-tight text-slate-900 md:text-5xl lg:text-6xl"
+        class="hero-stagger-2 mb-6 text-4xl font-extrabold leading-tight tracking-tight text-white md:text-5xl lg:text-6xl"
       >
         {t('hero.headline')}
       </h1>
 
-      <p class="hero-stagger-3 mb-8 max-w-xl text-base leading-relaxed text-slate-600 md:text-lg">
+      <p class="hero-stagger-3 mb-8 max-w-xl text-base leading-relaxed text-slate-400 md:text-lg">
         {t('hero.description')}
       </p>
 
       <div class="hero-stagger-4 flex flex-wrap justify-center gap-4 lg:justify-start">
         <a
           href="#contact"
-          class="rounded-lg bg-primary px-6 py-3 font-semibold text-white shadow-lg transition-all duration-200 hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-xl"
+          class="rounded-lg bg-[#22d3ee] px-6 py-3 font-semibold text-[#050816] shadow-lg shadow-[#22d3ee]/20 transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#22d3ee]/90 hover:shadow-xl hover:shadow-[#22d3ee]/30"
         >
           {t('hero.ctaPrimary')}
         </a>
         <a
           href="#projects"
-          class="rounded-lg border border-slate-300 bg-white px-6 py-3 font-semibold text-slate-700 transition-all duration-200 hover:-translate-y-0.5 hover:border-primary hover:text-primary hover:shadow-xl"
+          class="rounded-lg border border-[#1E293B] bg-[#0B1120] px-6 py-3 font-semibold text-slate-300 transition-all duration-200 hover:-translate-y-0.5 hover:border-[#22d3ee]/50 hover:text-[#22d3ee] hover:shadow-xl hover:shadow-[#22d3ee]/10"
         >
           {t('hero.ctaSecondary')}
         </a>
@@ -116,7 +116,7 @@ const t = useTranslations(Astro);
     <div class="hero-stagger-image flex justify-center lg:w-1/2 lg:justify-end">
       <div class="relative">
         <div
-          class="absolute -inset-6 rounded-3xl bg-gradient-to-br from-primary/20 to-primary/5 blur-2xl"
+          class="absolute -inset-6 rounded-3xl bg-gradient-to-br from-[#22d3ee]/15 to-[#22d3ee]/5 blur-2xl"
         >
         </div>
         <div class="relative grid grid-cols-2 gap-3">
@@ -165,12 +165,12 @@ const t = useTranslations(Astro);
 <style>
   /* Neural network SVG styles */
   .neural-node {
-    fill: var(--color-primary, #10b981);
+    fill: var(--color-accent, #22d3ee);
     opacity: 0.25;
   }
 
   .neural-line {
-    stroke: var(--color-primary, #10b981);
+    stroke: var(--color-accent, #22d3ee);
     stroke-width: 1.5;
     fill: none;
     opacity: 0.18;
@@ -202,7 +202,7 @@ const t = useTranslations(Astro);
 
   /* Traveling data pulse particles */
   .data-pulse {
-    fill: var(--color-primary, #10b981);
+    fill: var(--color-accent, #22d3ee);
     opacity: 0.5;
     filter: url(#node-glow);
   }
@@ -222,7 +222,7 @@ const t = useTranslations(Astro);
   /* Node glow rings */
   .node-ring {
     fill: none;
-    stroke: var(--color-primary, #10b981);
+    stroke: var(--color-accent, #22d3ee);
     stroke-width: 1;
     opacity: 0;
     animation: ring-ping 3s ease-out infinite;
