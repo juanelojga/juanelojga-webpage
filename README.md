@@ -89,7 +89,7 @@ This approach enables easy content updates without modifying component code.
 The site is configured for deployment on **Netlify** with:
 
 - Automatic builds on push
-- Node.js 20 environment
+- Node.js 24 environment
 - Optimized caching for static assets
 - Automatic redirects for i18n routing
 
@@ -99,7 +99,7 @@ Deploy configuration is in `netlify.toml`.
 
 ### Prerequisites
 
-- **Node.js 20** (specified in `.nvmrc`)
+- **Node.js 24** (specified in `.nvmrc`)
 - npm package manager
 
 ### Local Development
@@ -132,6 +132,22 @@ Git hooks are automatically set up via Husky to run:
 
 - ESLint and Prettier checks before commits
 - Auto-formatting for staged files
+
+## 📋 Implementation Plan Workflow
+
+For complex, multi-phase work, use the `implementation-plan` skill with the following rules:
+
+- Store plans in `documents/IMPLEMENTATION_PLAN_<feature-name>.md`
+- Include phases with Goal, Status, Tasks checklist, and Quality Gates checklist
+- Treat plans as living documents and update them as work progresses
+
+Required capabilities for this workflow:
+
+- File read/write/edit to create and maintain plan documents
+- GitHub issue create/edit/comment to track phases and execution status
+
+When creating a plan, also create corresponding GitHub issues (typically one per phase) and link
+them to the plan document for traceability.
 
 ## 📝 License
 
