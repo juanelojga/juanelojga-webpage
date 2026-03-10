@@ -3,6 +3,7 @@ import { useTranslations } from '../utils/translate';
 import '../css/navbar.css';
 
 const t = useTranslations(Astro);
+const lang = Astro.currentLocale === 'es' ? 'es' : 'en';
 ---
 
 <nav
@@ -64,7 +65,7 @@ const t = useTranslations(Astro);
         >{t('navbar.vision')}</a
       >
       <a
-        href="#resume"
+        href={`/${lang}/resume`}
         class="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white transition hover:bg-primary/90"
         >{t('navbar.resume')}</a
       >
@@ -109,7 +110,7 @@ const t = useTranslations(Astro);
         >{t('navbar.vision')}</a
       >
       <a
-        href="#resume"
+        href={`/${lang}/resume`}
         class="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white transition hover:bg-primary/90"
         >{t('navbar.resume')}</a
       >
