@@ -10,7 +10,6 @@ interface Props {
 
 const { title, lang } = Astro.props;
 const t = useTranslations(Astro);
-const featured = projects.slice(0, 3);
 ---
 
 <section id="projects" class="bg-background-light px-6 py-20 lg:py-28">
@@ -18,87 +17,120 @@ const featured = projects.slice(0, 3);
     <p class="mb-3 font-mono text-xs uppercase tracking-[0.2em] text-primary">
       {t('projects.subtitle')}
     </p>
-    <h2 class="mb-14 text-4xl font-extrabold text-slate-900 sm:text-5xl lg:mb-20">{title}</h2>
+    <h2 class="mb-10 text-4xl font-extrabold text-slate-900 sm:text-5xl lg:mb-14">{title}</h2>
 
-    <div class="grid gap-8 lg:grid-cols-3">
-      <!-- Featured card: 2/3 width on desktop -->
-      <div class="project-card self-stretch lg:col-span-2" style="--delay: 0s">
-        <ProjectCard
-          title={featured[0].title}
-          slug={featured[0].slug}
-          description={featured[0].description}
-          tags={featured[0].tags}
-          image={featured[0].image}
-          lang={lang}
-          featured={true}
-          viewCaseStudyLabel={t('projects.viewCaseStudy')}
-        />
+    <!-- Carousel -->
+    <div class="relative">
+      <div class="carousel-container overflow-hidden">
+        <div
+          class="carousel-track flex transition-transform duration-500 ease-out will-change-transform"
+        >
+          {
+            projects.map(project => (
+              <div class="carousel-slide min-w-full">
+                <ProjectCard
+                  title={project.title}
+                  slug={project.slug}
+                  description={project.description}
+                  tags={project.tags}
+                  image={project.image}
+                  lang={lang}
+                  hasCaseStudy={!!(project as any).metadata}
+                  liveUrl={(project.links as any)?.live}
+                  liveLabel={t('projects.live')}
+                  viewCaseStudyLabel={t('projects.viewCaseStudy')}
+                />
+              </div>
+            ))
+          }
+        </div>
       </div>
 
-      <!-- Right column: remaining cards stacked -->
-      <div class="flex flex-col gap-8">
-        {
-          featured.slice(1).map((project, i) => (
-            <div class="project-card flex-1" style={`--delay: ${(i + 1) * 0.1}s`}>
-              <ProjectCard
-                title={project.title}
-                slug={project.slug}
-                description={project.description}
-                tags={project.tags}
-                image={project.image}
-                lang={lang}
-                featured={false}
-                viewCaseStudyLabel={t('projects.viewCaseStudy')}
-              />
-            </div>
-          ))
-        }
-      </div>
+      <!-- Arrow buttons -->
+      <button
+        class="carousel-prev absolute -left-4 top-1/2 z-10 flex size-10 -translate-y-1/2 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 shadow-sm transition hover:border-primary hover:text-primary lg:-left-6"
+        aria-label="Previous project"
+      >
+        <span class="material-symbols-outlined text-xl">chevron_left</span>
+      </button>
+      <button
+        class="carousel-next absolute -right-4 top-1/2 z-10 flex size-10 -translate-y-1/2 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 shadow-sm transition hover:border-primary hover:text-primary lg:-right-6"
+        aria-label="Next project"
+      >
+        <span class="material-symbols-outlined text-xl">chevron_right</span>
+      </button>
+    </div>
+
+    <!-- Dot indicators -->
+    <div class="mt-6 flex justify-center gap-2">
+      {
+        projects.map((_, i) => (
+          <button
+            class:list={[
+              'carousel-dot h-1.5 rounded-full transition-all duration-300',
+              i === 0 ? 'w-6 bg-primary' : 'w-1.5 bg-slate-300',
+            ]}
+            aria-label={`Go to project ${i + 1}`}
+          />
+        ))
+      }
     </div>
   </div>
 </section>
 
-<style>
-  .project-card {
-    opacity: 0;
-    transform: translateY(1.5rem);
-  }
-
-  .project-card.visible {
-    opacity: 1;
-    transform: translateY(0);
-    transition:
-      opacity 0.55s ease-out var(--delay),
-      transform 0.55s ease-out var(--delay);
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .project-card {
-      opacity: 1;
-      transform: none;
-    }
-  }
-</style>
-
 <script is:inline>
-  function initProjectCards() {
-    const cards = document.querySelectorAll('#projects .project-card');
-    if (!cards.length) return;
+  document.addEventListener('astro:page-load', () => {
+    const track = document.querySelector('#projects .carousel-track');
+    const dots = [...document.querySelectorAll('#projects .carousel-dot')];
+    const total = dots.length;
+    if (!track || !total) return;
 
-    const observer = new IntersectionObserver(
-      entries => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('visible');
-            observer.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.15 }
-    );
+    let current = 0;
+    let timer;
 
-    cards.forEach(el => observer.observe(el));
-  }
+    function goTo(index) {
+      current = (index + total) % total;
+      track.style.transform = `translateX(-${current * 100}%)`;
+      dots.forEach((d, i) => {
+        const active = i === current;
+        d.classList.toggle('bg-primary', active);
+        d.classList.toggle('bg-slate-300', !active);
+        d.classList.toggle('w-6', active);
+        d.classList.toggle('w-1.5', !active);
+      });
+    }
 
-  document.addEventListener('astro:page-load', initProjectCards);
+    function start() {
+      timer = setInterval(() => goTo(current + 1), 5000);
+    }
+
+    function stop() {
+      clearInterval(timer);
+    }
+
+    document.querySelector('#projects .carousel-container')?.addEventListener('mouseenter', stop);
+    document.querySelector('#projects .carousel-container')?.addEventListener('mouseleave', start);
+
+    document.querySelector('#projects .carousel-prev')?.addEventListener('click', () => {
+      stop();
+      goTo(current - 1);
+      start();
+    });
+
+    document.querySelector('#projects .carousel-next')?.addEventListener('click', () => {
+      stop();
+      goTo(current + 1);
+      start();
+    });
+
+    dots.forEach((dot, i) => {
+      dot.addEventListener('click', () => {
+        stop();
+        goTo(i);
+        start();
+      });
+    });
+
+    start();
+  });
 </script>

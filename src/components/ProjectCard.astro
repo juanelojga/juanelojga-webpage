@@ -6,38 +6,33 @@ interface Props {
   tags: string[];
   image: string;
   lang: string;
+  hasCaseStudy: boolean;
   viewCaseStudyLabel: string;
-  featured: boolean;
+  liveUrl?: string;
+  liveLabel: string;
 }
 
-const { title, slug, description, tags, image, lang, viewCaseStudyLabel, featured } = Astro.props;
+const {
+  title,
+  slug,
+  description,
+  tags,
+  image,
+  lang,
+  hasCaseStudy,
+  viewCaseStudyLabel,
+  liveUrl,
+  liveLabel,
+} = Astro.props;
 
 const primaryTag = tags[0] ?? '';
 ---
 
 <article
-  class:list={[
-    'group relative flex h-full flex-col overflow-hidden border-l-[3px] border-slate-200 bg-white',
-    'transition-all duration-300',
-    'hover:border-l-primary hover:shadow-lg hover:shadow-primary/10',
-    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30',
-  ]}
+  class="group flex h-full flex-col overflow-hidden border-l-[3px] border-slate-200 bg-white transition-all duration-300 hover:border-l-primary hover:shadow-lg hover:shadow-primary/10 md:flex-row"
 >
-  <!-- Terminal header bar -->
-  <div
-    aria-hidden="true"
-    class="flex shrink-0 items-center gap-2 border-b border-slate-100 bg-slate-50 px-4 py-2.5"
-  >
-    <span class="size-2.5 rounded-full bg-red-400"></span>
-    <span class="size-2.5 rounded-full bg-yellow-400"></span>
-    <span class="size-2.5 rounded-full bg-green-400"></span>
-    <span class="ml-auto font-mono text-[10px] uppercase tracking-widest text-slate-400">
-      {primaryTag}
-    </span>
-  </div>
-
-  <!-- Image -->
-  <div class:list={['shrink-0 overflow-hidden', featured ? 'aspect-[4/3]' : 'aspect-video']}>
+  <!-- Image: stacked on mobile, left half on desktop -->
+  <div class="aspect-video shrink-0 overflow-hidden md:aspect-auto md:w-1/2">
     <img
       src={image}
       alt={title}
@@ -46,16 +41,24 @@ const primaryTag = tags[0] ?? '';
     />
   </div>
 
-  <!-- Card body -->
-  <div class="relative flex flex-1 flex-col p-6">
-    <h3 class:list={['mb-2 font-bold text-slate-900', featured ? 'text-xl' : 'text-lg']}>
-      {title}
-    </h3>
+  <!-- Content panel -->
+  <div class="flex flex-1 flex-col p-6 md:p-10">
+    <!-- Terminal bar -->
+    <div aria-hidden="true" class="mb-6 flex items-center gap-2 border-b border-slate-100 pb-4">
+      <span class="size-2.5 rounded-full bg-red-400"></span>
+      <span class="size-2.5 rounded-full bg-yellow-400"></span>
+      <span class="size-2.5 rounded-full bg-green-400"></span>
+      <span class="ml-auto font-mono text-[10px] uppercase tracking-widest text-slate-400">
+        {primaryTag}
+      </span>
+    </div>
 
-    <p class="mb-4 flex-1 text-sm leading-relaxed text-slate-600">{description}</p>
+    <h3 class="mb-3 text-xl font-bold text-slate-900">{title}</h3>
+
+    <p class="mb-5 flex-1 text-sm leading-relaxed text-slate-600">{description}</p>
 
     <!-- Tags -->
-    <div class="mb-5 flex flex-wrap gap-2">
+    <div class="mb-6 flex flex-wrap gap-2">
       {
         tags.map(tag => (
           <span class="rounded bg-primary/10 px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-wider text-primary">
@@ -65,21 +68,31 @@ const primaryTag = tags[0] ?? '';
       }
     </div>
 
-    <!-- CTA link with sliding arrow -->
-    <a
-      href={`/${lang}/projects/${slug}`}
-      class="group/link mt-auto inline-flex items-center gap-1.5 text-sm font-semibold text-primary transition-colors hover:text-primary/80"
-    >
-      {viewCaseStudyLabel}
-      <span class="transition-transform duration-200 group-hover/link:translate-x-1">&rarr;</span>
-    </a>
+    <!-- Conditional CTA -->
+    {
+      hasCaseStudy ? (
+        <a
+          href={`/${lang}/projects/${slug}`}
+          class="group/link mt-auto inline-flex items-center gap-1.5 text-sm font-semibold text-primary transition-colors hover:text-primary/80"
+        >
+          {viewCaseStudyLabel}
+          <span class="transition-transform duration-200 group-hover/link:translate-x-1">
+            &rarr;
+          </span>
+        </a>
+      ) : liveUrl ? (
+        <a
+          href={liveUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="group/link mt-auto inline-flex items-center gap-1.5 text-sm font-semibold text-primary transition-colors hover:text-primary/80"
+        >
+          {liveLabel}
+          <span class="transition-transform duration-200 group-hover/link:translate-x-1">
+            &rarr;
+          </span>
+        </a>
+      ) : null
+    }
   </div>
 </article>
-
-<style>
-  @media (prefers-reduced-motion: reduce) {
-    article span[aria-hidden='true'] {
-      transition: none;
-    }
-  }
-</style>
