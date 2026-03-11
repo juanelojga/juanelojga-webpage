@@ -64,12 +64,8 @@ const breadcrumbSchema = {
   structuredData={[webPageSchema, breadcrumbSchema]}
 >
   <Fragment slot="head">
-    <link rel="alternate" href={`${canonicalBase}/en/resume/`} hreflang="en" />
-    <link rel="alternate" href={`${canonicalBase}/es/resume/`} hreflang="es" />
-    <link rel="alternate" href={`${canonicalBase}/en/resume/`} hreflang="x-default" />
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonicalUrl} />
-    <meta name="twitter:card" content="summary" />
     <meta name="twitter:url" content={canonicalUrl} />
   </Fragment>
 
@@ -95,7 +91,7 @@ const breadcrumbSchema = {
     </header>
 
     <!-- Resume Preview -->
-    <section class="mx-auto max-w-6xl px-6 py-12 pb-20">
+    <section aria-label={resume.pageTitle} class="mx-auto max-w-6xl px-6 py-12 pb-20">
       <ResumePreview />
     </section>
 
@@ -103,7 +99,7 @@ const breadcrumbSchema = {
     <ResumeSkillsGrid title={resume.sections.skills} categories={skillCategories} />
 
     <!-- Lead Capture Form -->
-    <section class="mx-auto max-w-6xl px-6 pb-20">
+    <section aria-label={resume.form.heading} class="mx-auto max-w-6xl px-6 pb-20">
       <LeadCaptureForm lang={lang} labels={resume.form} client:visible />
     </section>
   </div>
