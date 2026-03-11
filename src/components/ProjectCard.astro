@@ -7,15 +7,37 @@ interface Props {
   image: string;
   lang: string;
   viewCaseStudyLabel: string;
+  featured: boolean;
 }
 
-const { title, slug, description, tags, image, lang, viewCaseStudyLabel } = Astro.props;
+const { title, slug, description, tags, image, lang, viewCaseStudyLabel, featured } = Astro.props;
+
+const primaryTag = tags[0] ?? '';
 ---
 
 <article
-  class="group overflow-hidden rounded-2xl border border-slate-200 bg-white transition hover:-translate-y-1 hover:shadow-2xl"
+  class:list={[
+    'group relative flex h-full flex-col overflow-hidden border-l-[3px] border-slate-200 bg-white',
+    'transition-all duration-300',
+    'hover:border-l-primary hover:shadow-lg hover:shadow-primary/10',
+    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30',
+  ]}
 >
-  <div class="aspect-video overflow-hidden">
+  <!-- Terminal header bar -->
+  <div
+    aria-hidden="true"
+    class="flex shrink-0 items-center gap-2 border-b border-slate-100 bg-slate-50 px-4 py-2.5"
+  >
+    <span class="size-2.5 rounded-full bg-red-400"></span>
+    <span class="size-2.5 rounded-full bg-yellow-400"></span>
+    <span class="size-2.5 rounded-full bg-green-400"></span>
+    <span class="ml-auto font-mono text-[10px] uppercase tracking-widest text-slate-400">
+      {primaryTag}
+    </span>
+  </div>
+
+  <!-- Image -->
+  <div class:list={['shrink-0 overflow-hidden', featured ? 'aspect-[4/3]' : 'aspect-video']}>
     <img
       src={image}
       alt={title}
@@ -24,25 +46,40 @@ const { title, slug, description, tags, image, lang, viewCaseStudyLabel } = Astr
     />
   </div>
 
-  <div class="p-6">
-    <h3 class="mb-2 text-lg font-bold text-slate-900">{title}</h3>
-    <p class="mb-4 text-sm leading-relaxed text-slate-600">{description}</p>
+  <!-- Card body -->
+  <div class="relative flex flex-1 flex-col p-6">
+    <h3 class:list={['mb-2 font-bold text-slate-900', featured ? 'text-xl' : 'text-lg']}>
+      {title}
+    </h3>
 
-    <div class="mb-4 flex flex-wrap gap-2">
+    <p class="mb-4 flex-1 text-sm leading-relaxed text-slate-600">{description}</p>
+
+    <!-- Tags -->
+    <div class="mb-5 flex flex-wrap gap-2">
       {
         tags.map(tag => (
-          <span class="rounded-full bg-primary/10 px-2.5 py-0.5 text-[10px] font-bold uppercase text-primary">
+          <span class="rounded bg-primary/10 px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-wider text-primary">
             {tag}
           </span>
         ))
       }
     </div>
 
+    <!-- CTA link with sliding arrow -->
     <a
       href={`/${lang}/projects/${slug}`}
-      class="inline-flex items-center gap-1 text-sm font-semibold text-primary transition hover:text-primary/80"
+      class="group/link mt-auto inline-flex items-center gap-1.5 text-sm font-semibold text-primary transition-colors hover:text-primary/80"
     >
-      {viewCaseStudyLabel} &rarr;
+      {viewCaseStudyLabel}
+      <span class="transition-transform duration-200 group-hover/link:translate-x-1">&rarr;</span>
     </a>
   </div>
 </article>
+
+<style>
+  @media (prefers-reduced-motion: reduce) {
+    article span[aria-hidden='true'] {
+      transition: none;
+    }
+  }
+</style>

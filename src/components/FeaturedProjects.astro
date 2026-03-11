@@ -15,23 +15,98 @@ const featured = projects.slice(0, 3);
 
 <section id="projects" class="bg-background-light px-6 py-20 lg:py-28">
   <div class="mx-auto max-w-6xl">
-    <h2 class="mb-2 text-3xl font-extrabold text-slate-900 sm:text-4xl">{title}</h2>
-    <div class="mb-12 h-1 w-16 rounded-full bg-primary"></div>
+    <p class="mb-3 font-mono text-xs uppercase tracking-[0.2em] text-primary">
+      {t('projects.subtitle')}
+    </p>
+    <h2 class="mb-14 text-4xl font-extrabold text-slate-900 sm:text-5xl lg:mb-20">{title}</h2>
 
-    <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-      {
-        featured.map(project => (
+    <div class="grid gap-8 lg:grid-cols-3">
+      <!-- Featured card: 2/3 width on desktop -->
+      <div class="project-card self-stretch lg:col-span-2" style="--delay: 0s">
+        <ProjectCard
+          title={featured[0].title}
+          slug={featured[0].slug}
+          description={featured[0].description}
+          tags={featured[0].tags}
+          image={featured[0].image}
+          lang={lang}
+          featured={true}
+          viewCaseStudyLabel={t('projects.viewCaseStudy')}
+        />
+      </div>
+
+      <!-- Right column: 2 stacked cards -->
+      <div class="flex flex-col gap-8">
+        <div class="project-card flex-1" style="--delay: 0.1s">
           <ProjectCard
-            title={project.title}
-            slug={project.slug}
-            description={project.description}
-            tags={project.tags}
-            image={project.image}
+            title={featured[1].title}
+            slug={featured[1].slug}
+            description={featured[1].description}
+            tags={featured[1].tags}
+            image={featured[1].image}
             lang={lang}
+            featured={false}
             viewCaseStudyLabel={t('projects.viewCaseStudy')}
           />
-        ))
-      }
+        </div>
+        <div class="project-card flex-1" style="--delay: 0.2s">
+          <ProjectCard
+            title={featured[2].title}
+            slug={featured[2].slug}
+            description={featured[2].description}
+            tags={featured[2].tags}
+            image={featured[2].image}
+            lang={lang}
+            featured={false}
+            viewCaseStudyLabel={t('projects.viewCaseStudy')}
+          />
+        </div>
+      </div>
     </div>
   </div>
 </section>
+
+<style>
+  .project-card {
+    opacity: 0;
+    transform: translateY(1.5rem);
+  }
+
+  .project-card.visible {
+    opacity: 1;
+    transform: translateY(0);
+    transition:
+      opacity 0.55s ease-out var(--delay),
+      transform 0.55s ease-out var(--delay);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .project-card {
+      opacity: 1;
+      transform: none;
+    }
+  }
+</style>
+
+<script is:inline>
+  function initProjectCards() {
+    const cards = document.querySelectorAll('#projects .project-card');
+    if (!cards.length) return;
+
+    const observer = new IntersectionObserver(
+      entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.15 }
+    );
+
+    cards.forEach(el => observer.observe(el));
+  }
+
+  document.addEventListener('astro:page-load', initProjectCards);
+</script>

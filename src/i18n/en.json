@@ -27,6 +27,7 @@
   },
   "projects": {
     "title": "Featured Projects",
+    "subtitle": "Selected work",
     "viewCaseStudy": "View Case Study",
     "live": "Live Preview",
     "github": "GitHub"
