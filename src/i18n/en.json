@@ -97,6 +97,30 @@
       "invalidEmail": "Please enter a valid email address."
     }
   },
+  "vision": {
+    "eyebrow": "What drives me",
+    "title": "Vision",
+    "cards": [
+      {
+        "label": "01",
+        "icon": "visibility",
+        "title": "My Vision",
+        "description": "To bridge the gap between cutting-edge AI research and production-ready software, creating systems that are both intelligent and reliable at scale."
+      },
+      {
+        "label": "02",
+        "icon": "trending_up",
+        "title": "My Expectations",
+        "description": "I hold myself to high standards of code quality, performance, and user experience. Every project is an opportunity to raise the bar and deliver meaningful impact."
+      },
+      {
+        "label": "03",
+        "icon": "rocket_launch",
+        "title": "Future Focus",
+        "description": "Exploring the intersection of AI agents, full-stack architecture, and developer tooling to build the next generation of intelligent applications."
+      }
+    ]
+  },
   "philosophy": {
     "subtitle": "How I think",
     "title": "Philosophy & Outlook",

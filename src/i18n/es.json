@@ -97,6 +97,30 @@
       "invalidEmail": "Por favor, ingresa una dirección de correo válida."
     }
   },
+  "vision": {
+    "eyebrow": "Lo que me impulsa",
+    "title": "Visión",
+    "cards": [
+      {
+        "label": "01",
+        "icon": "visibility",
+        "title": "Mi Visión",
+        "description": "Tender puentes entre la investigación de IA de vanguardia y el software listo para producción, creando sistemas que sean a la vez inteligentes y confiables a escala."
+      },
+      {
+        "label": "02",
+        "icon": "trending_up",
+        "title": "Mis Expectativas",
+        "description": "Me exijo altos estándares de calidad de código, rendimiento y experiencia de usuario. Cada proyecto es una oportunidad para elevar el nivel y generar un impacto significativo."
+      },
+      {
+        "label": "03",
+        "icon": "rocket_launch",
+        "title": "Enfoque Futuro",
+        "description": "Explorando la intersección entre agentes de IA, arquitectura full-stack y herramientas para desarrolladores, para construir la próxima generación de aplicaciones inteligentes."
+      }
+    ]
+  },
   "philosophy": {
     "subtitle": "Cómo pienso",
     "title": "Filosofía y Perspectiva",
