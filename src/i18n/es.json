@@ -97,6 +97,24 @@
       "invalidEmail": "Por favor, ingresa una dirección de correo válida."
     }
   },
+  "philosophy": {
+    "subtitle": "Cómo pienso",
+    "title": "Filosofía y Perspectiva",
+    "cards": {
+      "selfLearner": {
+        "title": "Autodidacta",
+        "description": "Ampliando constantemente mis habilidades a través de la experimentación práctica, contribuciones a código abierto y profundizaciones en tecnologías emergentes."
+      },
+      "curiosityDriven": {
+        "title": "Impulsado por la Curiosidad",
+        "description": "Abordo cada problema con genuina curiosidad, preguntando \"por qué\" antes que \"cómo\" para descubrir soluciones que aborden las causas raíz, no solo los síntomas."
+      },
+      "responsibleDeveloper": {
+        "title": "Desarrollador Responsable",
+        "description": "Creo en escribir código que sea mantenible, accesible y ético — construyendo software que sirva a las personas y resista el paso del tiempo."
+      }
+    }
+  },
   "seo": {
     "title": "Juan Almeida | Ingeniero Full Stack y de IA",
     "description": "Ingeniero apasionado por crear software inteligente, escalable y centrado en las personas mediante desarrollo full-stack e innovación en IA.",

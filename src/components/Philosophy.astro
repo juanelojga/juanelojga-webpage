@@ -1,31 +1,34 @@
 ---
+import { useTranslations } from '../utils/translate';
+
+const t = useTranslations(Astro);
+
 const cards = [
   {
     icon: 'school',
-    title: 'Self-Learner',
-    description:
-      'Constantly expanding my skill set through hands-on experimentation, open-source contributions, and deep dives into emerging technologies.',
+    title: t('philosophy.cards.selfLearner.title'),
+    description: t('philosophy.cards.selfLearner.description'),
   },
   {
     icon: 'explore',
-    title: 'Curiosity-Driven',
-    description:
-      'I approach every problem with genuine curiosity, asking "why" before "how" to uncover solutions that address root causes, not just symptoms.',
+    title: t('philosophy.cards.curiosityDriven.title'),
+    description: t('philosophy.cards.curiosityDriven.description'),
   },
   {
     icon: 'shield',
-    title: 'Responsible Developer',
-    description:
-      'I believe in writing code that is maintainable, accessible, and ethical — building software that serves people and stands the test of time.',
+    title: t('philosophy.cards.responsibleDeveloper.title'),
+    description: t('philosophy.cards.responsibleDeveloper.description'),
   },
 ] as const;
 ---
 
 <section id="philosophy" class="relative bg-background-light px-6 pb-20 pt-28 lg:pb-28 lg:pt-36">
   <div class="mx-auto max-w-6xl">
-    <p class="mb-3 font-mono text-xs uppercase tracking-[0.2em] text-primary">How I think</p>
+    <p class="mb-3 font-mono text-xs uppercase tracking-[0.2em] text-primary">
+      {t('philosophy.subtitle')}
+    </p>
     <h2 class="mb-14 text-4xl font-extrabold text-slate-900 sm:text-5xl lg:mb-20">
-      Philosophy &amp; Outlook
+      {t('philosophy.title')}
     </h2>
 
     <div class="grid gap-6 md:grid-cols-3 lg:gap-8">
