@@ -95,7 +95,12 @@ export default function LeadCaptureForm({ lang, labels }: Props) {
 
   return (
     <div className="mx-auto w-full max-w-md">
-      <h2 className="mb-6 text-2xl font-bold tracking-tight text-slate-900">{labels.heading}</h2>
+      <h2
+        id="lead-capture-heading"
+        className="mb-6 text-2xl font-bold tracking-tight text-slate-900"
+      >
+        {labels.heading}
+      </h2>
 
       {status === 'success' ? (
         <div

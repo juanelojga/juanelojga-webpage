@@ -99,7 +99,7 @@ const breadcrumbSchema = {
     <ResumeSkillsGrid title={resume.sections.skills} categories={skillCategories} />
 
     <!-- Lead Capture Form -->
-    <section aria-label={resume.form.heading} class="mx-auto max-w-6xl px-6 pb-20">
+    <section aria-labelledby="lead-capture-heading" class="mx-auto max-w-6xl px-6 pb-20">
       <LeadCaptureForm lang={lang} labels={resume.form} client:visible />
     </section>
   </div>

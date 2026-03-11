@@ -20,7 +20,10 @@ const canonicalBase = 'https://juanelojga.com';
 const localePath = lang === 'en' ? '' : `/${lang}`;
 const defaultCanonicalUrl = `${canonicalBase}${localePath}/`;
 
-// Build hreflang alternates dynamically from the current page path
+// Build hreflang alternates dynamically from the current page path.
+// Strips the locale prefix (e.g. /en/resume/ → /resume/) so alternates
+// point to the correct page in each language. For the homepage (/en/ → /),
+// this correctly produces /en/ and /es/.
 const pagePath = Astro.url.pathname.replace(/^\/(en|es)\//, '/');
 const enAlternate = `${canonicalBase}/en${pagePath}`;
 const esAlternate = `${canonicalBase}/es${pagePath}`;
