@@ -35,32 +35,24 @@ const featured = projects.slice(0, 3);
         />
       </div>
 
-      <!-- Right column: 2 stacked cards -->
+      <!-- Right column: remaining cards stacked -->
       <div class="flex flex-col gap-8">
-        <div class="project-card flex-1" style="--delay: 0.1s">
-          <ProjectCard
-            title={featured[1].title}
-            slug={featured[1].slug}
-            description={featured[1].description}
-            tags={featured[1].tags}
-            image={featured[1].image}
-            lang={lang}
-            featured={false}
-            viewCaseStudyLabel={t('projects.viewCaseStudy')}
-          />
-        </div>
-        <div class="project-card flex-1" style="--delay: 0.2s">
-          <ProjectCard
-            title={featured[2].title}
-            slug={featured[2].slug}
-            description={featured[2].description}
-            tags={featured[2].tags}
-            image={featured[2].image}
-            lang={lang}
-            featured={false}
-            viewCaseStudyLabel={t('projects.viewCaseStudy')}
-          />
-        </div>
+        {
+          featured.slice(1).map((project, i) => (
+            <div class="project-card flex-1" style={`--delay: ${(i + 1) * 0.1}s`}>
+              <ProjectCard
+                title={project.title}
+                slug={project.slug}
+                description={project.description}
+                tags={project.tags}
+                image={project.image}
+                lang={lang}
+                featured={false}
+                viewCaseStudyLabel={t('projects.viewCaseStudy')}
+              />
+            </div>
+          ))
+        }
       </div>
     </div>
   </div>
