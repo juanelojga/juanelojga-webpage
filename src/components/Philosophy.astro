@@ -21,25 +21,98 @@ const cards = [
 ] as const;
 ---
 
-<section id="philosophy" class="bg-background-light px-6 py-20 lg:py-28">
+<section id="philosophy" class="relative bg-background-light px-6 pb-20 pt-28 lg:pb-28 lg:pt-36">
   <div class="mx-auto max-w-6xl">
-    <h2 class="mb-2 text-3xl font-extrabold text-slate-900 sm:text-4xl">
+    <p class="mb-3 font-mono text-xs uppercase tracking-[0.2em] text-primary">How I think</p>
+    <h2 class="mb-14 text-4xl font-extrabold text-slate-900 sm:text-5xl lg:mb-20">
       Philosophy &amp; Outlook
     </h2>
-    <div class="mb-12 h-1 w-16 rounded-full bg-primary"></div>
 
-    <div class="grid gap-8 md:grid-cols-3">
+    <div class="grid gap-6 md:grid-cols-3 lg:gap-8">
       {
-        cards.map(card => (
-          <div class="rounded-xl border border-slate-100 bg-slate-50/50 p-8 transition hover:border-primary/30 hover:shadow-xl">
-            <div class="mb-4 flex size-12 items-center justify-center rounded-full bg-primary/10">
-              <span class="material-symbols-outlined text-2xl text-primary">{card.icon}</span>
-            </div>
-            <h3 class="mb-2 text-lg font-bold text-slate-900">{card.title}</h3>
+        cards.map((card, i) => (
+          <article
+            class:list={[
+              'philosophy-card group border-l-[3px] border-slate-200 bg-white p-8 transition-all duration-300',
+              'hover:border-l-primary hover:shadow-lg hover:shadow-primary/5',
+              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30 focus-visible:ring-offset-2',
+              'lg:p-10',
+              i === 1 ? 'philosophy-card--offset' : '',
+            ]}
+            style={`--delay: ${i * 0.1}s`}
+          >
+            <span class="philosophy-ordinal mb-4 block font-mono text-5xl font-bold text-slate-100 transition-all duration-300 group-hover:translate-x-1 group-hover:text-primary/15 lg:text-7xl">
+              0{i + 1}
+            </span>
+            <h3 class="mb-2 flex items-center gap-2 text-lg font-bold text-slate-900">
+              <span class="material-symbols-outlined text-2xl text-primary transition-transform duration-300 group-hover:scale-110">
+                {card.icon}
+              </span>
+              {card.title}
+            </h3>
             <p class="text-sm leading-relaxed text-slate-600">{card.description}</p>
-          </div>
+          </article>
         ))
       }
     </div>
   </div>
 </section>
+
+<style>
+  #philosophy::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 6rem;
+    background: linear-gradient(to bottom, #050816, #f6f7f8);
+    pointer-events: none;
+  }
+
+  .philosophy-card {
+    opacity: 0;
+    animation: phil-card-enter 0.6s ease-out forwards;
+    animation-delay: var(--delay);
+  }
+
+  @keyframes phil-card-enter {
+    from {
+      opacity: 0;
+      transform: translateY(1.5rem);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Preserve stagger offset after animation for the middle card */
+  @media (min-width: 768px) {
+    .philosophy-card--offset {
+      animation-name: phil-card-enter-offset;
+    }
+  }
+
+  @keyframes phil-card-enter-offset {
+    from {
+      opacity: 0;
+      transform: translateY(calc(1.5rem + 1.5rem));
+    }
+    to {
+      opacity: 1;
+      transform: translateY(1.5rem);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .philosophy-card {
+      animation: none;
+      opacity: 1;
+    }
+
+    .philosophy-ordinal {
+      transition: none;
+    }
+  }
+</style>
