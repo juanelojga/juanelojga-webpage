@@ -1,0 +1,78 @@
+---
+import { useTranslations } from '../utils/translate';
+
+const t = useTranslations(Astro);
+---
+
+<div class="text-center lg:w-1/2 lg:text-left">
+  <span
+    class="hero-stagger-1 mb-4 inline-block rounded-full bg-[#22d3ee]/10 px-4 py-1.5 font-mono text-xs font-bold uppercase tracking-widest text-[#22d3ee]"
+  >
+    {t('hero.subtitleTag')}
+  </span>
+
+  <h1
+    class="hero-stagger-2 mb-6 text-4xl font-extrabold leading-tight tracking-tight text-white md:text-5xl lg:text-6xl"
+  >
+    {t('hero.headline')}
+  </h1>
+
+  <p class="hero-stagger-3 mb-8 max-w-xl text-base leading-relaxed text-slate-400 md:text-lg">
+    {t('hero.description')}
+  </p>
+
+  <div class="hero-stagger-4 flex flex-wrap justify-center gap-4 lg:justify-start">
+    <a
+      href="#contact"
+      class="rounded-lg bg-[#22d3ee] px-6 py-3 font-semibold text-[#050816] shadow-lg shadow-[#22d3ee]/20 transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#22d3ee]/90 hover:shadow-xl hover:shadow-[#22d3ee]/30"
+    >
+      {t('hero.ctaPrimary')}
+    </a>
+    <a
+      href="#projects"
+      class="rounded-lg border border-[#1E293B] bg-[#0B1120] px-6 py-3 font-semibold text-slate-300 transition-all duration-200 hover:-translate-y-0.5 hover:border-[#22d3ee]/50 hover:text-[#22d3ee] hover:shadow-xl hover:shadow-[#22d3ee]/10"
+    >
+      {t('hero.ctaSecondary')}
+    </a>
+  </div>
+</div>
+
+<style>
+  /* Entrance animations */
+  @keyframes fade-in-up {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .hero-stagger-1 {
+    animation: fade-in-up 0.7s ease-out 0.1s both;
+  }
+
+  .hero-stagger-2 {
+    animation: fade-in-up 0.7s ease-out 0.25s both;
+  }
+
+  .hero-stagger-3 {
+    animation: fade-in-up 0.7s ease-out 0.4s both;
+  }
+
+  .hero-stagger-4 {
+    animation: fade-in-up 0.7s ease-out 0.55s both;
+  }
+
+  /* Respect reduced motion preferences */
+  @media (prefers-reduced-motion: reduce) {
+    .hero-stagger-1,
+    .hero-stagger-2,
+    .hero-stagger-3,
+    .hero-stagger-4 {
+      animation: none;
+    }
+  }
+</style>

@@ -1,0 +1,63 @@
+---
+import { Image } from 'astro:assets';
+---
+
+<div class="hero-stagger-image flex justify-center lg:w-1/2 lg:justify-end">
+  <div class="relative">
+    <div
+      class="absolute -inset-6 rounded-3xl bg-gradient-to-br from-[#22d3ee]/15 to-[#22d3ee]/5 blur-2xl"
+    >
+    </div>
+    <div class="relative grid h-[380px] grid-cols-[2fr_3fr_2fr] items-center gap-3">
+      <Image
+        src="/me-1.png"
+        alt="Portrait of Juan Almeida"
+        width={150}
+        height={380}
+        class="h-full min-h-0 rounded-xl object-cover object-top shadow-lg grayscale transition-all duration-500 hover:scale-[1.03] hover:grayscale-0"
+        loading="eager"
+      />
+      <Image
+        src="/me-2.png"
+        alt="Portrait of Juan Almeida"
+        width={250}
+        height={380}
+        class="h-full min-h-0 rounded-xl object-cover object-[40%_top] shadow-lg transition-all duration-500 hover:scale-[1.03] hover:grayscale-0"
+        loading="eager"
+      />
+      <Image
+        src="/me-3.png"
+        alt="Portrait of Juan Almeida"
+        width={150}
+        height={380}
+        class="h-full min-h-0 rounded-xl object-cover object-top shadow-lg grayscale transition-all duration-500 hover:scale-[1.03] hover:grayscale-0"
+        loading="eager"
+      />
+    </div>
+  </div>
+</div>
+
+<style>
+  /* Entrance animation */
+  @keyframes fade-in-scale {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  .hero-stagger-image {
+    animation: fade-in-scale 0.8s ease-out 0.3s both;
+  }
+
+  /* Respect reduced motion preferences */
+  @media (prefers-reduced-motion: reduce) {
+    .hero-stagger-image {
+      animation: none;
+    }
+  }
+</style>

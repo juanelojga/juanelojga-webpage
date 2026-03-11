@@ -97,6 +97,24 @@
       "invalidEmail": "Please enter a valid email address."
     }
   },
+  "philosophy": {
+    "subtitle": "How I think",
+    "title": "Philosophy & Outlook",
+    "cards": {
+      "selfLearner": {
+        "title": "Self-Learner",
+        "description": "Constantly expanding my skill set through hands-on experimentation, open-source contributions, and deep dives into emerging technologies."
+      },
+      "curiosityDriven": {
+        "title": "Curiosity-Driven",
+        "description": "I approach every problem with genuine curiosity, asking \"why\" before \"how\" to uncover solutions that address root causes, not just symptoms."
+      },
+      "responsibleDeveloper": {
+        "title": "Responsible Developer",
+        "description": "I believe in writing code that is maintainable, accessible, and ethical — building software that serves people and stands the test of time."
+      }
+    }
+  },
   "seo": {
     "title": "Juan Almeida | Full Stack & AI Engineer",
     "description": "Engineer passionate about building smart, scalable, and human-centered software through full-stack development and AI innovation.",
