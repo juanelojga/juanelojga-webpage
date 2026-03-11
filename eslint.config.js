@@ -39,7 +39,8 @@ export default [
           extraFileExtensions: ['.astro'],
         },
         rules: {
-          'prettier/prettier': 'warn',
+          'prettier/prettier': 'off',
+          '@typescript-eslint/no-unused-vars': ['warn', { varsIgnorePattern: '^Props$' }],
         },
       },
     ],
@@ -52,4 +53,11 @@ export default [
       '@typescript-eslint/no-unused-vars': 'warn',
     },
   }),
+  {
+    files: ['**/*.astro', '**/*.astro/**'],
+    rules: {
+      'prettier/prettier': 'off',
+      '@typescript-eslint/no-unused-vars': ['warn', { varsIgnorePattern: '^Props$' }],
+    },
+  },
 ];
