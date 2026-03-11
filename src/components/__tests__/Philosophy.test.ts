@@ -69,16 +69,16 @@ describe('Philosophy template contract', () => {
     expect(componentSource).toContain('</article>');
   });
 
-  it('should render the mono label "How I think"', () => {
-    expect(componentSource).toContain('How I think');
+  it('should render the mono label via i18n key', () => {
+    expect(componentSource).toContain("t('philosophy.subtitle')");
   });
 
-  it('should render the section heading', () => {
-    expect(componentSource).toContain('Philosophy &amp; Outlook');
+  it('should render the section heading via i18n key', () => {
+    expect(componentSource).toContain("t('philosophy.title')");
   });
 
   it('should use font-mono for the label', () => {
-    expect(componentSource).toMatch(/font-mono.*How I think/s);
+    expect(componentSource).toMatch(/font-mono.*philosophy\.subtitle/s);
   });
 
   it('should render ordinal numbers with font-mono', () => {
