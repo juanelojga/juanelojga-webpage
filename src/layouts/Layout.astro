@@ -20,6 +20,14 @@ const canonicalBase = 'https://juanelojga.com';
 const localePath = lang === 'en' ? '' : `/${lang}`;
 const defaultCanonicalUrl = `${canonicalBase}${localePath}/`;
 
+// Build hreflang alternates dynamically from the current page path.
+// Strips the locale prefix (e.g. /en/resume/ → /resume/) so alternates
+// point to the correct page in each language. For the homepage (/en/ → /),
+// this correctly produces /en/ and /es/.
+const pagePath = Astro.url.pathname.replace(/^\/(en|es)\//, '/');
+const enAlternate = `${canonicalBase}/en${pagePath}`;
+const esAlternate = `${canonicalBase}/es${pagePath}`;
+
 const pageTitle = Astro.props.title ?? t('seo.title');
 const pageDescription = Astro.props.description ?? t('seo.description');
 const pageCanonicalUrl = Astro.props.canonicalUrl ?? defaultCanonicalUrl;
@@ -64,9 +72,9 @@ const personSchema = {
       content="Juan Almeida, Full Stack Engineer, AI Engineer, Software Developer, JavaScript, Python, React, Astro, Django"
     />
     <link rel="canonical" href={pageCanonicalUrl} />
-    <link rel="alternate" href="https://juanelojga.com/" hreflang="en" />
-    <link rel="alternate" href="https://juanelojga.com/es/" hreflang="es" />
-    <link rel="alternate" href="https://juanelojga.com/" hreflang="x-default" />
+    <link rel="alternate" href={enAlternate} hreflang="en" />
+    <link rel="alternate" href={esAlternate} hreflang="es" />
+    <link rel="alternate" href={enAlternate} hreflang="x-default" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:image" content={`${canonicalBase}${pageOgImage}`} />
     <script type="application/ld+json" set:html={JSON.stringify(personSchema)} />
