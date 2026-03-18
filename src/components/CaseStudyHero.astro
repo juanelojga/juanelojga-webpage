@@ -14,13 +14,13 @@ const { category, title, description, heroImage, liveLink, githubLink, liveLabel
   Astro.props;
 ---
 
-<header class="relative w-full overflow-hidden bg-background-light px-6 py-20 lg:py-32">
+<header class="bg-background-light relative w-full overflow-hidden px-6 py-20 lg:py-32">
   <div
     class="relative z-10 mx-auto flex w-full max-w-6xl flex-col-reverse items-center gap-12 lg:flex-row lg:justify-between"
   >
     <div class="text-center lg:w-1/2 lg:text-left">
       <span
-        class="mb-4 inline-block rounded-full bg-primary/10 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-primary"
+        class="bg-primary/10 mb-4 inline-block rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-primary"
       >
         {category}
       </span>
@@ -40,7 +40,7 @@ const { category, title, description, heroImage, liveLink, githubLink, liveLabel
               href={liveLink}
               target="_blank"
               rel="noopener noreferrer"
-              class="rounded-lg bg-primary px-6 py-3 font-semibold text-white shadow-lg transition hover:bg-primary/90"
+              class="hover:bg-primary/90 rounded-lg bg-primary px-6 py-3 font-semibold text-white shadow-lg transition"
             >
               {liveLabel}
             </a>
@@ -64,7 +64,7 @@ const { category, title, description, heroImage, liveLink, githubLink, liveLabel
     <div class="flex justify-center lg:w-1/2 lg:justify-end">
       <div class="relative">
         <div
-          class="absolute -inset-4 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 blur-2xl"
+          class="from-primary/20 to-primary/5 absolute -inset-4 rounded-2xl bg-gradient-to-br blur-2xl"
         >
         </div>
         <img

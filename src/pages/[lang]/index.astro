@@ -13,16 +13,16 @@ const t = useTranslations(Astro);
   <section
     class="flex min-h-[calc(100vh-8rem)] flex-col items-center justify-center px-6 py-20 text-center"
   >
-    <h1 class="font-mono text-4xl font-bold text-slate-900 sm:text-5xl">Juan Almeida</h1>
-    <p class="mt-3 font-mono text-lg text-primary sm:text-xl">{t('construction.tagline')}</p>
-    <p class="mt-6 max-w-md text-base text-slate-500">{t('construction.message')}</p>
+    <h1 class="font-mono text-4xl font-bold text-text-primary sm:text-5xl">Juan Almeida</h1>
+    <p class="mt-3 font-mono text-lg text-signal-primary sm:text-xl">{t('construction.tagline')}</p>
+    <p class="mt-6 max-w-md text-base text-text-secondary">{t('construction.message')}</p>
 
     <nav class="mt-10 flex items-center gap-6" aria-label="Social links">
       <a
         href="https://linkedin.com/in/juanelojga"
         target="_blank"
         rel="noopener noreferrer"
-        class="text-slate-400 transition-colors hover:text-primary"
+        class="text-text-secondary transition-colors hover:text-signal-primary"
         aria-label="LinkedIn"
       >
         <svg class="size-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -35,7 +35,7 @@ const t = useTranslations(Astro);
         href="https://github.com/juanelojga"
         target="_blank"
         rel="noopener noreferrer"
-        class="text-slate-400 transition-colors hover:text-primary"
+        class="text-text-secondary transition-colors hover:text-signal-primary"
         aria-label="GitHub"
       >
         <svg class="size-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -46,7 +46,7 @@ const t = useTranslations(Astro);
       </a>
       <a
         href="mailto:juanelojga@gmail.com"
-        class="text-slate-400 transition-colors hover:text-primary"
+        class="text-text-secondary transition-colors hover:text-signal-primary"
         aria-label="Email"
       >
         <svg

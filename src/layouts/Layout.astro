@@ -57,9 +57,20 @@ const personSchema = {
 ---
 
 <!doctype html>
-<html lang={lang}>
+<html lang={lang} data-theme="build">
   <head>
     <meta charset="UTF-8" />
+    <!-- Inline theme detection — runs before first paint to prevent FOUC -->
+    <script is:inline>
+      (function () {
+        var t = localStorage.getItem('theme');
+        if (t === 'build' || t === 'after-hours') {
+          document.documentElement.setAttribute('data-theme', t);
+        } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+          document.documentElement.setAttribute('data-theme', 'after-hours');
+        }
+      })();
+    </script>
     <GoogleAnalytics />
     <meta name="description" content={pageDescription} />
     <meta property="og:title" content={pageTitle} />
@@ -105,7 +116,7 @@ const personSchema = {
     <slot name="head" />
     <ViewTransitions />
   </head>
-  <body class="bg-background-light font-display text-slate-900">
+  <body class="bg-surface-primary font-display text-text-primary">
     <a href="#main" class="sr-only focus:not-sr-only">Skip to content</a>
     <Navbar />
     <main id="main"><slot /></main>
