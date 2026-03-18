@@ -14,7 +14,7 @@
 - Content stays in plain JSON (no Astro Content Collections migration)
 - Netlify deployment, SEO/crawlability, and accessibility (WCAG AA) must be maintained
 - Portrait photography assets must be produced externally (not blocked by code work)
-- 21 existing test files must continue to pass or be updated alongside component changes
+- 21 existing test files at project start — 10 will be intentionally deleted during Phase 0b (legacy component cleanup); remaining ~11 tests must continue to pass or be updated alongside component changes
 
 ---
 
@@ -76,29 +76,29 @@ The project uses the **Impeccable** skill suite to enforce design quality at eve
 
 ### Skill-to-Phase Map
 
-| Skill              | Primary Phase(s)   | Purpose in This Project                                                                               |
-| ------------------ | ------------------ | ----------------------------------------------------------------------------------------------------- |
-| `teach-impeccable` | Phase 0 (pre-work) | One-time setup: gather design context and save persistent design guidelines before any implementation |
-| `extract`          | Phase 1            | Extract reusable design tokens, color palettes, and spacing scales into the Tailwind config           |
-| `typeset`          | Phase 1            | Define the 5-level typography hierarchy with responsive clamp values and font pairing                 |
-| `colorize`         | Phase 1            | Establish the dual-theme color system (Build Mode / After Hours) with signal and surface color roles  |
-| `frontend-design`  | Phases 2–6         | Build each new component (TodoRail, HeroNarrative, BioChapter, SkillMatrix, WorkLog, ContactChapter)  |
-| `arrange`          | Phases 2, 4, 5     | Layout composition for the split shell, skill matrix grouping, and work log cascade                   |
-| `adapt`            | Phases 2, 4, 8     | Responsive adaptation: mobile rail, compact skill cards, breakpoint QA                                |
-| `onboard`          | Phases 2, 3        | TODO rail as a first-time discovery guide; hero as initial orientation moment                         |
-| `bolder`           | Phase 3            | Push the hero section beyond safe/generic into distinctive territory                                  |
-| `clarify`          | Phases 3, 6        | Sharpen hero copy, bio narrative, CTA labels, and i18n microcopy                                      |
-| `distill`          | Phases 3, 5        | Tighten the bio chapter (merge Philosophy + Vision); strip work log to essentials                     |
-| `delight`          | Phases 6, 7        | Contact completion feedback, TODO rail checkmark moments, theme toggle surprise                       |
-| `animate`          | Phase 7            | Implement all chapter-specific reveal families and micro-interactions                                 |
-| `overdrive`        | Phase 7            | Technically ambitious effects: portrait frame sequence, TODO rail state machine choreography          |
-| `quieter`          | Phase 7            | Dial back any animations that feel aggressive after implementation; ensure elegance over spectacle    |
-| `harden`           | Phases 6, 8        | i18n edge cases (Spanish expansion), error states, text overflow, resilient interaction patterns      |
-| `critique`         | Milestone gates    | Design effectiveness review at the end of each milestone before proceeding                            |
-| `audit`            | Phase 8            | Comprehensive audit across accessibility, performance, theming, and responsive design                 |
-| `optimize`         | Phase 8            | Performance pass: Lighthouse scores, image optimization, animation budget enforcement                 |
-| `normalize`        | Phase 8            | Verify all components conform to the new design system tokens and patterns                            |
-| `polish`           | Phase 8            | Final detail pass: alignment, spacing, consistency, and micro-adjustments before launch               |
+| Skill              | Primary Phase(s)   | Purpose in This Project                                                                                                           |
+| ------------------ | ------------------ | --------------------------------------------------------------------------------------------------------------------------------- |
+| `teach-impeccable` | Phase 0 (pre-work) | One-time setup: gather design context and save persistent design guidelines before any implementation                             |
+| `frontend-design`  | Phases 0b, 2–6     | Build construction page (0b), then each new component (TodoRail, HeroNarrative, BioChapter, SkillMatrix, WorkLog, ContactChapter) |
+| `distill`          | Phases 0b, 3, 5    | Codebase cleanup (0b); tighten the bio chapter (merge Philosophy + Vision); strip work log to essentials                          |
+| `extract`          | Phase 1            | Extract reusable design tokens, color palettes, and spacing scales into the Tailwind config                                       |
+| `typeset`          | Phase 1            | Define the 5-level typography hierarchy with responsive clamp values and font pairing                                             |
+| `colorize`         | Phase 1            | Establish the dual-theme color system (Build Mode / After Hours) with signal and surface color roles                              |
+| `arrange`          | Phases 2, 4, 5     | Layout composition for the split shell, skill matrix grouping, and work log cascade                                               |
+| `adapt`            | Phases 2, 4, 8     | Responsive adaptation: mobile rail, compact skill cards, breakpoint QA                                                            |
+| `onboard`          | Phases 2, 3        | TODO rail as a first-time discovery guide; hero as initial orientation moment                                                     |
+| `bolder`           | Phase 3            | Push the hero section beyond safe/generic into distinctive territory                                                              |
+| `clarify`          | Phases 3, 6        | Sharpen hero copy, bio narrative, CTA labels, and i18n microcopy                                                                  |
+| `delight`          | Phases 6, 7        | Contact completion feedback, TODO rail checkmark moments, theme toggle surprise                                                   |
+| `animate`          | Phase 7            | Implement all chapter-specific reveal families and micro-interactions                                                             |
+| `overdrive`        | Phase 7            | Technically ambitious effects: portrait frame sequence, TODO rail state machine choreography                                      |
+| `quieter`          | Phase 7            | Dial back any animations that feel aggressive after implementation; ensure elegance over spectacle                                |
+| `harden`           | Phases 6, 8        | i18n edge cases (Spanish expansion), error states, text overflow, resilient interaction patterns                                  |
+| `critique`         | Milestone gates    | Design effectiveness review at the end of each milestone before proceeding                                                        |
+| `audit`            | Phase 8            | Comprehensive audit across accessibility, performance, theming, and responsive design                                             |
+| `optimize`         | Phase 8            | Performance pass: Lighthouse scores, image optimization, animation budget enforcement                                             |
+| `normalize`        | Phase 8            | Verify all components conform to the new design system tokens and patterns                                                        |
+| `polish`           | Phase 8            | Final detail pass: alignment, spacing, consistency, and micro-adjustments before launch                                           |
 
 ### Invocation Protocol
 
@@ -126,10 +126,105 @@ The project uses the **Impeccable** skill suite to enforce design quality at eve
 
 ---
 
+## Phase 0b: Construction Page & Codebase Cleanup (Pre-Week 1)
+
+> Deploy a bilingual "under construction" holding page and remove all legacy homepage components that the redesign will replace. This creates a clean slate for building the new design without carrying dead code.
+
+**Rationale**: The current site is visually and structurally incompatible with the new design system. Rather than maintaining two parallel codebases during development, this phase deploys a minimal construction page and strips away everything that will be rebuilt — reducing cognitive overhead, eliminating false test-pass signals from legacy components, and preventing accidental dependency on code that's being retired.
+
+### Components to Remove (Homepage-only, being rebuilt in later phases)
+
+| Component                 | Replacement (Future Phase)               |
+| ------------------------- | ---------------------------------------- |
+| `Hero.astro`              | `HeroNarrative.astro` (Phase 3)          |
+| `HeroContent.astro`       | `HeroNarrative.astro` (Phase 3)          |
+| `HeroImageCollage.astro`  | Portrait integration (Phase 3)           |
+| `HeroSvgBackground.astro` | Removed entirely                         |
+| `Philosophy.astro`        | `BioChapter.astro` (Phase 3)             |
+| `Vision.astro`            | `BioChapter.astro` (Phase 3)             |
+| `FeaturedProjects.astro`  | `WorkLog.astro` (Phase 5)                |
+| `ProjectCard.astro`       | Redesigned `ProjectCard.astro` (Phase 5) |
+| `SkillGrid.astro`         | `SkillMatrix.astro` (Phase 4)            |
+| `Timeline.astro`          | `WorkLog.astro` (Phase 5)                |
+| `Contact.astro`           | `ContactChapter.astro` (Phase 6)         |
+
+### Components to Retain
+
+| Component                                                                                                    | Reason                                                    |
+| ------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------- |
+| `Navbar.astro`                                                                                               | Used by resume + case study pages (refactored in Phase 2) |
+| `Footer.astro`                                                                                               | Used by resume + case study pages (refactored in Phase 2) |
+| `Breadcrumbs.astro`, `CaseStudyHero.astro`, `CaseStudySection.astro`, `MetricsGrid.astro`, `CodeBlock.astro` | Case study detail pages                                   |
+| `ResumePreview.astro`, `ResumeSkillsGrid.astro`                                                              | Resume page                                               |
+| `TechPills.astro`                                                                                            | Case study pages                                          |
+| `GoogleAnalytics.astro`                                                                                      | Analytics (retained)                                      |
+| `LeadCaptureForm.tsx`                                                                                        | Resume page (already React)                               |
+
+### Tests to Remove (for deleted components)
+
+| Test File                   | Deleted Component         |
+| --------------------------- | ------------------------- |
+| `Hero.test.ts`              | `Hero.astro`              |
+| `HeroContent.test.ts`       | `HeroContent.astro`       |
+| `HeroImageCollage.test.ts`  | `HeroImageCollage.astro`  |
+| `HeroSvgBackground.test.ts` | `HeroSvgBackground.astro` |
+| `Philosophy.test.ts`        | `Philosophy.astro`        |
+| `Vision.test.ts`            | `Vision.astro`            |
+| `FeaturedProjects.test.ts`  | `FeaturedProjects.astro`  |
+| `SkillGrid.test.ts`         | `SkillGrid.astro`         |
+| `Timeline.test.ts`          | `Timeline.astro`          |
+| `Contact.test.ts`           | `Contact.astro`           |
+
+### Tasks
+
+| Task                                                                   | Effort | Depends On | Done Criteria                                                                                                                                                                                                                                                                                                                                                     |
+| ---------------------------------------------------------------------- | ------ | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 0b.1 Build bilingual "Under Construction" page in `[lang]/index.astro` | 3h     | 0.2        | Minimal, on-brand page with "Site under construction" message in both locales; includes name, brief tagline, and social/contact links (LinkedIn, GitHub, email); uses existing `Layout.astro` with Navbar + Footer; responsive at all breakpoints. **Quality gates ★1–★4, #7, #13.**                                                                              |
+| 0b.2 Deploy construction page to production (Netlify)                  | 1h     | 0b.1       | Live site at juanelojga.com shows construction page in both `/en/` and `/es/`; resume and case study pages still accessible and unaffected; redirects working. **Quality gate #13.**                                                                                                                                                                              |
+| 0b.3 Remove legacy homepage components                                 | 2h     | 0b.1       | Delete: `Hero.astro`, `HeroContent.astro`, `HeroImageCollage.astro`, `HeroSvgBackground.astro`, `Philosophy.astro`, `Vision.astro`, `FeaturedProjects.astro`, `ProjectCard.astro`, `SkillGrid.astro`, `Timeline.astro`, `Contact.astro`. No orphaned imports remain anywhere. **Quality gates ★1–★4, #12, #13.**                                                  |
+| 0b.4 Remove tests for deleted components                               | 1h     | 0b.3       | Delete: `Hero.test.ts`, `HeroContent.test.ts`, `HeroImageCollage.test.ts`, `HeroSvgBackground.test.ts`, `Philosophy.test.ts`, `Vision.test.ts`, `FeaturedProjects.test.ts`, `SkillGrid.test.ts`, `Timeline.test.ts`, `Contact.test.ts`. Remaining test suite passes (`npm test` exits 0). **Quality gates ★1–★4.**                                                |
+| 0b.5 Clean up orphaned i18n keys, CSS, and utilities                   | 2h     | 0b.3       | Remove i18n keys used exclusively by deleted components (preserve keys used by retained pages); remove unused CSS in `navbar.css` and `global.css` if applicable; remove scroll-snap logic tied exclusively to deleted homepage sections from `Layout.astro`; clean up `src/utils/skills.ts` if `SkillGrid` was sole consumer. **Quality gates ★1–★4, #12, #13.** |
+| 0b.6 Clean up unused content JSON and assets                           | 1h     | 0b.3       | Archive or remove `experience.json` if only consumed by `Timeline` (verify); audit `src/assets/` for orphaned SVGs; verify `public/images/` assets used by case studies are retained. Content JSON files needed by future phases (`projects.json`, `skills.json`, etc.) are kept. **Quality gates ★1–★4, #12, #13.**                                              |
+| 0b.7 Verify non-homepage pages and build integrity                     | 1h     | 0b.3–0b.6  | Resume page (`/[lang]/resume`) and case study pages (`/[lang]/projects/[slug]`) render correctly; `npm run build` succeeds; `npm test` passes; no broken imports or missing dependencies. **Quality gates ★1–★4, #7 (Playwright verification of sub-pages), #10, #13.**                                                                                           |
+
+### Execution Strategy
+
+```
+Wave 1 ─ sequential: 0b.1 (construction page, ←0.2)
+Wave 2 ─ sequential: 0b.2 (deploy to production, ←0b.1)
+Wave 3 ─ sequential: 0b.3 (remove components, ←0b.1)
+Wave 4 ─ parallel:   0b.4 (remove tests, ←0b.3) + 0b.5 (clean i18n/CSS, ←0b.3) + 0b.6 (clean content/assets, ←0b.3)
+Wave 5 ─ sequential: 0b.7 (verify sub-pages + build, ←0b.3–0b.6)
+```
+
+- **Critical path**: 0b.1 → 0b.3 → 0b.7 (6h sequential minimum)
+- **Parallelism savings**: ~3h — Wave 4 runs three cleanup tasks simultaneously (4h serial → ~2h parallel)
+- **Deploy timing**: 0b.2 (deploy) runs after the construction page is built. The remaining cleanup (0b.3–0b.6) happens after the construction page is live, so there's no window where the site is broken in production
+- **Safety note**: 0b.2 and 0b.3 can run in parallel (deploy happens independently of cleanup), but keeping them sequential avoids deploying a broken state if cleanup accidentally affects shared components
+
+### Impact on Later Phases
+
+The following retirement tasks from later phases are **eliminated** by this cleanup and should be removed or marked as pre-completed:
+
+| Eliminated Task                                                                           | Original Phase | Original Effort |
+| ----------------------------------------------------------------------------------------- | -------------- | --------------- |
+| 3.6 Retire `HeroContent`, `HeroImageCollage`, `HeroSvgBackground`, `Philosophy`, `Vision` | Phase 3        | 2h              |
+| 4.5 Retire `SkillGrid` and `Timeline` from homepage                                       | Phase 4        | 1h              |
+| 5.6 Retire `FeaturedProjects` from homepage                                               | Phase 5        | 1h              |
+| 6.3 Retire old `Contact` from homepage                                                    | Phase 6        | 1h              |
+| **Total effort saved from later phases**                                                  |                | **5h**          |
+
+**Net effect**: Phase 0b adds ~11h of work but eliminates ~5h from later phases and removes scattered retirement tasks that would otherwise interrupt the flow of new component development. More importantly, it ensures every subsequent phase starts from a clean codebase with zero legacy coupling.
+
+**Phase 0b Total**: ~11h
+
+---
+
 ## Milestones
 
 | #   | Milestone             | Target     | Success Criteria                                                                                                                                                                                                                                                                        |
 | --- | --------------------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 0   | Clean Slate           | Pre-Week 1 | Construction page live on production. All legacy homepage components and their tests removed. `npm run build` and `npm test` pass. Resume and case study pages unaffected. **All tasks 0b.1–0b.7 pass quality gate checklist.**                                                         |
 | 1   | Foundation Complete   | End Week 2 | New theme system, design tokens, typography, and base layout shell with TODO rail skeleton rendering on desktop/tablet/mobile. **All tasks 1.1–2.9 pass quality gate checklist. Playwright screenshots committed.**                                                                     |
 | 2   | Core Sections Built   | End Week 4 | Hero ("Hello World"), Bio, Skills, and Work Log sections implemented with i18n and content integration. **All tasks 3.1–5.7 pass quality gate checklist. Full test suite green. Playwright screenshots committed.**                                                                     |
 | 3   | Interactions & Motion | End Week 6 | TODO rail state machine, scroll-driven animations, theme toggle with portrait sequence, chapter-specific reveal families. **All tasks 6.1–7.10 pass quality gate checklist. Reduced-motion variants verified.**                                                                         |
@@ -212,30 +307,31 @@ Wave 6 ─ sequential: 2.10 (critique gate, ←2.9)
 >
 > **Skills**: `frontend-design` (component builds) · `bolder` (hero impact) · `clarify` (copy quality) · `distill` (bio tightening) · `onboard` (hero as orientation)
 
-| Task                                                                                                                    | Effort | Depends On    | Skill                       | Done Criteria                                                                                                                                                                                               |
-| ----------------------------------------------------------------------------------------------------------------------- | ------ | ------------- | --------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 3.1 Build new `HeroNarrative.astro` with "Hello World" headline + translator line                                       | 6h     | Phase 1, 2.4  | `frontend-design` `bolder`  | Static HTML headline that renders without JS; monospace display type; supporting value proposition line; primary + secondary CTA. **Quality gates ★1–★4, #5, #7, #9, #10, #12, #13.**                       |
-| 3.2 Add hero typing/resolve animation (client-side span splitting)                                                      | 4h     | 3.1           | —                           | "Hello World" text animates with syntax-highlight effect on load; falls back to static text if JS disabled; respects `prefers-reduced-motion`. **Quality gates ★1–★4, #7, #10, #11.**                       |
-| 3.3 Integrate portrait imagery into hero (light-mode base)                                                              | 4h     | 3.1           | —                           | Hero portrait renders via `astro:assets` `Image` with `loading="eager"`, masked reveal entry; placeholder for dark-mode variant. **Quality gates ★1–★4, #7 (all viewports), #8, #10, #13.**                 |
-| 3.4 Implement hero TODO teaching moment (Boot identity resolves on load)                                                | 3h     | 3.2, 2.6      | `onboard`                   | First TODO item visibly transitions pending → active → completed during hero load choreography. **Quality gates ★1–★4, #7 (verify choreography via Playwright), #10, #11.**                                 |
-| 3.5 Create `BioChapter.astro` (editorial narrative block)                                                               | 6h     | 2.4, Phase 1  | `frontend-design` `distill` | Short editorial bio combining current Philosophy + Vision content into tighter narrative; one portrait crop anchoring the section; stacked block reveal. **Quality gates ★1–★4, #5, #7, #8, #9, #10, #13.** |
-| 3.6 Retire `HeroContent.astro`, `HeroImageCollage.astro`, `HeroSvgBackground.astro`, `Philosophy.astro`, `Vision.astro` | 2h     | 3.1, 3.5      | —                           | Old components removed or archived; no dead imports. **Quality gates ★1–★4, #12 (verify no orphaned imports/references), #13.**                                                                             |
-| 3.7 Update hero and bio i18n keys in `en.json` / `es.json`                                                              | 3h     | 3.1, 3.5      | `clarify`                   | New `heroNarrative.*` and `bio.*` keys in both files; old `hero.*`, `philosophy.*`, `vision.*` keys cleaned up; copy is sharp and recruiter-friendly. **Quality gates ★1–★4, #6.**                          |
-| 3.8 Update/write tests for new hero and bio components                                                                  | 4h     | 3.1, 3.5, 3.7 | —                           | Tests validate i18n key parity, content rendering, animation fallbacks. **Quality gates ★1–★4.** Playwright verification for 3.1–3.5 must be complete before this task is considered done.                  |
+| Task                                                                                                                         | Effort | Depends On    | Skill                       | Done Criteria                                                                                                                                                                                               |
+| ---------------------------------------------------------------------------------------------------------------------------- | ------ | ------------- | --------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 3.1 Build new `HeroNarrative.astro` with "Hello World" headline + translator line                                            | 6h     | Phase 1, 2.4  | `frontend-design` `bolder`  | Static HTML headline that renders without JS; monospace display type; supporting value proposition line; primary + secondary CTA. **Quality gates ★1–★4, #5, #7, #9, #10, #12, #13.**                       |
+| 3.2 Add hero typing/resolve animation (client-side span splitting)                                                           | 4h     | 3.1           | —                           | "Hello World" text animates with syntax-highlight effect on load; falls back to static text if JS disabled; respects `prefers-reduced-motion`. **Quality gates ★1–★4, #7, #10, #11.**                       |
+| 3.3 Integrate portrait imagery into hero (light-mode base)                                                                   | 4h     | 3.1           | —                           | Hero portrait renders via `astro:assets` `Image` with `loading="eager"`, masked reveal entry; placeholder for dark-mode variant. **Quality gates ★1–★4, #7 (all viewports), #8, #10, #13.**                 |
+| 3.4 Implement hero TODO teaching moment (Boot identity resolves on load)                                                     | 3h     | 3.2, 2.6      | `onboard`                   | First TODO item visibly transitions pending → active → completed during hero load choreography. **Quality gates ★1–★4, #7 (verify choreography via Playwright), #10, #11.**                                 |
+| 3.5 Create `BioChapter.astro` (editorial narrative block)                                                                    | 6h     | 2.4, Phase 1  | `frontend-design` `distill` | Short editorial bio combining current Philosophy + Vision content into tighter narrative; one portrait crop anchoring the section; stacked block reveal. **Quality gates ★1–★4, #5, #7, #8, #9, #10, #13.** |
+| ~~3.6~~ ~~Retire old components~~ — **ELIMINATED by Phase 0b.3** (legacy components already deleted during codebase cleanup) | ~~2h~~ | ~~3.1, 3.5~~  | —                           | Pre-completed. Components removed in Phase 0b.3. No action needed.                                                                                                                                          |
+| 3.7 Update hero and bio i18n keys in `en.json` / `es.json`                                                                   | 3h     | 3.1, 3.5      | `clarify`                   | New `heroNarrative.*` and `bio.*` keys in both files; old `hero.*`, `philosophy.*`, `vision.*` keys cleaned up; copy is sharp and recruiter-friendly. **Quality gates ★1–★4, #6.**                          |
+| 3.8 Update/write tests for new hero and bio components                                                                       | 4h     | 3.1, 3.5, 3.7 | —                           | Tests validate i18n key parity, content rendering, animation fallbacks. **Quality gates ★1–★4.** Playwright verification for 3.1–3.5 must be complete before this task is considered done.                  |
 
 ### Execution Strategy
 
 ```
 Wave 1 ─ parallel:  3.1 (HeroNarrative, ←Phase 1+2.4) + 3.5 (BioChapter, ←2.4+Phase 1)
-Wave 2 ─ parallel:  3.2 (typing anim, ←3.1)  + 3.3 (portrait, ←3.1) + 3.6 (retire old, ←3.1+3.5) + 3.7 (i18n, ←3.1+3.5)
+Wave 2 ─ parallel:  3.2 (typing anim, ←3.1)  + 3.3 (portrait, ←3.1) + 3.7 (i18n, ←3.1+3.5)
 Wave 3 ─ parallel:  3.4 (TODO teaching, ←3.2+2.6) + 3.8 (tests, ←3.1+3.5+3.7)
 ```
 
 - **Critical path**: 3.1 → 3.2 → 3.4 (13h) or 3.1 → 3.7 → 3.8 (13h) — two equally long paths
-- **Parallelism savings**: ~14h — Wave 1 saves 6h (3.1 and 3.5 are independent), Wave 2 saves up to 8h (four tasks run simultaneously)
+- **Parallelism savings**: ~12h — Wave 1 saves 6h (3.1 and 3.5 are independent), Wave 2 saves up to 6h (three tasks run simultaneously)
 - **Cross-phase note**: 3.1 and 3.5 share the same prerequisites (Phase 1 + task 2.4), making the parallel start a significant efficiency gain. 3.4 depends on 2.6 (Phase 2) — ensure IntersectionObserver wiring is complete before starting
+- **Phase 0b impact**: Task 3.6 (retire old components) eliminated — legacy components already removed in Phase 0b.3
 
-**Phase 3 Total**: ~32h
+**Phase 3 Total**: ~30h (was 32h; 2h saved by eliminating task 3.6)
 
 ---
 
@@ -245,28 +341,29 @@ Wave 3 ─ parallel:  3.4 (TODO teaching, ←3.2+2.6) + 3.8 (tests, ←3.1+3.5+3
 >
 > **Skills**: `frontend-design` (component build) · `arrange` (matrix grouping layout) · `adapt` (mobile card stack)
 
-| Task                                                                    | Effort | Depends On   | Skill                       | Done Criteria                                                                                                                                                                                   |
-| ----------------------------------------------------------------------- | ------ | ------------ | --------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 4.1 Design skill cluster data model (Build, Scale, AI, Ship categories) | 3h     | —            | —                           | Restructure or map existing `skills.json` + `core-technologies.json` into 4 grouped clusters with display order. **Quality gates ★1–★4.**                                                       |
-| 4.2 Build `SkillMatrix.astro` (desktop: interactive competency board)   | 8h     | 4.1, Phase 1 | `frontend-design` `arrange` | Grouped clusters with category hover/focus revealing supporting proof points; chips animate into position; keyboard + touch accessible. **Quality gates ★1–★4, #5, #7, #8, #9, #10, #12, #13.** |
-| 4.3 Build mobile skill layout (compact mission tracker card stack)      | 4h     | 4.2          | `adapt`                     | Stacked category cards with expandable detail; touch-friendly affordances. **Quality gates ★1–★4, #5, #7 (mobile + tablet viewports), #9, #10, #13.**                                           |
-| 4.4 Add skills section i18n keys                                        | 2h     | 4.1          | `clarify`                   | `skills.*` keys updated for new category labels and proof point text in both locales. **Quality gates ★1–★4, #6.**                                                                              |
-| 4.5 Retire `SkillGrid.astro` and `Timeline.astro` from homepage         | 1h     | 4.2          | —                           | Old components removed from page; timeline content absorbed into Work Log (Phase 5). **Quality gates ★1–★4, #12, #13.**                                                                         |
-| 4.6 Write tests for SkillMatrix                                         | 3h     | 4.2, 4.4     | —                           | Tests for rendering, category filtering, i18n parity. **Quality gates ★1–★4.** Playwright verification for 4.2–4.3 must be complete before this task is done.                                   |
+| Task                                                                                                                                     | Effort | Depends On   | Skill                       | Done Criteria                                                                                                                                                                                   |
+| ---------------------------------------------------------------------------------------------------------------------------------------- | ------ | ------------ | --------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 4.1 Design skill cluster data model (Build, Scale, AI, Ship categories)                                                                  | 3h     | —            | —                           | Restructure or map existing `skills.json` + `core-technologies.json` into 4 grouped clusters with display order. **Quality gates ★1–★4.**                                                       |
+| 4.2 Build `SkillMatrix.astro` (desktop: interactive competency board)                                                                    | 8h     | 4.1, Phase 1 | `frontend-design` `arrange` | Grouped clusters with category hover/focus revealing supporting proof points; chips animate into position; keyboard + touch accessible. **Quality gates ★1–★4, #5, #7, #8, #9, #10, #12, #13.** |
+| 4.3 Build mobile skill layout (compact mission tracker card stack)                                                                       | 4h     | 4.2          | `adapt`                     | Stacked category cards with expandable detail; touch-friendly affordances. **Quality gates ★1–★4, #5, #7 (mobile + tablet viewports), #9, #10, #13.**                                           |
+| 4.4 Add skills section i18n keys                                                                                                         | 2h     | 4.1          | `clarify`                   | `skills.*` keys updated for new category labels and proof point text in both locales. **Quality gates ★1–★4, #6.**                                                                              |
+| ~~4.5~~ ~~Retire `SkillGrid` and `Timeline`~~ — **ELIMINATED by Phase 0b.3** (legacy components already deleted during codebase cleanup) | ~~1h~~ | ~~4.2~~      | —                           | Pre-completed. Components removed in Phase 0b.3. No action needed.                                                                                                                              |
+| 4.6 Write tests for SkillMatrix                                                                                                          | 3h     | 4.2, 4.4     | —                           | Tests for rendering, category filtering, i18n parity. **Quality gates ★1–★4.** Playwright verification for 4.2–4.3 must be complete before this task is done.                                   |
 
 ### Execution Strategy
 
 ```
 Wave 1 ─ sequential: 4.1 (data model)
 Wave 2 ─ parallel:   4.2 (SkillMatrix, ←4.1+Phase 1) + 4.4 (i18n keys, ←4.1)
-Wave 3 ─ parallel:   4.3 (mobile layout, ←4.2) + 4.5 (retire old, ←4.2) + 4.6 (tests, ←4.2+4.4)
+Wave 3 ─ parallel:   4.3 (mobile layout, ←4.2) + 4.6 (tests, ←4.2+4.4)
 ```
 
 - **Critical path**: 4.1 → 4.2 → 4.3 (15h sequential minimum)
-- **Parallelism savings**: ~5h — Wave 2 saves 2h (4.4 alongside 4.2), Wave 3 saves 4h (4.5+4.6 alongside 4.3)
+- **Parallelism savings**: ~4h — Wave 2 saves 2h (4.4 alongside 4.2), Wave 3 saves 3h (4.6 alongside 4.3)
 - **Cross-phase note**: Phase 4 and Phase 5 share no direct dependencies — they can run fully in parallel once Phase 2 (Milestone 1) is complete. This is the largest parallelism opportunity in the plan
+- **Phase 0b impact**: Task 4.5 (retire old components) eliminated — `SkillGrid` and `Timeline` already removed in Phase 0b.3
 
-**Phase 4 Total**: ~21h
+**Phase 4 Total**: ~20h (was 21h; 1h saved by eliminating task 4.5)
 
 ---
 
@@ -276,32 +373,33 @@ Wave 3 ─ parallel:   4.3 (mobile layout, ←4.2) + 4.5 (retire old, ←4.2) + 
 >
 > **Skills**: `frontend-design` (component builds) · `arrange` (cascade layout) · `distill` (strip to essentials)
 
-| Task                                                                      | Effort | Depends On    | Skill                       | Done Criteria                                                                                                                                                                                                                 |
-| ------------------------------------------------------------------------- | ------ | ------------- | --------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 5.1 Design Work Log data model (merged projects + experience milestones)  | 3h     | —             | `distill`                   | Interface combining `projects.json` entries with `experience.json` roles into chronological or narrative order; one highlighted case study. **Quality gates ★1–★4.**                                                          |
-| 5.2 Build `WorkLog.astro` section with cascade layout                     | 8h     | 5.1, Phase 1  | `frontend-design` `arrange` | Project cards + role milestone markers in combined sectional layout; cascade reveal tied to scroll; connector from active TODO item to highlighted work area. **Quality gates ★1–★4, #5, #7, #8, #9, #10, #12, #13.**         |
-| 5.3 Redesign `ProjectCard.astro` with metadata tray hover                 | 4h     | 5.2           | `frontend-design`           | Card hover expands metadata tray (role, duration, tech stack) instead of simple lift; directional motion tied to pointer entry. **Quality gates ★1–★4, #5, #7 (hover verified via Playwright), #9, #10, #13.**                |
-| 5.4 Ensure case study links remain functional (`/[lang]/projects/[slug]`) | 2h     | 5.2           | —                           | Case study pages still accessible via standard links from Work Log cards. **Quality gates ★1–★4, #7 (navigate links via Playwright, verify no 404s), #10.**                                                                   |
-| 5.5 Add Work Log i18n keys                                                | 2h     | 5.1           | `clarify`                   | `workLog.*` keys in both locales. **Quality gates ★1–★4, #6.**                                                                                                                                                                |
-| 5.6 Retire `FeaturedProjects.astro` from homepage                         | 1h     | 5.2           | —                           | Component removed from homepage index; available for case study pages if needed. **Quality gates ★1–★4, #12, #13.**                                                                                                           |
-| 5.7 Write tests for WorkLog and updated ProjectCard                       | 3h     | 5.2, 5.3, 5.5 | —                           | Tests validate rendering, data integration, i18n parity. **Quality gates ★1–★4.** Playwright verification for 5.2–5.4 must be complete before this task is done.                                                              |
-| 5.8 **Milestone 2 gate**: Run `critique` on all core sections             | 2h     | 5.7, 4.6, 3.8 | `critique`                  | Design effectiveness review covers: hero impact, bio readability, skill matrix usability, work log information density; issues addressed before Phase 6. **Prerequisite: all tasks 3.1–5.7 have passed their quality gates.** |
+| Task                                                                                                                             | Effort | Depends On    | Skill                       | Done Criteria                                                                                                                                                                                                                 |
+| -------------------------------------------------------------------------------------------------------------------------------- | ------ | ------------- | --------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 5.1 Design Work Log data model (merged projects + experience milestones)                                                         | 3h     | —             | `distill`                   | Interface combining `projects.json` entries with `experience.json` roles into chronological or narrative order; one highlighted case study. **Quality gates ★1–★4.**                                                          |
+| 5.2 Build `WorkLog.astro` section with cascade layout                                                                            | 8h     | 5.1, Phase 1  | `frontend-design` `arrange` | Project cards + role milestone markers in combined sectional layout; cascade reveal tied to scroll; connector from active TODO item to highlighted work area. **Quality gates ★1–★4, #5, #7, #8, #9, #10, #12, #13.**         |
+| 5.3 Redesign `ProjectCard.astro` with metadata tray hover                                                                        | 4h     | 5.2           | `frontend-design`           | Card hover expands metadata tray (role, duration, tech stack) instead of simple lift; directional motion tied to pointer entry. **Quality gates ★1–★4, #5, #7 (hover verified via Playwright), #9, #10, #13.**                |
+| 5.4 Ensure case study links remain functional (`/[lang]/projects/[slug]`)                                                        | 2h     | 5.2           | —                           | Case study pages still accessible via standard links from Work Log cards. **Quality gates ★1–★4, #7 (navigate links via Playwright, verify no 404s), #10.**                                                                   |
+| 5.5 Add Work Log i18n keys                                                                                                       | 2h     | 5.1           | `clarify`                   | `workLog.*` keys in both locales. **Quality gates ★1–★4, #6.**                                                                                                                                                                |
+| ~~5.6~~ ~~Retire `FeaturedProjects`~~ — **ELIMINATED by Phase 0b.3** (legacy components already deleted during codebase cleanup) | ~~1h~~ | ~~5.2~~       | —                           | Pre-completed. Components removed in Phase 0b.3. No action needed.                                                                                                                                                            |
+| 5.7 Write tests for WorkLog and updated ProjectCard                                                                              | 3h     | 5.2, 5.3, 5.5 | —                           | Tests validate rendering, data integration, i18n parity. **Quality gates ★1–★4.** Playwright verification for 5.2–5.4 must be complete before this task is done.                                                              |
+| 5.8 **Milestone 2 gate**: Run `critique` on all core sections                                                                    | 2h     | 5.7, 4.6, 3.8 | `critique`                  | Design effectiveness review covers: hero impact, bio readability, skill matrix usability, work log information density; issues addressed before Phase 6. **Prerequisite: all tasks 3.1–5.7 have passed their quality gates.** |
 
 ### Execution Strategy
 
 ```
 Wave 1 ─ sequential: 5.1 (data model)
 Wave 2 ─ parallel:   5.2 (WorkLog, ←5.1+Phase 1) + 5.5 (i18n keys, ←5.1)
-Wave 3 ─ parallel:   5.3 (ProjectCard, ←5.2)      + 5.4 (case study links, ←5.2) + 5.6 (retire old, ←5.2)
+Wave 3 ─ parallel:   5.3 (ProjectCard, ←5.2)      + 5.4 (case study links, ←5.2)
 Wave 4 ─ sequential: 5.7 (tests, ←5.2+5.3+5.5)
 Wave 5 ─ sequential: 5.8 (critique gate, ←5.7+4.6+3.8) ⚠ cross-phase blocker
 ```
 
 - **Critical path**: 5.1 → 5.2 → 5.3 → 5.7 → 5.8 (20h sequential minimum)
-- **Parallelism savings**: ~5h — Wave 2 saves 2h (5.5 alongside 5.2), Wave 3 saves 3h (5.4+5.6 alongside 5.3)
+- **Parallelism savings**: ~4h — Wave 2 saves 2h (5.5 alongside 5.2), Wave 3 saves 2h (5.4 alongside 5.3)
 - **Cross-phase note**: Phases 4 and 5 are independently parallelizable — 5.1 can start at the same time as 4.1. However, **5.8 (Milestone 2 gate) blocks until Phase 3 tests (3.8) and Phase 4 tests (4.6) also pass**, making it a convergence point for three parallel streams
+- **Phase 0b impact**: Task 5.6 (retire old component) eliminated — `FeaturedProjects` already removed in Phase 0b.3
 
-**Phase 5 Total**: ~25h
+**Phase 5 Total**: ~24h (was 25h; 1h saved by eliminating task 5.6)
 
 ---
 
@@ -311,33 +409,34 @@ Wave 5 ─ sequential: 5.8 (critique gate, ←5.7+4.6+3.8) ⚠ cross-phase block
 >
 > **Skills**: `frontend-design` (component build) · `clarify` (CTA copy) · `delight` (completion feedback) · `harden` (i18n edge cases)
 
-| Task                                                                   | Effort | Depends On              | Skill                       | Done Criteria                                                                                                                                                                                                                                                        |
-| ---------------------------------------------------------------------- | ------ | ----------------------- | --------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 6.1 Build new `ContactChapter.astro` (final unresolved task narrative) | 6h     | Phase 1, 2.4            | `frontend-design` `delight` | Last TODO item ("Open channel") feels like "ready to start"; direct email CTA, social links, resume entry point; completion feedback toast on email copy. **Quality gates ★1–★4, #5, #7, #8, #9, #10, #12, #13.**                                                    |
-| 6.2 Integrate resume access into Contact section                       | 2h     | 6.1                     | —                           | Resume link/download visible within Contact chapter; links to existing `/[lang]/resume` page. **Quality gates ★1–★4, #7 (verify link navigation via Playwright), #10.**                                                                                              |
-| 6.3 Retire old `Contact.astro` from homepage                           | 1h     | 6.1                     | —                           | Old component removed from homepage. **Quality gates ★1–★4, #12, #13.**                                                                                                                                                                                              |
-| 6.4 Wire full page section order in `[lang]/index.astro`               | 4h     | 3.1, 3.5, 4.2, 5.2, 6.1 | —                           | Homepage renders: HeroNarrative → BioChapter → SkillMatrix → WorkLog → ContactChapter; all sections have `class="fade-section"` and unique `id` matching TODO rail targets. **Quality gates ★1–★4, #7 (full-page screenshots all viewports/locales), #8, #10, #13.** |
-| 6.5 Add Contact i18n keys and clean up retired keys                    | 2h     | 6.1                     | `clarify`                   | `contact.*` keys updated; orphaned keys from retired components removed from both locales; CTA microcopy is action-oriented and clear. **Quality gates ★1–★4, #6.**                                                                                                  |
-| 6.6 Ensure non-homepage pages still work (resume, case studies)        | 3h     | 6.4                     | `harden`                    | `/[lang]/resume` and `/[lang]/projects/[slug]` render correctly; may use a simplified layout without TODO rail (or rail disabled); Spanish text expansion tested. **Quality gates ★1–★4, #7 (Playwright navigates all sub-pages), #10, #13.**                        |
-| 6.7 Write tests for ContactChapter                                     | 2h     | 6.1, 6.5                | —                           | Tests validate rendering, CTA functionality, i18n parity. **Quality gates ★1–★4.** Playwright verification for 6.1–6.4 must be complete before this task is done.                                                                                                    |
-| 6.8 **Milestone 3 gate**: Run `critique` on complete page assembly     | 2h     | 6.7                     | `critique`                  | Full-page design review: section flow, visual rhythm, narrative coherence, TODO rail pacing; issues addressed before animation work begins. **Prerequisite: all tasks 6.1–6.7 have passed their quality gates.**                                                     |
+| Task                                                                                                                        | Effort | Depends On              | Skill                       | Done Criteria                                                                                                                                                                                                                                                        |
+| --------------------------------------------------------------------------------------------------------------------------- | ------ | ----------------------- | --------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 6.1 Build new `ContactChapter.astro` (final unresolved task narrative)                                                      | 6h     | Phase 1, 2.4            | `frontend-design` `delight` | Last TODO item ("Open channel") feels like "ready to start"; direct email CTA, social links, resume entry point; completion feedback toast on email copy. **Quality gates ★1–★4, #5, #7, #8, #9, #10, #12, #13.**                                                    |
+| 6.2 Integrate resume access into Contact section                                                                            | 2h     | 6.1                     | —                           | Resume link/download visible within Contact chapter; links to existing `/[lang]/resume` page. **Quality gates ★1–★4, #7 (verify link navigation via Playwright), #10.**                                                                                              |
+| ~~6.3~~ ~~Retire old `Contact`~~ — **ELIMINATED by Phase 0b.3** (legacy components already deleted during codebase cleanup) | ~~1h~~ | ~~6.1~~                 | —                           | Pre-completed. Components removed in Phase 0b.3. No action needed.                                                                                                                                                                                                   |
+| 6.4 Wire full page section order in `[lang]/index.astro`                                                                    | 4h     | 3.1, 3.5, 4.2, 5.2, 6.1 | —                           | Homepage renders: HeroNarrative → BioChapter → SkillMatrix → WorkLog → ContactChapter; all sections have `class="fade-section"` and unique `id` matching TODO rail targets. **Quality gates ★1–★4, #7 (full-page screenshots all viewports/locales), #8, #10, #13.** |
+| 6.5 Add Contact i18n keys and clean up retired keys                                                                         | 2h     | 6.1                     | `clarify`                   | `contact.*` keys updated; orphaned keys from retired components removed from both locales; CTA microcopy is action-oriented and clear. **Quality gates ★1–★4, #6.**                                                                                                  |
+| 6.6 Ensure non-homepage pages still work (resume, case studies)                                                             | 3h     | 6.4                     | `harden`                    | `/[lang]/resume` and `/[lang]/projects/[slug]` render correctly; may use a simplified layout without TODO rail (or rail disabled); Spanish text expansion tested. **Quality gates ★1–★4, #7 (Playwright navigates all sub-pages), #10, #13.**                        |
+| 6.7 Write tests for ContactChapter                                                                                          | 2h     | 6.1, 6.5                | —                           | Tests validate rendering, CTA functionality, i18n parity. **Quality gates ★1–★4.** Playwright verification for 6.1–6.4 must be complete before this task is done.                                                                                                    |
+| 6.8 **Milestone 3 gate**: Run `critique` on complete page assembly                                                          | 2h     | 6.7                     | `critique`                  | Full-page design review: section flow, visual rhythm, narrative coherence, TODO rail pacing; issues addressed before animation work begins. **Prerequisite: all tasks 6.1–6.7 have passed their quality gates.**                                                     |
 
 ### Execution Strategy
 
 ```
 Wave 1 ─ sequential: 6.1 (ContactChapter, ←Phase 1+2.4)
-Wave 2 ─ parallel:   6.2 (resume access, ←6.1) + 6.3 (retire old, ←6.1) + 6.5 (i18n, ←6.1)
+Wave 2 ─ parallel:   6.2 (resume access, ←6.1) + 6.5 (i18n, ←6.1)
 Wave 3 ─ parallel:   6.4 (page wiring, ←3.1+3.5+4.2+5.2+6.1) + 6.7 (tests, ←6.1+6.5)
 Wave 4 ─ sequential: 6.6 (sub-page QA, ←6.4)
 Wave 5 ─ sequential: 6.8 (critique gate, ←6.7)
 ```
 
 - **Critical path**: 6.1 → 6.5 → 6.7 → 6.8 (12h) or 6.1 → 6.4 → 6.6 (13h) — the page-wiring path is slightly longer
-- **Parallelism savings**: ~5h — Wave 2 saves 3h (three tasks alongside each other), Wave 3 saves 2h (6.7 alongside 6.4)
+- **Parallelism savings**: ~4h — Wave 2 saves 2h (two tasks alongside each other), Wave 3 saves 2h (6.7 alongside 6.4)
 - **Cross-phase blockers**: 6.4 is the most dependency-heavy task in the entire plan — it requires completed components from Phases 3, 4, 5, and 6. This is why Phases 4+5 must finish before full page assembly
 - **Early start opportunity**: 6.1 only depends on Phase 1 + task 2.4 (not on Phases 3–5), so ContactChapter can be built in parallel with Phases 4 and 5
+- **Phase 0b impact**: Task 6.3 (retire old Contact) eliminated — `Contact.astro` already removed in Phase 0b.3
 
-**Phase 6 Total**: ~22h
+**Phase 6 Total**: ~21h (was 22h; 1h saved by eliminating task 6.3)
 
 ---
 
@@ -435,34 +534,40 @@ Wave 5 ─ sequential: 8.13 (deploy, ←8.1–8.12)
 ### Phase-Level Dependency Graph
 
 ```
-Phase 0 (teach-impeccable) ──> Phase 1 (Tokens/Theme) ──────────────────────────┐
-  ├── 1.1 Tokens ──> 1.2 CSS Vars ──> 1.6 Theme Persistence                     │
-  ├── 1.1 ──> 1.3 Typography ──> 1.5 Token Tests                                │
-  └── 1.4 Fonts (parallel)                                                       │
-                                                                                 │
-Phase 2 (Layout/Rail) ───────────────────────────────────────────────────────────┐│
-  ├── 2.1 Data Model ──> 2.2 TodoRail ──> 2.3 Mobile Rail                       ││
-  ├── 2.2 + 1.2 ──> 2.4 Layout Shell ──> 2.6 IntersectionObserver              ││
-  ├── 1.6 ──> 2.7 Theme Toggle ──> 2.8 Locale Switcher                         ││
-  └── 2.9 Tests ──> 2.10 critique gate (Milestone 1)                            ││
+Phase 0 (teach-impeccable) ──> Phase 0b (Construction + Cleanup) ───────────────┐
+  ├── 0b.1 Construction Page ──> 0b.2 Deploy to Production                      │
+  ├── 0b.1 ──> 0b.3 Remove Legacy Components                                   │
+  ├── 0b.3 ──> 0b.4 Remove Tests + 0b.5 Clean i18n/CSS + 0b.6 Clean Assets    │
+  └── 0b.7 Verify Build & Sub-Pages (←0b.3–0b.6)                               │
+                                                                                │
+Phase 1 (Tokens/Theme) ─────────────────────────────────────────────────────────┐│
+  ├── 1.1 Tokens ──> 1.2 CSS Vars ──> 1.6 Theme Persistence                    ││
+  ├── 1.1 ──> 1.3 Typography ──> 1.5 Token Tests                               ││
+  └── 1.4 Fonts (parallel)                                                      ││
                                                                                 ││
-Phase 3 (Hero/Bio) ──────────────────────────────────────────────────────┐      ││
-  ├── 3.1 HeroNarrative ──> 3.2 Typing Anim ──> 3.4 TODO Teaching      │      ││
-  ├── 3.1 ──> 3.3 Portrait ────────────────────────────────────────┐    │      ││
-  ├── 3.5 BioChapter ──> 3.6 Retire old ──> 3.7 i18n ──> 3.8 Tests│    │      ││
-  └────────────────────────────────────────────────────────────────┘    │      ││
-                                                                       │      ││
-Phase 4 (Skills) & Phase 5 (Work Log) — FULLY PARALLEL STREAMS ───────┐│      ││
-  ├── 4.1–4.6 (Skills) ──────────────────────────────────>─┐          ││      ││
-  ├── 5.1–5.7 (Work Log) ────────────────────────────────>─┤  ┌──────┘│      ││
-  │                                                        ├──┤       │      ││
-  │   6.1 (Contact, ←Phase 1+2.4) — EARLY START ─────────>┤  │       │      ││
-  │                                                        │  │       │      ││
-  └── 5.8 critique gate (M2, ←3.8+4.6+5.7) ──────────────>┘  │       │      ││
-                                                               │       │      ││
-Phase 6 (Contact + Page Wiring) ──> 6.8 critique gate (M3) ──>│       │      ││
-  ──────> Phase 7 (Animation — 8 PARALLEL tracks) ──> 7.9 ──> 7.10    │      ││
-  ──────> Phase 8 (QA — 7 PARALLEL tracks) ──> 8.10 ──> 8.12 ──> 8.13││
+Phase 2 (Layout/Rail) ──────────────────────────────────────────────────────────┐││
+  ├── 2.1 Data Model ──> 2.2 TodoRail ──> 2.3 Mobile Rail                      │││
+  ├── 2.2 + 1.2 ──> 2.4 Layout Shell ──> 2.6 IntersectionObserver             │││
+  ├── 1.6 ──> 2.7 Theme Toggle ──> 2.8 Locale Switcher                        │││
+  └── 2.9 Tests ──> 2.10 critique gate (Milestone 1)                           │││
+                                                                               │││
+Phase 3 (Hero/Bio) ─────────────────────────────────────────────────────┐      │││
+  ├── 3.1 HeroNarrative ──> 3.2 Typing Anim ──> 3.4 TODO Teaching     │      │││
+  ├── 3.1 ──> 3.3 Portrait ───────────────────────────────────────┐    │      │││
+  ├── 3.5 BioChapter ──> 3.7 i18n ──> 3.8 Tests                  │    │      │││
+  └── (3.6 eliminated — cleaned in Phase 0b) ────────────────────┘    │      │││
+                                                                      │      │││
+Phase 4 (Skills) & Phase 5 (Work Log) — FULLY PARALLEL STREAMS ──────┐│      │││
+  ├── 4.1–4.4+4.6 (Skills, 4.5 eliminated) ─────────────────────>─┐  ││      │││
+  ├── 5.1–5.5+5.7 (Work Log, 5.6 eliminated) ───────────────────>─┤  ┌──────┘││
+  │                                                                ├──┤      │││
+  │   6.1 (Contact, ←Phase 1+2.4) — EARLY START ─────────────────>┤  │      │││
+  │                                                                │  │      │││
+  └── 5.8 critique gate (M2, ←3.8+4.6+5.7) ──────────────────────>┘  │      │││
+                                                                      │      │││
+Phase 6 (Contact + Page Wiring, 6.3 eliminated) ──> 6.8 (M3) ───────>│      │││
+  ──────> Phase 7 (Animation — 8 PARALLEL tracks) ──> 7.9 ──> 7.10   │      │││
+  ──────> Phase 8 (QA — 7 PARALLEL tracks) ──> 8.10 ──> 8.12 ──> 8.13│││
 ```
 
 ### Cross-Phase Parallelism Opportunities
@@ -479,21 +584,22 @@ These are tasks that can start **before their phase officially begins**, reducin
 ### Critical Path (End-to-End)
 
 ```
-0.1 ─> 0.2 ─> 1.1 ─> 1.2 ─> 2.2 ─> 2.3 ─> 2.4 ─> 2.9 ─> 2.10 ─>
+0.1 ─> 0.2 ─> 0b.1 ─> 0b.3 ─> 0b.7 ─> 1.1 ─> 1.2 ─> 2.2 ─> 2.3 ─> 2.4 ─> 2.9 ─> 2.10 ─>
 ─> 3.1 ─> 3.2 ─> 3.4 ─> ... ─> 6.4 ─> 6.8 ─> 7.3 ─> 7.9 ─> 7.10 ─>
 ─> 8.1 ─> 8.8 ─> 8.10 ─> 8.12 ─> 8.13
 ```
 
-**Critical path duration**: ~110h (out of 255h total)
+**Critical path duration**: ~116h (out of ~261h total — Phase 0b adds ~6h to the critical path but eliminates 5h from later phases)
 
-The remaining ~145h runs on parallel tracks. Maximum parallelism reduces the elapsed calendar time from ~255h serial to ~110h effective.
+The remaining ~145h runs on parallel tracks. Maximum parallelism reduces the elapsed calendar time from ~261h serial to ~116h effective.
 
 ### Milestone Convergence Points
 
-These are the 4 synchronization barriers where all parallel streams must converge:
+These are the 5 synchronization barriers where all parallel streams must converge:
 
 | Milestone | Gate Task | Waits For                                     | Blocks         |
 | --------- | --------- | --------------------------------------------- | -------------- |
+| M0        | 0b.7      | Phase 0b (0b.1–0b.6)                          | Phase 1        |
 | M1        | 2.10      | All of Phase 1 + Phase 2 (2.1–2.9)            | Phases 3, 4, 5 |
 | M2        | 5.8       | Phase 3 (3.8) + Phase 4 (4.6) + Phase 5 (5.7) | Phase 6.4+     |
 | M3        | 6.8       | Phase 6 (6.1–6.7)                             | Phase 7        |
