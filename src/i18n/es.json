@@ -1,40 +1,10 @@
 {
   "navbar": {
-    "projects": "Proyectos",
-    "experience": "Experiencia",
-    "skills": "Habilidades",
-    "vision": "Visión",
     "resume": "Currículum"
   },
-  "hero": {
-    "subtitleTag": "ARQUITECTO DE SISTEMAS IA",
-    "headline": "Diseñando el Futuro de la IA",
-    "description": "Ingeniero de Software Full-Stack apasionado por la IA, Frontend, Backend, Bases de Datos y Machine Learning. Diseño sistemas escalables que combinan arquitectura limpia, rendimiento y experiencias de usuario inteligentes.",
-    "ctaPrimary": "Contáctame",
-    "ctaSecondary": "Ver Proyectos"
-  },
-  "about": {
-    "title": "Sobre mí",
-    "description": "Desarrollo sistemas escalables de backend a frontend, conectando una arquitectura sólida con impacto real en los usuarios.",
-    "tabs": {
-      "skills": "Habilidades",
-      "experience": "Experiencia",
-      "interests": "Intereses"
-    },
-    "coreTechnologies": "Tecnologías Clave",
-    "toolsPlatforms": "Herramientas y Plataformas",
-    "interestsText": "Siento pasión por superar mis límites en el deporte, especialmente en el triatlón y el ciclismo, donde la disciplina y la perseverancia me impulsan a seguir progresando. La belleza de la naturaleza y los viajes me inspiran, y valoro cada aventura, desde recorridos locales hasta travesías por lugares como las Islas Galápagos. Mi comunidad —amigos, familia y compañeros de equipo— es una parte esencial de mi historia, alimentando mi crecimiento y motivación cada día. La creatividad me impulsa, ya sea explorando nuevos pasatiempos como la pintura o experimentando con la impresión 3D. Creo que el verdadero crecimiento surge al abrazar el proceso, encontrando alegría en cada desafío y lección. Por encima de todo, valoro la gratitud, la resiliencia y la creación de recuerdos significativos en el camino."
-  },
-  "projects": {
-    "title": "Proyectos Destacados",
-    "viewCaseStudy": "Ver Caso de Estudio",
-    "live": "Vista Previa",
-    "github": "GitHub"
-  },
-  "contact": {
-    "title": "Ponte en Contacto",
-    "subtitle": "¿Tienes un proyecto en mente? Construyamos algo increíble juntos.",
-    "copyEmailAria": "Copiar correo electrónico"
+  "construction": {
+    "tagline": "Ingeniero Full Stack e IA",
+    "message": "Nuevo portafolio próximamente."
   },
   "footer": {
     "rights": "Todos los derechos reservados.",
@@ -95,48 +65,6 @@
       "privacyNotice": "Tu información se usa solo para enviar el currículum y no será compartida con terceros.",
       "requiredField": "Este campo es obligatorio.",
       "invalidEmail": "Por favor, ingresa una dirección de correo válida."
-    }
-  },
-  "vision": {
-    "eyebrow": "Lo que me impulsa",
-    "title": "Visión",
-    "cards": [
-      {
-        "label": "01",
-        "icon": "visibility",
-        "title": "Mi Visión",
-        "description": "Tender puentes entre la investigación de IA de vanguardia y el software listo para producción, creando sistemas que sean a la vez inteligentes y confiables a escala."
-      },
-      {
-        "label": "02",
-        "icon": "trending_up",
-        "title": "Mis Expectativas",
-        "description": "Me exijo altos estándares de calidad de código, rendimiento y experiencia de usuario. Cada proyecto es una oportunidad para elevar el nivel y generar un impacto significativo."
-      },
-      {
-        "label": "03",
-        "icon": "rocket_launch",
-        "title": "Enfoque Futuro",
-        "description": "Explorando la intersección entre agentes de IA, arquitectura full-stack y herramientas para desarrolladores, para construir la próxima generación de aplicaciones inteligentes."
-      }
-    ]
-  },
-  "philosophy": {
-    "subtitle": "Cómo pienso",
-    "title": "Filosofía y Perspectiva",
-    "cards": {
-      "selfLearner": {
-        "title": "Autodidacta",
-        "description": "Ampliando constantemente mis habilidades a través de la experimentación práctica, contribuciones a código abierto y profundizaciones en tecnologías emergentes."
-      },
-      "curiosityDriven": {
-        "title": "Impulsado por la Curiosidad",
-        "description": "Abordo cada problema con genuina curiosidad, preguntando \"por qué\" antes que \"cómo\" para descubrir soluciones que aborden las causas raíz, no solo los síntomas."
-      },
-      "responsibleDeveloper": {
-        "title": "Desarrollador Responsable",
-        "description": "Creo en escribir código que sea mantenible, accesible y ético — construyendo software que sirva a las personas y resista el paso del tiempo."
-      }
     }
   },
   "seo": {
