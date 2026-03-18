@@ -1,451 +1,316 @@
 ---
 name: implementation-plan
-description: Create structured implementation plans for complex features, refactoring, or
-  multi-phase work. MUST be used when user asks to "create a plan" or "make an
-  implementation plan" or work requires multiple distinct phases. Creates file
-  named documents/IMPLEMENTATION_PLAN_<feature-name>.md with phases that include
-  tasks, quality gates (code review, tests, linter, type checker), and status
-  tracking. Each phase must have Goal, Status (Not Started/In
-  Progress/Complete), Tasks checklist, and Quality Gates checklist. Plans are
-  living documents - update as work progresses, commit with code changes.
+description: |
+  Breaks down complex projects into actionable tasks with timelines, dependencies, and milestones.
+  Use when: planning projects, creating task breakdowns, defining milestones, estimating timelines,
+  managing dependencies, or when user mentions project planning, roadmap, work breakdown, or task estimation.
+license: MIT
+metadata:
+  author: awesome-llm-apps
+  version: '1.0.0'
 ---
 
-# Implementation Plan
+# Project Planner
 
-Create structured implementation plans for complex features, refactoring, or
-multi-phase work. Use markdown files with phases and checklists to track
-progress and ensure quality gates are met.
+You are an expert project planner who breaks down complex projects into achievable, well-structured tasks.
 
-## When to Create an Implementation Plan
+## When to Apply
 
-Create a plan when:
+Use this skill when:
 
-- Feature requires multiple distinct phases or steps
-- Refactoring affects multiple files or systems
-- Work will span multiple commits or PRs
-- Task requires coordination across different areas
-- Breaking down complex work helps clarify approach
-- Need to track progress on long-running work
+- Defining project scope and deliverables
+- Creating work breakdown structures (WBS)
+- Identifying task dependencies
+- Estimating timelines and effort
+- Planning milestones and phases
+- Allocating resources
+- Risk assessment and mitigation
 
-**Don't create a plan for:**
+## Planning Process
 
-- Simple bug fixes
-- Single-file changes
-- Trivial updates
-- Well-understood, straightforward tasks
+### 1. **Define Success**
 
-## Plan Structure
+- What is the end goal?
+- What are the success criteria?
+- What defines "done"?
+- What are the constraints (time, budget, resources)?
 
-Implementation plans use a markdown file named
-`documents/IMPLEMENTATION_PLAN_<feature-name>.md`. Use a short, descriptive
-feature name in kebab-case (lowercase with hyphens).
+### 2. **Identify Deliverables**
 
-**Examples:**
+- What are the major outputs?
+- What milestones mark progress?
+- What dependencies exist?
+- What can be parallelized?
 
-- `documents/IMPLEMENTATION_PLAN_user-authentication.md`
-- `documents/IMPLEMENTATION_PLAN_async-queue-processing.md`
-- `documents/IMPLEMENTATION_PLAN_api-v2-migration.md`
+### 3. **Break Down Tasks**
 
-The plan includes:
+- Each task: 2-8 hours of work
+- Clear "done" criteria
+- Assignable to single owner
+- Testable/verifiable completion
 
-1. **Overview** - Summary of what's being implemented and why
-2. **Phases** - Ordered list of implementation phases with checklists
-3. **Notes** - Additional context, decisions, or considerations
+### 4. **Map Dependencies**
 
-## Phase Template
+- What must be done first?
+- What can happen in parallel?
+- What are the critical path items?
+- Where are the bottlenecks?
 
-Each phase follows this structure:
+### 5. **Estimate and Buffer**
+
+- Best case, likely case, worst case
+- Add 20-30% buffer for unknowns
+- Account for review/testing time
+- Include contingency for risks
+
+### 6. **Assign and Track**
+
+- Who owns each task?
+- What skills are required?
+- How will progress be tracked?
+- When are check-ins scheduled?
+
+## Task Sizing Guidelines
+
+**Too Large** (>2 days):
+
+- Break into subtasks
+- Hard to estimate accurately
+- Difficult to track progress
+- Blocks other work too long
+
+**Well-Sized** (2-8 hours):
+
+- Clear deliverable
+- One person can complete
+- Progress visible daily
+- Easy to estimate
+
+**Too Small** (<1 hour):
+
+- May be over-planning
+- Too much overhead
+- Combine related micro-tasks
+
+## Output Format
 
 ```markdown
-## Phase N: [Phase Name]
-
-**Goal:** [Clear statement of what this phase achieves]
-
-**Status:** Not Started | In Progress | Complete
-
-### Tasks
-
-- [ ] [Specific task to complete]
-- [ ] [Another task]
-- [ ] [More tasks as needed]
-
-### Quality Gates
-
-- [ ] Code review (self-review changes before moving to next phase)
-- [ ] Tests passing (run test suite and verify all tests pass)
-- [ ] Linter passing (run linter and fix all issues)
-- [ ] Type checker passing (run type checker and fix all issues)
-- [ ] Manual testing (verify functionality works as expected)
-```
-
-**Phase Status Values:**
-
-- **Not Started** - Phase hasn't been started yet
-- **In Progress** - Currently working on this phase
-- **Complete** - All tasks and quality gates are finished
-
-## Creating the Plan
-
-### 1. Understand the Requirements
-
-Before creating the plan:
-
-- Read all requirements and context
-- Ask clarifying questions if needed
-- Identify dependencies and constraints
-- Consider architectural implications
-- Review existing code patterns
-
-### 2. Break Down Into Phases
-
-Organize work into logical phases:
-
-- **Each phase should be independently committable**
-- **Phases should build on each other sequentially**
-- **Each phase should have clear completion criteria**
-- **Phases should be small enough to complete in one session**
-
-Example phase breakdown for adding authentication:
-
-1. Phase 1: Add database models and migrations
-2. Phase 2: Implement authentication service
-3. Phase 3: Add API endpoints
-4. Phase 4: Add frontend integration
-5. Phase 5: Add tests and documentation
-
-### 3. Write the Plan File
-
-Create `documents/IMPLEMENTATION_PLAN_<feature-name>.md`:
-
-```markdown
-# Implementation Plan: [Feature Name]
-
-**Created:** [Date] **Status:** In Progress | Complete | Paused
-
-## Overview
-
-[2-4 sentence summary of what's being implemented and why. Include the problem
-being solved and the high-level approach.]
-
-## Phases
-
-[Include each phase using the phase template above]
-
-## Notes
-
-### Decisions Made
-
-- [Key architectural or implementation decisions]
-- [Trade-offs considered]
-
-### Open Questions
-
-- [ ] [Any unresolved questions]
-- [ ] [Items that need clarification]
-
-### Dependencies
-
-- [External dependencies or prerequisites]
-- [Other features or systems this depends on]
-```
-
-### 4. Review the Plan
-
-Before starting implementation:
-
-- Verify phases are in logical order
-- Ensure each phase has clear completion criteria
-- Confirm quality gates are appropriate
-- Check that all requirements are covered
-
-## Working With the Plan
-
-### Starting a Phase
-
-When beginning a phase:
-
-1. Update phase status: `**Status:** In Progress`
-2. Read through all tasks and quality gates
-3. Ensure previous phases are complete
-4. Create feature branch if needed
-
-### During Implementation
-
-As you work:
-
-- Check off tasks as they're completed
-- Add notes about unexpected issues or decisions
-- Keep the plan current with actual implementation
-
-### Completing a Phase
-
-Before marking a phase complete:
-
-1. Verify all tasks are checked off
-2. Complete all quality gates:
-   - [ ] Self-review code changes
-   - [ ] Run tests: `pytest` or equivalent
-   - [ ] Run linter: `ruff check .` or equivalent
-   - [ ] Run type checker: `mypy .` or equivalent
-   - [ ] Manually test the changes
-3. Commit the phase changes
-4. Mark phase as complete: `**Status:** Complete`
-5. Commit the updated plan
-
-### Updating the Plan
-
-The plan is a living document:
-
-- Add phases if you discover additional work
-- Adjust phases if approach changes
-- Add notes about important decisions or issues
-- Update status regularly
-
-### GitHub Issue Tracking (Required)
-
-After writing the plan, create GitHub issues that map to the phases/tasks so
-execution can be tracked collaboratively.
-
-- Create at least one issue per implementation phase
-- Link each issue back to the plan file path
-- Keep issue titles specific and action-oriented
-- Update/edit issues when the plan changes
-- Close issues as phases are completed
-
-Use GitHub CLI for issue operations:
-
-- Create issue: `gh issue create --title "..." --body-file <file>`
-- Edit issue: `gh issue edit <number> --title "..." --body-file <file>`
-- Comment progress: `gh issue comment <number> --body "..."`
-
-## Example Plan
-
-```markdown
-# Implementation Plan: User Authentication
-
-**Created:** 2026-01-07 **Status:** In Progress **Plan File:**
-`IMPLEMENTATION_PLAN_user-authentication.md`
-
-## Overview
-
-Add JWT-based authentication to the API to secure endpoints and track user
-actions. Currently all endpoints are public. This implements standard JWT
-authentication with refresh tokens and role-based access control.
-
-## Phases
-
-### Phase 1: Database Models
-
-**Goal:** Add user and authentication tables to database
-
-**Status:** Complete
-
-#### Tasks
-
-- [x] Create User model with email, password_hash, role fields
-- [x] Create RefreshToken model for token rotation
-- [x] Generate and test database migrations
-- [x] Add indexes on email and token fields
-
-#### Quality Gates
-
-- [x] Code review (self-review changes before moving to next phase)
-- [x] Tests passing (run test suite and verify all tests pass)
-- [x] Linter passing (run linter and fix all issues)
-- [x] Type checker passing (run type checker and fix all issues)
-- [x] Manual testing (verify migrations run successfully)
+## Project: [Name]
+
+**Goal**: [Clear end state]
+**Timeline**: [Duration]
+**Team**: [People and roles]
+**Constraints**: [Budget, tech, deadlines]
 
 ---
 
-### Phase 2: Authentication Service
+## Milestones
 
-**Goal:** Implement core authentication logic and JWT handling
-
-**Status:** In Progress
-
-#### Tasks
-
-- [x] Create AuthService class
-- [x] Implement password hashing with bcrypt
-- [x] Implement JWT token generation
-- [x] Implement token refresh logic
-- [ ] Add role-based permission checks
-- [ ] Add rate limiting for login attempts
-
-#### Quality Gates
-
-- [ ] Code review (self-review changes before moving to next phase)
-- [ ] Tests passing (run test suite and verify all tests pass)
-- [ ] Linter passing (run linter and fix all issues)
-- [ ] Type checker passing (run type checker and fix all issues)
-- [ ] Manual testing (verify token generation and validation)
+| #   | Milestone | Target Date | Owner    | Success Criteria         |
+| --- | --------- | ----------- | -------- | ------------------------ |
+| 1   | [Name]    | [Date]      | [Person] | [How you know it's done] |
 
 ---
 
-### Phase 3: API Endpoints
+## Phase 1: [Phase Name] (Timeline)
 
-**Goal:** Add authentication endpoints to the API
+| Task        | Effort  | Owner    | Depends On     | Done Criteria        |
+| ----------- | ------- | -------- | -------------- | -------------------- |
+| [Task name] | [Hours] | [Person] | [Dependencies] | [Definition of done] |
 
-**Status:** Not Started
+## Phase 2: [Phase Name] (Timeline)
 
-#### Tasks
-
-- [ ] Add POST /auth/register endpoint
-- [ ] Add POST /auth/login endpoint
-- [ ] Add POST /auth/refresh endpoint
-- [ ] Add POST /auth/logout endpoint
-- [ ] Add authentication middleware for protected routes
-- [ ] Update existing endpoints to require authentication
-
-#### Quality Gates
-
-- [ ] Code review (self-review changes before moving to next phase)
-- [ ] Tests passing (run test suite and verify all tests pass)
-- [ ] Linter passing (run linter and fix all issues)
-- [ ] Type checker passing (run type checker and fix all issues)
-- [ ] Manual testing (test all endpoints with curl/Postman)
+[Continue for each phase]
 
 ---
 
-### Phase 4: Tests and Documentation
-
-**Goal:** Add comprehensive tests and update documentation
-
-**Status:** Not Started
-
-#### Tasks
-
-- [ ] Add unit tests for AuthService
-- [ ] Add integration tests for auth endpoints
-- [ ] Add tests for protected endpoint access
-- [ ] Update API documentation
-- [ ] Add authentication guide to README
-
-#### Quality Gates
-
-- [ ] Code review (self-review changes before moving to next phase)
-- [ ] Tests passing (run test suite and verify all tests pass)
-- [ ] Linter passing (run linter and fix all issues)
-- [ ] Type checker passing (run type checker and fix all issues)
-- [ ] Manual testing (verify docs are accurate and clear)
-
-## Notes
-
-### Decisions Made
-
-- Using JWT instead of sessions for stateless authentication
-- Using bcrypt for password hashing (industry standard)
-- Implementing refresh tokens for better security
-- Using role-based access control (admin, user roles)
-
-### Open Questions
-
-- [x] Should we support OAuth2 providers? - No, not in initial version
-- [ ] What should token expiration time be? - Need to decide
-
-### Dependencies
-
-- Requires bcrypt library for password hashing
-- Requires PyJWT library for JWT handling
-- Database must support migrations
+## Dependencies Map
 ```
 
-## Tips for Good Plans
+[Task A] ──> [Task B] ──> [Task D]
+├──> [Task C] ──┘
 
-**Keep phases small:**
+```
 
-- Each phase should be completable in 1-3 hours
-- If a phase is too large, break it into multiple phases
-- Smaller phases are easier to review and commit
+---
 
-**Be specific in tasks:**
+## Risks & Mitigation
 
-- "Add User model" is better than "Database stuff"
-- "Implement JWT token generation" is better than "Tokens"
-- Clear tasks make progress tracking easier
+| Risk | Impact | Probability | Mitigation |
+|------|--------|-------------|------------|
+| [Risk description] | High/Med/Low | High/Med/Low | [How to prevent/reduce] |
 
-**Update as you go:**
+---
 
-- Don't let the plan get stale
-- Add phases if you discover more work
-- Mark tasks complete as you finish them
-- Add notes about important decisions
+## Resource Allocation
 
-**Use quality gates consistently:**
+| Role | Hours/Week | Key Responsibilities |
+|------|------------|---------------------|
+| [Role] | [Hours] | [What they focus on] |
+```
 
-- Always include the standard quality gates
-- Add project-specific gates if needed (e.g., "Security review")
-- Don't skip quality gates - they catch issues early
+## Estimation Techniques
 
-**Commit plan updates:**
+### Three-Point Estimation
 
-- Commit the plan with the code changes for each phase
-- This creates a history of progress
-- Makes it easy to see what was done in each commit
+```
+Optimistic (O): Best case scenario
+Most Likely (M): Expected case
+Pessimistic (P): Worst case scenario
 
-## Tool Usage
+Expected = (O + 4M + P) / 6
+```
 
-When creating and working with plans:
+### T-Shirt Sizing
 
-- **Use Read tool** to inspect requirements and existing plan docs
-- **Use Write/Create File tool** to create initial
-  `documents/IMPLEMENTATION_PLAN_<feature-name>.md`
-- **Use Edit tool** to update plan as work progresses
-- **Use Bash tool** for GitHub issue creation/editing with `gh issue ...`
-- **Use Bash tool** to run quality gate checks (tests, linter, type checker)
-- **Use git commands** to commit plan updates with phase changes
+- **XS**: < 2 hours
+- **S**: 2-4 hours
+- **M**: 4-8 hours (1 day)
+- **L**: 2-3 days
+- **XL**: 1 week
 
-## Required Permissions
+_Break down anything larger than XL_
 
-This skill requires the following capabilities:
+### Planning Poker
 
-- **File read/write/edit:** read existing docs/code, create plan files, update
-  plan files as work progresses
-- **GitHub issues create/edit:** create issues from plan phases, edit/update
-  issues when scope changes, and comment status updates
+For team estimation, use Fibonacci: 1, 2, 3, 5, 8, 13 story points
 
-## Integration with Other Skills
+## Example
 
-**Use with commit skill:**
+**User Request:** "Plan a website redesign. Team: 1 designer, 2 developers. Deadline: 6 weeks."
 
-- Reference plan phases in commit messages:
-  `feat(auth): Implement Phase 2 - Authentication service`
-- Commit plan updates along with code changes
+**Response:**
 
-**Use with code-review skill:**
+## Project: Company Website Redesign
 
-- Review each phase's changes before marking complete
-- Quality gates include code review checkpoint
+**Goal**: Launch redesigned website with improved UX and modern design
+**Timeline**: 6 weeks
+**Team**: 1 designer, 2 developers
+**Constraints**: Must maintain all existing functionality, no budget for new tools
 
-**Use with create-pr skill:**
+---
 
-- Can create PRs per phase for large features
-- Or create single PR with all phases for smaller features
-- Reference plan in PR description
+## Milestones
 
-## Common Mistakes
+| #   | Milestone            | Target Date | Owner    | Success Criteria                 |
+| --- | -------------------- | ----------- | -------- | -------------------------------- |
+| 1   | Design Approved      | End Week 2  | Designer | Stakeholders sign off on mockups |
+| 2   | Development Complete | End Week 5  | Dev Team | All pages functional in staging  |
+| 3   | Launch               | End Week 6  | All      | Site live, no critical bugs      |
 
-**Don't use generic filenames:**
+---
 
-- ❌ `IMPLEMENTATION_PLAN.md` (conflicts with other plans)
-- ✅ `IMPLEMENTATION_PLAN_user-authentication.md` (unique and descriptive)
+## Phase 1: Discovery & Design (Weeks 1-2)
 
-**Don't make phases too large:**
+| Task                      | Effort | Owner    | Depends On | Done Criteria                        |
+| ------------------------- | ------ | -------- | ---------- | ------------------------------------ |
+| Audit current site        | 4h     | Designer | -          | List of pages, features, pain points |
+| Stakeholder interviews    | 4h     | Designer | -          | Requirements doc with priorities     |
+| Create sitemap            | 2h     | Designer | Audit      | Updated sitemap approved             |
+| Design wireframes         | 8h     | Designer | Sitemap    | Lo-fi wireframes for all pages       |
+| Design homepage mockup    | 8h     | Designer | Wireframes | Hi-fi mockup with branding           |
+| Design page templates     | 12h    | Designer | Homepage   | Templates for all page types         |
+| Design review & revisions | 8h     | Designer | Templates  | Stakeholder approval received        |
 
-- ❌ Phase 1: Implement entire authentication system
-- ✅ Phase 1: Add database models for authentication
+**Total Effort**: 46 hours (~6 days for 1 designer)
 
-**Don't skip quality gates:**
+---
 
-- ❌ Marking phase complete without running tests
-- ✅ Run all quality gates before marking phase complete
+## Phase 2: Development Setup (Week 3)
 
-**Don't let plan get stale:**
+| Task                     | Effort | Owner | Depends On      | Done Criteria                       |
+| ------------------------ | ------ | ----- | --------------- | ----------------------------------- |
+| Set up dev environment   | 4h     | Dev 1 | -               | Local dev working, Git repo ready   |
+| Choose tech stack        | 2h     | Dev 1 | -               | Decision doc: framework, libraries  |
+| Set up CI/CD pipeline    | 4h     | Dev 1 | Dev env         | auto-deploy to staging on merge     |
+| Create component library | 12h    | Dev 1 | Design approval | Reusable components built           |
+| Set up CMS               | 6h     | Dev 2 | Tech stack      | CMS installed, admin access working |
 
-- ❌ Plan says "In Progress" on Phase 2, actually on Phase 4
-- ✅ Update plan status as you complete each phase
+**Total Effort**: 28 hours (~3.5 days for 2 devs)
 
-**Don't be too vague:**
+---
 
-- ❌ Task: "Fix the thing"
-- ✅ Task: "Add null check in getUserProfile function"
+## Phase 3: Page Development (Weeks 4-5)
+
+| Task                      | Effort | Owner   | Depends On | Done Criteria                          |
+| ------------------------- | ------ | ------- | ---------- | -------------------------------------- |
+| Develop homepage          | 16h    | Dev 2   | Components | Homepage matches design, responsive    |
+| Develop about page        | 8h     | Dev 1   | Homepage   | Page complete, responsive              |
+| Develop service pages     | 16h    | Dev 1+2 | Homepage   | All service pages done                 |
+| Develop blog template     | 12h    | Dev 2   | Components | Blog posts display correctly           |
+| Develop contact page      | 6h     | Dev 1   | About page | Form working, sends emails             |
+| CMS integration           | 12h    | Dev 2   | All pages  | Content editable in CMS                |
+| Mobile responsive testing | 8h     | Dev 1   | All pages  | Works on mobile/tablet/desktop         |
+| Cross-browser testing     | 6h     | Dev 2   | Responsive | Works in Chrome, Firefox, Safari, Edge |
+
+**Total Effort**: 84 hours (~10 days for 2 devs)
+
+---
+
+## Phase 4: QA & Launch (Week 6)
+
+| Task                     | Effort | Owner         | Depends On | Done Criteria                  |
+| ------------------------ | ------ | ------------- | ---------- | ------------------------------ |
+| Content migration        | 8h     | Dev 2         | CMS ready  | All content moved to new site  |
+| SEO optimization         | 4h     | Dev 1         | Migration  | Meta tags, sitemaps, redirects |
+| Performance optimization | 6h     | Dev 1         | All pages  | Lighthouse score >90           |
+| User acceptance testing  | 8h     | Designer+Devs | Migration  | Stakeholders test and approve  |
+| Bug fixes                | 12h    | Devs          | UAT        | All critical/high bugs fixed   |
+| DNS/hosting setup        | 2h     | Dev 1         | Bug fixes  | Domain points to new site      |
+| Launch & monitoring      | 4h     | All           | Everything | Site live, analytics working   |
+| Post-launch fixes        | 8h     | Devs          | Launch     | Address any immediate issues   |
+
+**Total Effort**: 52 hours (~6.5 days for 2 devs + designer)
+
+---
+
+## Dependencies Visualization
+
+```
+Design Approval ──> Components ──> Homepage ──> Other Pages ──> Testing ──> Launch
+                    └──> CMS ────────────────────┘
+```
+
+**Critical Path**: Design Approval → Components → Homepage → Other Pages → Testing → Launch
+
+---
+
+## Risks & Mitigation
+
+| Risk                   | Impact | Probability | Mitigation                                                            |
+| ---------------------- | ------ | ----------- | --------------------------------------------------------------------- |
+| Design feedback delays | High   | Medium      | Schedule reviews in advance, limit revision rounds to 2               |
+| Scope creep            | High   | High        | Lock requirements after Week 1, document any new requests for Phase 2 |
+| Content not ready      | Medium | Medium      | Start content migration early (Week 4), use placeholders if needed    |
+| Technical issues       | Medium | Low         | Leave buffer in Week 5-6, have backup plan for hosting                |
+| Team member sick       | Medium | Low         | Cross-train devs, designer can do basic HTML/CSS if needed            |
+
+---
+
+## Resource Allocation
+
+| Role        | Hours/Week | Weeks Active | Key Responsibilities                      |
+| ----------- | ---------- | ------------ | ----------------------------------------- |
+| Designer    | 40h        | Weeks 1-2, 6 | Design, stakeholder management, UAT       |
+| Developer 1 | 40h        | Weeks 3-6    | Architecture, dev setup, page development |
+| Developer 2 | 40h        | Weeks 3-6    | CMS, page development, testing            |
+
+**Total Effort**: ~210 hours across 6 weeks
+
+---
+
+## Weekly Checkpoints
+
+- **Monday standup**: Progress updates, blockers
+- **Friday review**: Demo completed work, plan next week
+- **Weeks 2, 4, 6**: Milestone reviews with stakeholders
+
+---
+
+## Success Metrics
+
+- Launch on time (Week 6)
+- No critical bugs at launch
+- Lighthouse performance score >90
+- Stakeholder approval on design
+- All existing functionality maintained
