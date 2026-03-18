@@ -4,13 +4,6 @@ import '../css/navbar.css';
 
 const t = useTranslations(Astro);
 const lang = Astro.currentLocale === 'es' ? 'es' : 'en';
-
-const navLinks = [
-  { href: '#projects', label: t('navbar.projects') },
-  { href: '#experience', label: t('navbar.experience') },
-  { href: '#skills', label: t('navbar.skills') },
-  { href: '#vision', label: t('navbar.vision') },
-];
 ---
 
 <nav
@@ -52,22 +45,6 @@ const navLinks = [
 
     <!-- Desktop Navigation -->
     <div class="hidden items-center gap-1 md:flex">
-      <span aria-hidden="true" class="mr-1 select-none font-mono text-xs text-slate-400">{'{'}</span
-      >
-      {
-        navLinks.map(link => (
-          <a
-            href={link.href}
-            data-section={link.href.replace('#', '')}
-            class="nav-tab relative rounded px-3 py-1.5 font-mono text-sm text-slate-600 transition-colors hover:text-slate-900"
-          >
-            {link.label}
-          </a>
-        ))
-      }
-      <span aria-hidden="true" class="ml-1 select-none font-mono text-xs text-slate-400">{'}'}</span
-      >
-
       <a
         href={`/${lang}/resume`}
         class="ml-4 rounded-lg border border-primary/50 px-4 py-1.5 font-mono text-sm font-medium text-primary transition-all hover:border-primary hover:bg-primary/10 hover:shadow-[0_0_12px_rgba(19,127,236,0.25)]"
@@ -93,19 +70,9 @@ const navLinks = [
     class="hidden w-full border-t border-slate-200 bg-white/90 backdrop-blur-xl md:hidden"
   >
     <div class="flex animate-menu-slide-down flex-col px-6 py-4">
-      {
-        navLinks.map(link => (
-          <a
-            href={link.href}
-            class="block rounded-lg px-4 py-3 font-mono text-sm text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900"
-          >
-            {link.label}
-          </a>
-        ))
-      }
       <a
         href={`/${lang}/resume`}
-        class="mt-2 block rounded-lg border border-primary/50 px-4 py-3 text-center font-mono text-sm font-medium text-primary transition-all hover:bg-primary/10"
+        class="block rounded-lg border border-primary/50 px-4 py-3 text-center font-mono text-sm font-medium text-primary transition-all hover:bg-primary/10"
         >{t('navbar.resume')}</a
       >
       <button
@@ -123,31 +90,6 @@ const navLinks = [
 </nav>
 
 <style>
-  .nav-tab::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    width: 0;
-    height: 1px;
-    background: #137fec;
-    transition: all 0.2s ease;
-    transform: translateX(-50%);
-  }
-
-  .nav-tab:hover::after {
-    width: 60%;
-  }
-
-  .nav-tab-active {
-    color: rgb(15, 23, 42); /* slate-900 */
-  }
-
-  .nav-tab-active::after {
-    width: 60%;
-    background: #137fec;
-  }
-
   #navbar::after {
     content: '';
     position: absolute;
@@ -247,30 +189,6 @@ const navLinks = [
       },
       { passive: true }
     );
-
-    // IntersectionObserver: highlight active section's nav tab
-    const navTabs = document.querySelectorAll<HTMLAnchorElement>('.nav-tab[data-section]');
-    const sectionIds = Array.from(navTabs).map(tab => tab.dataset.section!);
-    const sections = sectionIds
-      .map(id => document.getElementById(id))
-      .filter((el): el is HTMLElement => el !== null);
-
-    if (sections.length > 0) {
-      const observer = new IntersectionObserver(
-        entries => {
-          entries.forEach(entry => {
-            const tab = document.querySelector(`.nav-tab[data-section="${entry.target.id}"]`);
-            if (entry.isIntersecting) {
-              navTabs.forEach(t => t.classList.remove('nav-tab-active'));
-              tab?.classList.add('nav-tab-active');
-            }
-          });
-        },
-        { rootMargin: '-40% 0px -55% 0px', threshold: 0 }
-      );
-
-      sections.forEach(section => observer.observe(section));
-    }
 
     // Language switcher logic
     const handleLanguageSwitch = () => {

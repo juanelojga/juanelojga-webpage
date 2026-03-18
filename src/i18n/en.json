@@ -1,40 +1,10 @@
 {
   "navbar": {
-    "projects": "Projects",
-    "experience": "Experience",
-    "skills": "Skills",
-    "vision": "Vision",
     "resume": "Resume"
   },
-  "hero": {
-    "subtitleTag": "AI SYSTEMS ARCHITECT",
-    "headline": "Designing the Future of AI",
-    "description": "Full-Stack Software Engineer passionate about AI, Frontend, Backend, Databases, and Machine Learning. I design scalable systems that combine clean architecture, performance, and intelligent user experiences.",
-    "ctaPrimary": "Get in Touch",
-    "ctaSecondary": "View Projects"
-  },
-  "about": {
-    "title": "About Me",
-    "description": "I build scalable systems from backend to frontend, connecting strong architecture with real user impact.",
-    "tabs": {
-      "skills": "Skills",
-      "experience": "Experience",
-      "interests": "Interests"
-    },
-    "coreTechnologies": "Core Technologies",
-    "toolsPlatforms": "Tools & Platforms",
-    "interestsText": "I’m passionate about pushing my limits in sports—especially triathlon and cycling—where discipline and perseverance keep me striving for progress. The beauty of nature and travel inspires me, and I treasure every adventure, from local rides to journeys through places like the Galapagos. My community—friends, family, and teammates—are an essential part of my story, fueling my growth and motivation every day. Creativity drives me, whether I’m exploring new hobbies like painting or experimenting with 3D printing. I believe that real growth comes from embracing the process, finding joy in every challenge and lesson. Above all, I value gratitude, resilience, and making meaningful memories along the way."
-  },
-  "projects": {
-    "title": "Featured Projects",
-    "viewCaseStudy": "View Case Study",
-    "live": "Live Preview",
-    "github": "GitHub"
-  },
-  "contact": {
-    "title": "Get in Touch",
-    "subtitle": "Have a project in mind? Let’s build something amazing together.",
-    "copyEmailAria": "Copy email"
+  "construction": {
+    "tagline": "Full Stack & AI Engineer",
+    "message": "New portfolio coming soon."
   },
   "footer": {
     "rights": "All Rights Reserved.",
@@ -95,48 +65,6 @@
       "privacyNotice": "Your information is used only to send the resume and will not be shared with third parties.",
       "requiredField": "This field is required.",
       "invalidEmail": "Please enter a valid email address."
-    }
-  },
-  "vision": {
-    "eyebrow": "What drives me",
-    "title": "Vision",
-    "cards": [
-      {
-        "label": "01",
-        "icon": "visibility",
-        "title": "My Vision",
-        "description": "To bridge the gap between cutting-edge AI research and production-ready software, creating systems that are both intelligent and reliable at scale."
-      },
-      {
-        "label": "02",
-        "icon": "trending_up",
-        "title": "My Expectations",
-        "description": "I hold myself to high standards of code quality, performance, and user experience. Every project is an opportunity to raise the bar and deliver meaningful impact."
-      },
-      {
-        "label": "03",
-        "icon": "rocket_launch",
-        "title": "Future Focus",
-        "description": "Exploring the intersection of AI agents, full-stack architecture, and developer tooling to build the next generation of intelligent applications."
-      }
-    ]
-  },
-  "philosophy": {
-    "subtitle": "How I think",
-    "title": "Philosophy & Outlook",
-    "cards": {
-      "selfLearner": {
-        "title": "Self-Learner",
-        "description": "Constantly expanding my skill set through hands-on experimentation, open-source contributions, and deep dives into emerging technologies."
-      },
-      "curiosityDriven": {
-        "title": "Curiosity-Driven",
-        "description": "I approach every problem with genuine curiosity, asking \"why\" before \"how\" to uncover solutions that address root causes, not just symptoms."
-      },
-      "responsibleDeveloper": {
-        "title": "Responsible Developer",
-        "description": "I believe in writing code that is maintainable, accessible, and ethical — building software that serves people and stands the test of time."
-      }
     }
   },
   "seo": {
