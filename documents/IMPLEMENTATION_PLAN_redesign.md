@@ -18,6 +18,58 @@
 
 ---
 
+## Definition of Done — Quality Gate Checklist
+
+Every task that produces or modifies a **component, utility function, layout, or interactive behavior** is not considered done until **all applicable items** in this checklist pass. Tasks that are purely data/config/copy (e.g., adding i18n keys, updating JSON content) only need items marked with ★.
+
+### Mandatory Checklist
+
+| #   | Check                                  | Applies To                        | How to Verify                                                                                                                                                                                                                                                                        |
+| --- | -------------------------------------- | --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| ★1  | **Linter passes**                      | All code changes                  | `npm run lint` exits with 0 errors. No `eslint-disable` comments unless justified and documented in PR.                                                                                                                                                                              |
+| ★2  | **Formatter passes**                   | All code changes                  | `npm run format` produces no diff. Code matches Prettier config (single quotes, semicolons, 2-space indent, `arrowParens: "avoid"`, 100 char width).                                                                                                                                 |
+| ★3  | **TypeScript compiles**                | All `.ts`/`.tsx`/`.astro` changes | `npm run build` succeeds with no type errors. No `@ts-ignore` or `as any` unless justified.                                                                                                                                                                                          |
+| ★4  | **Existing tests pass**                | All code changes                  | `npm test` (Vitest) exits with 0 failures. No test may be skipped (`.skip`) or temporarily disabled without a linked tracking issue.                                                                                                                                                 |
+| 5   | **Unit/integration test written**      | New components and utilities      | Every new component (`.astro`, `.tsx`) has a corresponding test file in `src/components/__tests__/`. Every new utility in `src/utils/` has a test. Coverage target: ≥80%.                                                                                                            |
+| 6   | **i18n parity verified**               | Components with translated text   | Both `en.json` and `es.json` have identical key structures for new/changed keys. Test asserts key parity programmatically (existing pattern in test suite).                                                                                                                          |
+| 7   | **Playwright visual verification**     | All visual components             | Run Playwright MCP against `localhost:4321` at **3 viewports** (desktop 1280px, tablet 768px, mobile 375px) in **both locales** (`/en/`, `/es/`). Screenshots saved to `.screenshots/` with descriptive names. No broken layouts, overflow, missing elements, or misaligned content. |
+| 8   | **Playwright both-theme verification** | Themed components (after Phase 1) | Repeat viewport check (#7) with both `data-theme="build"` and `data-theme="after-hours"`. No contrast failures, missing theme variables, or broken visuals.                                                                                                                          |
+| 9   | **Accessibility baseline**             | Interactive/visual components     | Keyboard navigation works (Tab/Shift+Tab/Enter/Escape); focus indicators visible; ARIA roles/labels present on interactive elements; no Lighthouse Accessibility regressions below 90.                                                                                               |
+| 10  | **No console errors**                  | All components                    | Browser console shows zero errors/warnings during Playwright runs. `astro check` (if available) reports no issues.                                                                                                                                                                   |
+| 11  | **Reduced motion respected**           | Animated components               | With `prefers-reduced-motion: reduce` enabled, animations are replaced with instant state or short opacity fade. Verified via Playwright emulation.                                                                                                                                  |
+| 12  | **No dead code introduced**            | All code changes                  | No unused imports, unreachable code, or orphaned files. Retiring a component means removing all imports and references.                                                                                                                                                              |
+| 13  | **Build succeeds**                     | All changes (final gate)          | `npm run build` completes without errors. Output in `dist/` is deployable. No SSR/hydration mismatches.                                                                                                                                                                              |
+
+### Enforcement Rules
+
+1. **Tests are not optional.** A component without a test is not done. If a test task is listed separately in a phase (e.g., "2.9 Write tests"), the preceding component tasks are in a _blocked_ state until tests pass.
+2. **Playwright runs are not optional.** Every component build task must include visual verification before marking complete. The screenshots serve as visual regression baselines.
+3. **Lint/format/type-check run on every task**, not just at phase end. The pre-commit hook (Husky + lint-staged) catches staged files, but the full suite must also pass.
+4. **Milestone gates cannot be entered** until every task in the milestone has passed all applicable checklist items. The `critique` skill reviews assume all prior quality gates are green.
+5. **Failed checks block progress.** If a check fails, fix it before moving to the next task. Do not accumulate tech debt across tasks.
+
+### Playwright Verification Protocol
+
+For consistency, follow this protocol for check #7 and #8:
+
+1. Start dev server: `npm run dev`
+2. Open Playwright MCP and navigate to `localhost:4321/en/` and `localhost:4321/es/`
+3. For each page, take full-page screenshots at:
+   - **Desktop**: 1280×800 viewport
+   - **Tablet**: 768×1024 viewport
+   - **Mobile**: 375×812 viewport
+4. Save screenshots to `.screenshots/` with naming convention: `{component}-{viewport}-{locale}-{theme}.png` (e.g., `hero-desktop-en-build.png`)
+5. Manually inspect screenshots for:
+   - Layout breaks or horizontal overflow
+   - Missing or misaligned elements
+   - Text truncation or overlap (especially Spanish locale)
+   - Theme color application correctness
+   - Scroll-snap section alignment (desktop)
+   - Touch target sizing (mobile, ≥44px)
+6. Flag and fix any issues before marking the task complete
+
+---
+
 ## Design Skill Integration Strategy
 
 The project uses the **Impeccable** skill suite to enforce design quality at every phase. Each skill is invoked at specific points in the workflow — not ad hoc — to ensure systematic coverage.
@@ -66,18 +118,22 @@ The project uses the **Impeccable** skill suite to enforce design quality at eve
 | 0.1 Run `teach-impeccable` skill to gather project design context           | 1h     | —          | Design context file generated with project-specific guidelines, color language, component patterns       |
 | 0.2 Review and refine generated design context against DESIGN_DIRECTION doc | 1h     | 0.1        | Context file accurately reflects the narrative TODO-rail concept, dual-theme system, and design language |
 
+### Execution Strategy
+
+**Strictly sequential** — 0.1 → 0.2. No parallelism possible; 0.2 reviews the output of 0.1.
+
 **Phase 0 Total**: ~2h
 
 ---
 
 ## Milestones
 
-| #   | Milestone             | Target     | Success Criteria                                                                                                              |
-| --- | --------------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| 1   | Foundation Complete   | End Week 2 | New theme system, design tokens, typography, and base layout shell with TODO rail skeleton rendering on desktop/tablet/mobile |
-| 2   | Core Sections Built   | End Week 4 | Hero ("Hello World"), Bio, Skills, and Work Log sections implemented with i18n and content integration                        |
-| 3   | Interactions & Motion | End Week 6 | TODO rail state machine, scroll-driven animations, theme toggle with portrait sequence, chapter-specific reveal families      |
-| 4   | Polish & Launch       | End Week 8 | Responsive QA, accessibility audit, performance optimization, test suite updated, production deploy                           |
+| #   | Milestone             | Target     | Success Criteria                                                                                                                                                                                                                                                                        |
+| --- | --------------------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | Foundation Complete   | End Week 2 | New theme system, design tokens, typography, and base layout shell with TODO rail skeleton rendering on desktop/tablet/mobile. **All tasks 1.1–2.9 pass quality gate checklist. Playwright screenshots committed.**                                                                     |
+| 2   | Core Sections Built   | End Week 4 | Hero ("Hello World"), Bio, Skills, and Work Log sections implemented with i18n and content integration. **All tasks 3.1–5.7 pass quality gate checklist. Full test suite green. Playwright screenshots committed.**                                                                     |
+| 3   | Interactions & Motion | End Week 6 | TODO rail state machine, scroll-driven animations, theme toggle with portrait sequence, chapter-specific reveal families. **All tasks 6.1–7.10 pass quality gate checklist. Reduced-motion variants verified.**                                                                         |
+| 4   | Polish & Launch       | End Week 8 | Responsive QA, accessibility audit, performance optimization, test suite updated, production deploy. **All tasks 8.1–8.13 pass quality gate checklist. `npm run lint`, `npm test`, `npm run build` all exit 0. Lighthouse scores ≥90. Final Playwright screenshot baseline committed.** |
 
 ---
 
@@ -87,14 +143,26 @@ The project uses the **Impeccable** skill suite to enforce design quality at eve
 >
 > **Skills**: `extract` (design token extraction) · `colorize` (dual-theme color system) · `typeset` (typography hierarchy)
 
-| Task                                                                                         | Effort | Depends On | Skill                | Done Criteria                                                                                                                                                                                                                 |
-| -------------------------------------------------------------------------------------------- | ------ | ---------- | -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1.1 Define design token system (colors, spacing, typography scales) in `tailwind.config.mjs` | 6h     | —          | `extract` `colorize` | Tailwind config has `buildMode` and `afterHours` color palettes, signal colors (acid green, electric cyan, muted amber), surface colors (chalk, carbon, ink, smoked teal), font families (monospace display + editorial sans) |
-| 1.2 Create CSS custom property layer for theme switching in `global.css`                     | 4h     | 1.1        | `colorize`           | CSS variables for all color roles toggle via `[data-theme="build"]` / `[data-theme="after-hours"]` class on `<html>`                                                                                                          |
-| 1.3 Set up typography scale (Level 0–Body–Meta) with responsive clamp values                 | 4h     | 1.1        | `typeset`            | Tailwind utility classes or CSS for all 5 hierarchy levels from the design direction                                                                                                                                          |
-| 1.4 Add font assets (monospace display + editorial sans-serif)                               | 2h     | —          | `typeset`            | Fonts loaded via `<link>` or `@font-face` with `font-display: swap`; fallbacks defined                                                                                                                                        |
-| 1.5 Update `design-tokens.test.ts` to validate new token structure                           | 2h     | 1.1, 1.2   | —                    | Test passes confirming token keys, contrast ratios, and theme variable presence                                                                                                                                               |
-| 1.6 Create theme persistence utility (localStorage + system preference detection)            | 3h     | 1.2        | —                    | Utility reads `prefers-color-scheme`, checks localStorage override, applies `data-theme` attribute before first paint (inline script in `<head>`)                                                                             |
+| Task                                                                                         | Effort | Depends On | Skill                | Done Criteria                                                                                                                                                                                                                                                |
+| -------------------------------------------------------------------------------------------- | ------ | ---------- | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 1.1 Define design token system (colors, spacing, typography scales) in `tailwind.config.mjs` | 6h     | —          | `extract` `colorize` | Tailwind config has `buildMode` and `afterHours` color palettes, signal colors (acid green, electric cyan, muted amber), surface colors (chalk, carbon, ink, smoked teal), font families (monospace display + editorial sans). **Quality gates ★1–★4, #13.** |
+| 1.2 Create CSS custom property layer for theme switching in `global.css`                     | 4h     | 1.1        | `colorize`           | CSS variables for all color roles toggle via `[data-theme="build"]` / `[data-theme="after-hours"]` class on `<html>`. **Quality gates ★1–★4, #13.**                                                                                                          |
+| 1.3 Set up typography scale (Level 0–Body–Meta) with responsive clamp values                 | 4h     | 1.1        | `typeset`            | Tailwind utility classes or CSS for all 5 hierarchy levels from the design direction. **Quality gates ★1–★4, #7, #13.**                                                                                                                                      |
+| 1.4 Add font assets (monospace display + editorial sans-serif)                               | 2h     | —          | `typeset`            | Fonts loaded via `<link>` or `@font-face` with `font-display: swap`; fallbacks defined. **Quality gates ★1–★4, #13.**                                                                                                                                        |
+| 1.5 Update `design-tokens.test.ts` to validate new token structure                           | 2h     | 1.1, 1.2   | —                    | Test passes confirming token keys, contrast ratios, and theme variable presence. **Quality gates ★1–★4.**                                                                                                                                                    |
+| 1.6 Create theme persistence utility (localStorage + system preference detection)            | 3h     | 1.2        | —                    | Utility reads `prefers-color-scheme`, checks localStorage override, applies `data-theme` attribute before first paint (inline script in `<head>`). **Quality gates ★1–★4, #5 (unit test for utility), #10, #13.**                                            |
+
+### Execution Strategy
+
+```
+Wave 1 ─ parallel:  1.1 (tokens)          + 1.4 (font assets)
+Wave 2 ─ parallel:  1.2 (CSS vars, ←1.1)  + 1.3 (typography, ←1.1)
+Wave 3 ─ parallel:  1.5 (tests, ←1.1+1.2) + 1.6 (theme util, ←1.2)
+```
+
+- **Critical path**: 1.1 → 1.2 → 1.6 (13h sequential minimum)
+- **Parallelism savings**: ~4h — Wave 1 saves 2h (1.4 runs alongside 1.1), Wave 2 saves 4h (1.3 runs alongside 1.2), Wave 3 saves 2h (1.5 runs alongside 1.6)
+- **Early start opportunity**: 1.4 (font assets) has zero dependencies and can begin immediately, even before 1.1
 
 **Phase 1 Total**: ~21h
 
@@ -106,18 +174,33 @@ The project uses the **Impeccable** skill suite to enforce design quality at eve
 >
 > **Skills**: `frontend-design` (component builds) · `arrange` (split layout composition) · `adapt` (mobile rail) · `onboard` (rail as discovery UX)
 
-| Task                                                                                                                     | Effort | Depends On    | Skill                     | Done Criteria                                                                                                                                                                              |
-| ------------------------------------------------------------------------------------------------------------------------ | ------ | ------------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| 2.1 Design TODO rail data model and state machine (pending → active → completed)                                         | 3h     | —             | `onboard`                 | TypeScript interface for rail items with id, label (en/es), state, sectionId; state transition logic                                                                                       |
-| 2.2 Build `TodoRail.tsx` React component (desktop: right sticky column)                                                  | 8h     | 2.1, 1.2      | `frontend-design`         | Renders 4 items ("Boot identity", "Compile strengths", "Unlock work log", "Open channel") with 3-state visuals; sticky positioning; WAI-ARIA nav landmark with current/completed semantics |
-| 2.3 Build `TodoRailMobile.tsx` (sticky top progress strip / bottom dock)                                                 | 6h     | 2.2           | `frontend-design` `adapt` | Compact horizontal progress bar that expands to show full checklist on tap; same state machine                                                                                             |
-| 2.4 Update `Layout.astro` to new shell: remove navbar/footer wrapper, add split layout (content stage left + rail right) | 6h     | 2.2, 2.3, 1.2 | `arrange`                 | Layout renders correctly at desktop/tablet/mobile breakpoints; no navbar or footer on homepage                                                                                             |
-| 2.5 Add TODO rail i18n keys to `en.json` and `es.json`                                                                   | 2h     | 2.1           | `clarify`                 | Both translation files have `todoRail.*` keys with playful developer labels in both languages                                                                                              |
-| 2.6 Wire IntersectionObserver to drive rail state from scroll position                                                   | 4h     | 2.2, 2.4      | —                         | Scrolling through sections updates rail items through pending → active → completed states; clicking rail items scrolls to corresponding section                                            |
-| 2.7 Build theme toggle component (compact utility strip)                                                                 | 4h     | 1.6, 1.2      | `frontend-design`         | Toggle switches between "Build Mode" and "After Hours" with CSS variable swap; respects reduced motion; includes locale switcher                                                           |
-| 2.8 Build locale switcher (integrated into utility strip)                                                                | 2h     | 2.7           | —                         | Language switch preserves current section and theme state                                                                                                                                  |
-| 2.9 Write tests for TodoRail and Layout changes                                                                          | 4h     | 2.2, 2.3, 2.4 | —                         | Unit tests for state machine logic, i18n key parity, and component rendering                                                                                                               |
-| 2.10 **Milestone 1 gate**: Run `critique` on foundation + layout shell                                                   | 2h     | 2.9           | `critique`                | Design effectiveness review covers: rail readability, layout balance, theme coherence, mobile adaptation; issues logged and addressed before Phase 3                                       |
+| Task                                                                                                                     | Effort | Depends On    | Skill                     | Done Criteria                                                                                                                                                                                                                                                   |
+| ------------------------------------------------------------------------------------------------------------------------ | ------ | ------------- | ------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2.1 Design TODO rail data model and state machine (pending → active → completed)                                         | 3h     | —             | `onboard`                 | TypeScript interface for rail items with id, label (en/es), state, sectionId; state transition logic. **Quality gates ★1–★4, #5 (unit test for state machine).**                                                                                                |
+| 2.2 Build `TodoRail.tsx` React component (desktop: right sticky column)                                                  | 8h     | 2.1, 1.2      | `frontend-design`         | Renders 4 items ("Boot identity", "Compile strengths", "Unlock work log", "Open channel") with 3-state visuals; sticky positioning; WAI-ARIA nav landmark with current/completed semantics. **Quality gates ★1–★4, #5, #7, #9, #10, #12, #13.**                 |
+| 2.3 Build `TodoRailMobile.tsx` (sticky top progress strip / bottom dock)                                                 | 6h     | 2.2           | `frontend-design` `adapt` | Compact horizontal progress bar that expands to show full checklist on tap; same state machine. **Quality gates ★1–★4, #5, #7 (mobile + tablet viewports), #9, #10, #13.**                                                                                      |
+| 2.4 Update `Layout.astro` to new shell: remove navbar/footer wrapper, add split layout (content stage left + rail right) | 6h     | 2.2, 2.3, 1.2 | `arrange`                 | Layout renders correctly at desktop/tablet/mobile breakpoints; no navbar or footer on homepage. **Quality gates ★1–★4, #7 (all 3 viewports, both locales), #10, #12, #13.**                                                                                     |
+| 2.5 Add TODO rail i18n keys to `en.json` and `es.json`                                                                   | 2h     | 2.1           | `clarify`                 | Both translation files have `todoRail.*` keys with playful developer labels in both languages. **Quality gates ★1–★4, #6.**                                                                                                                                     |
+| 2.6 Wire IntersectionObserver to drive rail state from scroll position                                                   | 4h     | 2.2, 2.4      | —                         | Scrolling through sections updates rail items through pending → active → completed states; clicking rail items scrolls to corresponding section. **Quality gates ★1–★4, #5 (unit test for observer logic), #7 (scroll behavior verified via Playwright), #10.** |
+| 2.7 Build theme toggle component (compact utility strip)                                                                 | 4h     | 1.6, 1.2      | `frontend-design`         | Toggle switches between "Build Mode" and "After Hours" with CSS variable swap; respects reduced motion; includes locale switcher. **Quality gates ★1–★4, #5, #7, #8, #9, #11, #13.**                                                                            |
+| 2.8 Build locale switcher (integrated into utility strip)                                                                | 2h     | 2.7           | —                         | Language switch preserves current section and theme state. **Quality gates ★1–★4, #5, #7 (both locales), #10.**                                                                                                                                                 |
+| 2.9 Write tests for TodoRail and Layout changes                                                                          | 4h     | 2.2, 2.3, 2.4 | —                         | Unit tests for state machine logic, i18n key parity, and component rendering. **Quality gates ★1–★4.** All component tests from 2.2–2.8 must be included.                                                                                                       |
+| 2.10 **Milestone 1 gate**: Run `critique` on foundation + layout shell                                                   | 2h     | 2.9           | `critique`                | Design effectiveness review covers: rail readability, layout balance, theme coherence, mobile adaptation; issues logged and addressed before Phase 3. **Prerequisite: all tasks 1.1–2.9 have passed their quality gates.**                                      |
+
+### Execution Strategy
+
+```
+Wave 1 ─ parallel:  2.1 (data model)         + 2.7 (theme toggle, ←1.6+1.2)
+Wave 2 ─ parallel:  2.2 (TodoRail, ←2.1+1.2) + 2.5 (i18n keys, ←2.1) + 2.8 (locale switcher, ←2.7)
+Wave 3 ─ sequential: 2.3 (mobile rail, ←2.2)
+Wave 4 ─ sequential: 2.4 (layout shell, ←2.2+2.3+1.2)
+Wave 5 ─ parallel:  2.6 (IntersectionObserver, ←2.2+2.4) + 2.9 (tests, ←2.2+2.3+2.4)
+Wave 6 ─ sequential: 2.10 (critique gate, ←2.9)
+```
+
+- **Critical path**: 2.1 → 2.2 → 2.3 → 2.4 → 2.9 → 2.10 (29h sequential minimum)
+- **Parallelism savings**: ~10h — Wave 1 saves 4h (2.7 runs alongside 2.1), Wave 2 saves 4h (2.5+2.8 alongside 2.2), Wave 5 saves 4h (2.6 alongside 2.9)
+- **Cross-phase note**: 2.1 has no Phase 1 dependencies and can start during Phase 1 Wave 2 or 3. 2.7 only needs 1.2+1.6 and can start as soon as those complete (before the rest of Phase 1 finishes)
 
 **Phase 2 Total**: ~41h
 
@@ -129,16 +212,28 @@ The project uses the **Impeccable** skill suite to enforce design quality at eve
 >
 > **Skills**: `frontend-design` (component builds) · `bolder` (hero impact) · `clarify` (copy quality) · `distill` (bio tightening) · `onboard` (hero as orientation)
 
-| Task                                                                                                                    | Effort | Depends On    | Skill                       | Done Criteria                                                                                                                                           |
-| ----------------------------------------------------------------------------------------------------------------------- | ------ | ------------- | --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 3.1 Build new `HeroNarrative.astro` with "Hello World" headline + translator line                                       | 6h     | Phase 1, 2.4  | `frontend-design` `bolder`  | Static HTML headline that renders without JS; monospace display type; supporting value proposition line; primary + secondary CTA                        |
-| 3.2 Add hero typing/resolve animation (client-side span splitting)                                                      | 4h     | 3.1           | —                           | "Hello World" text animates with syntax-highlight effect on load; falls back to static text if JS disabled; respects `prefers-reduced-motion`           |
-| 3.3 Integrate portrait imagery into hero (light-mode base)                                                              | 4h     | 3.1           | —                           | Hero portrait renders via `astro:assets` `Image` with `loading="eager"`, masked reveal entry; placeholder for dark-mode variant                         |
-| 3.4 Implement hero TODO teaching moment (Boot identity resolves on load)                                                | 3h     | 3.2, 2.6      | `onboard`                   | First TODO item visibly transitions pending → active → completed during hero load choreography                                                          |
-| 3.5 Create `BioChapter.astro` (editorial narrative block)                                                               | 6h     | 2.4, Phase 1  | `frontend-design` `distill` | Short editorial bio combining current Philosophy + Vision content into tighter narrative; one portrait crop anchoring the section; stacked block reveal |
-| 3.6 Retire `HeroContent.astro`, `HeroImageCollage.astro`, `HeroSvgBackground.astro`, `Philosophy.astro`, `Vision.astro` | 2h     | 3.1, 3.5      | —                           | Old components removed or archived; no dead imports                                                                                                     |
-| 3.7 Update hero and bio i18n keys in `en.json` / `es.json`                                                              | 3h     | 3.1, 3.5      | `clarify`                   | New `heroNarrative.*` and `bio.*` keys in both files; old `hero.*`, `philosophy.*`, `vision.*` keys cleaned up; copy is sharp and recruiter-friendly    |
-| 3.8 Update/write tests for new hero and bio components                                                                  | 4h     | 3.1, 3.5, 3.7 | —                           | Tests validate i18n key parity, content rendering, animation fallbacks                                                                                  |
+| Task                                                                                                                    | Effort | Depends On    | Skill                       | Done Criteria                                                                                                                                                                                               |
+| ----------------------------------------------------------------------------------------------------------------------- | ------ | ------------- | --------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 3.1 Build new `HeroNarrative.astro` with "Hello World" headline + translator line                                       | 6h     | Phase 1, 2.4  | `frontend-design` `bolder`  | Static HTML headline that renders without JS; monospace display type; supporting value proposition line; primary + secondary CTA. **Quality gates ★1–★4, #5, #7, #9, #10, #12, #13.**                       |
+| 3.2 Add hero typing/resolve animation (client-side span splitting)                                                      | 4h     | 3.1           | —                           | "Hello World" text animates with syntax-highlight effect on load; falls back to static text if JS disabled; respects `prefers-reduced-motion`. **Quality gates ★1–★4, #7, #10, #11.**                       |
+| 3.3 Integrate portrait imagery into hero (light-mode base)                                                              | 4h     | 3.1           | —                           | Hero portrait renders via `astro:assets` `Image` with `loading="eager"`, masked reveal entry; placeholder for dark-mode variant. **Quality gates ★1–★4, #7 (all viewports), #8, #10, #13.**                 |
+| 3.4 Implement hero TODO teaching moment (Boot identity resolves on load)                                                | 3h     | 3.2, 2.6      | `onboard`                   | First TODO item visibly transitions pending → active → completed during hero load choreography. **Quality gates ★1–★4, #7 (verify choreography via Playwright), #10, #11.**                                 |
+| 3.5 Create `BioChapter.astro` (editorial narrative block)                                                               | 6h     | 2.4, Phase 1  | `frontend-design` `distill` | Short editorial bio combining current Philosophy + Vision content into tighter narrative; one portrait crop anchoring the section; stacked block reveal. **Quality gates ★1–★4, #5, #7, #8, #9, #10, #13.** |
+| 3.6 Retire `HeroContent.astro`, `HeroImageCollage.astro`, `HeroSvgBackground.astro`, `Philosophy.astro`, `Vision.astro` | 2h     | 3.1, 3.5      | —                           | Old components removed or archived; no dead imports. **Quality gates ★1–★4, #12 (verify no orphaned imports/references), #13.**                                                                             |
+| 3.7 Update hero and bio i18n keys in `en.json` / `es.json`                                                              | 3h     | 3.1, 3.5      | `clarify`                   | New `heroNarrative.*` and `bio.*` keys in both files; old `hero.*`, `philosophy.*`, `vision.*` keys cleaned up; copy is sharp and recruiter-friendly. **Quality gates ★1–★4, #6.**                          |
+| 3.8 Update/write tests for new hero and bio components                                                                  | 4h     | 3.1, 3.5, 3.7 | —                           | Tests validate i18n key parity, content rendering, animation fallbacks. **Quality gates ★1–★4.** Playwright verification for 3.1–3.5 must be complete before this task is considered done.                  |
+
+### Execution Strategy
+
+```
+Wave 1 ─ parallel:  3.1 (HeroNarrative, ←Phase 1+2.4) + 3.5 (BioChapter, ←2.4+Phase 1)
+Wave 2 ─ parallel:  3.2 (typing anim, ←3.1)  + 3.3 (portrait, ←3.1) + 3.6 (retire old, ←3.1+3.5) + 3.7 (i18n, ←3.1+3.5)
+Wave 3 ─ parallel:  3.4 (TODO teaching, ←3.2+2.6) + 3.8 (tests, ←3.1+3.5+3.7)
+```
+
+- **Critical path**: 3.1 → 3.2 → 3.4 (13h) or 3.1 → 3.7 → 3.8 (13h) — two equally long paths
+- **Parallelism savings**: ~14h — Wave 1 saves 6h (3.1 and 3.5 are independent), Wave 2 saves up to 8h (four tasks run simultaneously)
+- **Cross-phase note**: 3.1 and 3.5 share the same prerequisites (Phase 1 + task 2.4), making the parallel start a significant efficiency gain. 3.4 depends on 2.6 (Phase 2) — ensure IntersectionObserver wiring is complete before starting
 
 **Phase 3 Total**: ~32h
 
@@ -150,14 +245,26 @@ The project uses the **Impeccable** skill suite to enforce design quality at eve
 >
 > **Skills**: `frontend-design` (component build) · `arrange` (matrix grouping layout) · `adapt` (mobile card stack)
 
-| Task                                                                    | Effort | Depends On   | Skill                       | Done Criteria                                                                                                                          |
-| ----------------------------------------------------------------------- | ------ | ------------ | --------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| 4.1 Design skill cluster data model (Build, Scale, AI, Ship categories) | 3h     | —            | —                           | Restructure or map existing `skills.json` + `core-technologies.json` into 4 grouped clusters with display order                        |
-| 4.2 Build `SkillMatrix.astro` (desktop: interactive competency board)   | 8h     | 4.1, Phase 1 | `frontend-design` `arrange` | Grouped clusters with category hover/focus revealing supporting proof points; chips animate into position; keyboard + touch accessible |
-| 4.3 Build mobile skill layout (compact mission tracker card stack)      | 4h     | 4.2          | `adapt`                     | Stacked category cards with expandable detail; touch-friendly affordances                                                              |
-| 4.4 Add skills section i18n keys                                        | 2h     | 4.1          | `clarify`                   | `skills.*` keys updated for new category labels and proof point text in both locales                                                   |
-| 4.5 Retire `SkillGrid.astro` and `Timeline.astro` from homepage         | 1h     | 4.2          | —                           | Old components removed from page; timeline content absorbed into Work Log (Phase 5)                                                    |
-| 4.6 Write tests for SkillMatrix                                         | 3h     | 4.2, 4.4     | —                           | Tests for rendering, category filtering, i18n parity                                                                                   |
+| Task                                                                    | Effort | Depends On   | Skill                       | Done Criteria                                                                                                                                                                                   |
+| ----------------------------------------------------------------------- | ------ | ------------ | --------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 4.1 Design skill cluster data model (Build, Scale, AI, Ship categories) | 3h     | —            | —                           | Restructure or map existing `skills.json` + `core-technologies.json` into 4 grouped clusters with display order. **Quality gates ★1–★4.**                                                       |
+| 4.2 Build `SkillMatrix.astro` (desktop: interactive competency board)   | 8h     | 4.1, Phase 1 | `frontend-design` `arrange` | Grouped clusters with category hover/focus revealing supporting proof points; chips animate into position; keyboard + touch accessible. **Quality gates ★1–★4, #5, #7, #8, #9, #10, #12, #13.** |
+| 4.3 Build mobile skill layout (compact mission tracker card stack)      | 4h     | 4.2          | `adapt`                     | Stacked category cards with expandable detail; touch-friendly affordances. **Quality gates ★1–★4, #5, #7 (mobile + tablet viewports), #9, #10, #13.**                                           |
+| 4.4 Add skills section i18n keys                                        | 2h     | 4.1          | `clarify`                   | `skills.*` keys updated for new category labels and proof point text in both locales. **Quality gates ★1–★4, #6.**                                                                              |
+| 4.5 Retire `SkillGrid.astro` and `Timeline.astro` from homepage         | 1h     | 4.2          | —                           | Old components removed from page; timeline content absorbed into Work Log (Phase 5). **Quality gates ★1–★4, #12, #13.**                                                                         |
+| 4.6 Write tests for SkillMatrix                                         | 3h     | 4.2, 4.4     | —                           | Tests for rendering, category filtering, i18n parity. **Quality gates ★1–★4.** Playwright verification for 4.2–4.3 must be complete before this task is done.                                   |
+
+### Execution Strategy
+
+```
+Wave 1 ─ sequential: 4.1 (data model)
+Wave 2 ─ parallel:   4.2 (SkillMatrix, ←4.1+Phase 1) + 4.4 (i18n keys, ←4.1)
+Wave 3 ─ parallel:   4.3 (mobile layout, ←4.2) + 4.5 (retire old, ←4.2) + 4.6 (tests, ←4.2+4.4)
+```
+
+- **Critical path**: 4.1 → 4.2 → 4.3 (15h sequential minimum)
+- **Parallelism savings**: ~5h — Wave 2 saves 2h (4.4 alongside 4.2), Wave 3 saves 4h (4.5+4.6 alongside 4.3)
+- **Cross-phase note**: Phase 4 and Phase 5 share no direct dependencies — they can run fully in parallel once Phase 2 (Milestone 1) is complete. This is the largest parallelism opportunity in the plan
 
 **Phase 4 Total**: ~21h
 
@@ -169,16 +276,30 @@ The project uses the **Impeccable** skill suite to enforce design quality at eve
 >
 > **Skills**: `frontend-design` (component builds) · `arrange` (cascade layout) · `distill` (strip to essentials)
 
-| Task                                                                      | Effort | Depends On    | Skill                       | Done Criteria                                                                                                                                                |
-| ------------------------------------------------------------------------- | ------ | ------------- | --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| 5.1 Design Work Log data model (merged projects + experience milestones)  | 3h     | —             | `distill`                   | Interface combining `projects.json` entries with `experience.json` roles into chronological or narrative order; one highlighted case study                   |
-| 5.2 Build `WorkLog.astro` section with cascade layout                     | 8h     | 5.1, Phase 1  | `frontend-design` `arrange` | Project cards + role milestone markers in combined sectional layout; cascade reveal tied to scroll; connector from active TODO item to highlighted work area |
-| 5.3 Redesign `ProjectCard.astro` with metadata tray hover                 | 4h     | 5.2           | `frontend-design`           | Card hover expands metadata tray (role, duration, tech stack) instead of simple lift; directional motion tied to pointer entry                               |
-| 5.4 Ensure case study links remain functional (`/[lang]/projects/[slug]`) | 2h     | 5.2           | —                           | Case study pages still accessible via standard links from Work Log cards                                                                                     |
-| 5.5 Add Work Log i18n keys                                                | 2h     | 5.1           | `clarify`                   | `workLog.*` keys in both locales                                                                                                                             |
-| 5.6 Retire `FeaturedProjects.astro` from homepage                         | 1h     | 5.2           | —                           | Component removed from homepage index; available for case study pages if needed                                                                              |
-| 5.7 Write tests for WorkLog and updated ProjectCard                       | 3h     | 5.2, 5.3, 5.5 | —                           | Tests validate rendering, data integration, i18n parity                                                                                                      |
-| 5.8 **Milestone 2 gate**: Run `critique` on all core sections             | 2h     | 5.7, 4.6, 3.8 | `critique`                  | Design effectiveness review covers: hero impact, bio readability, skill matrix usability, work log information density; issues addressed before Phase 6      |
+| Task                                                                      | Effort | Depends On    | Skill                       | Done Criteria                                                                                                                                                                                                                 |
+| ------------------------------------------------------------------------- | ------ | ------------- | --------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 5.1 Design Work Log data model (merged projects + experience milestones)  | 3h     | —             | `distill`                   | Interface combining `projects.json` entries with `experience.json` roles into chronological or narrative order; one highlighted case study. **Quality gates ★1–★4.**                                                          |
+| 5.2 Build `WorkLog.astro` section with cascade layout                     | 8h     | 5.1, Phase 1  | `frontend-design` `arrange` | Project cards + role milestone markers in combined sectional layout; cascade reveal tied to scroll; connector from active TODO item to highlighted work area. **Quality gates ★1–★4, #5, #7, #8, #9, #10, #12, #13.**         |
+| 5.3 Redesign `ProjectCard.astro` with metadata tray hover                 | 4h     | 5.2           | `frontend-design`           | Card hover expands metadata tray (role, duration, tech stack) instead of simple lift; directional motion tied to pointer entry. **Quality gates ★1–★4, #5, #7 (hover verified via Playwright), #9, #10, #13.**                |
+| 5.4 Ensure case study links remain functional (`/[lang]/projects/[slug]`) | 2h     | 5.2           | —                           | Case study pages still accessible via standard links from Work Log cards. **Quality gates ★1–★4, #7 (navigate links via Playwright, verify no 404s), #10.**                                                                   |
+| 5.5 Add Work Log i18n keys                                                | 2h     | 5.1           | `clarify`                   | `workLog.*` keys in both locales. **Quality gates ★1–★4, #6.**                                                                                                                                                                |
+| 5.6 Retire `FeaturedProjects.astro` from homepage                         | 1h     | 5.2           | —                           | Component removed from homepage index; available for case study pages if needed. **Quality gates ★1–★4, #12, #13.**                                                                                                           |
+| 5.7 Write tests for WorkLog and updated ProjectCard                       | 3h     | 5.2, 5.3, 5.5 | —                           | Tests validate rendering, data integration, i18n parity. **Quality gates ★1–★4.** Playwright verification for 5.2–5.4 must be complete before this task is done.                                                              |
+| 5.8 **Milestone 2 gate**: Run `critique` on all core sections             | 2h     | 5.7, 4.6, 3.8 | `critique`                  | Design effectiveness review covers: hero impact, bio readability, skill matrix usability, work log information density; issues addressed before Phase 6. **Prerequisite: all tasks 3.1–5.7 have passed their quality gates.** |
+
+### Execution Strategy
+
+```
+Wave 1 ─ sequential: 5.1 (data model)
+Wave 2 ─ parallel:   5.2 (WorkLog, ←5.1+Phase 1) + 5.5 (i18n keys, ←5.1)
+Wave 3 ─ parallel:   5.3 (ProjectCard, ←5.2)      + 5.4 (case study links, ←5.2) + 5.6 (retire old, ←5.2)
+Wave 4 ─ sequential: 5.7 (tests, ←5.2+5.3+5.5)
+Wave 5 ─ sequential: 5.8 (critique gate, ←5.7+4.6+3.8) ⚠ cross-phase blocker
+```
+
+- **Critical path**: 5.1 → 5.2 → 5.3 → 5.7 → 5.8 (20h sequential minimum)
+- **Parallelism savings**: ~5h — Wave 2 saves 2h (5.5 alongside 5.2), Wave 3 saves 3h (5.4+5.6 alongside 5.3)
+- **Cross-phase note**: Phases 4 and 5 are independently parallelizable — 5.1 can start at the same time as 4.1. However, **5.8 (Milestone 2 gate) blocks until Phase 3 tests (3.8) and Phase 4 tests (4.6) also pass**, making it a convergence point for three parallel streams
 
 **Phase 5 Total**: ~25h
 
@@ -190,16 +311,31 @@ The project uses the **Impeccable** skill suite to enforce design quality at eve
 >
 > **Skills**: `frontend-design` (component build) · `clarify` (CTA copy) · `delight` (completion feedback) · `harden` (i18n edge cases)
 
-| Task                                                                   | Effort | Depends On              | Skill                       | Done Criteria                                                                                                                                                              |
-| ---------------------------------------------------------------------- | ------ | ----------------------- | --------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 6.1 Build new `ContactChapter.astro` (final unresolved task narrative) | 6h     | Phase 1, 2.4            | `frontend-design` `delight` | Last TODO item ("Open channel") feels like "ready to start"; direct email CTA, social links, resume entry point; completion feedback toast on email copy                   |
-| 6.2 Integrate resume access into Contact section                       | 2h     | 6.1                     | —                           | Resume link/download visible within Contact chapter; links to existing `/[lang]/resume` page                                                                               |
-| 6.3 Retire old `Contact.astro` from homepage                           | 1h     | 6.1                     | —                           | Old component removed from homepage                                                                                                                                        |
-| 6.4 Wire full page section order in `[lang]/index.astro`               | 4h     | 3.1, 3.5, 4.2, 5.2, 6.1 | —                           | Homepage renders: HeroNarrative → BioChapter → SkillMatrix → WorkLog → ContactChapter; all sections have `class="fade-section"` and unique `id` matching TODO rail targets |
-| 6.5 Add Contact i18n keys and clean up retired keys                    | 2h     | 6.1                     | `clarify`                   | `contact.*` keys updated; orphaned keys from retired components removed from both locales; CTA microcopy is action-oriented and clear                                      |
-| 6.6 Ensure non-homepage pages still work (resume, case studies)        | 3h     | 6.4                     | `harden`                    | `/[lang]/resume` and `/[lang]/projects/[slug]` render correctly; may use a simplified layout without TODO rail (or rail disabled); Spanish text expansion tested           |
-| 6.7 Write tests for ContactChapter                                     | 2h     | 6.1, 6.5                | —                           | Tests validate rendering, CTA functionality, i18n parity                                                                                                                   |
-| 6.8 **Milestone 3 gate**: Run `critique` on complete page assembly     | 2h     | 6.7                     | `critique`                  | Full-page design review: section flow, visual rhythm, narrative coherence, TODO rail pacing; issues addressed before animation work begins                                 |
+| Task                                                                   | Effort | Depends On              | Skill                       | Done Criteria                                                                                                                                                                                                                                                        |
+| ---------------------------------------------------------------------- | ------ | ----------------------- | --------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 6.1 Build new `ContactChapter.astro` (final unresolved task narrative) | 6h     | Phase 1, 2.4            | `frontend-design` `delight` | Last TODO item ("Open channel") feels like "ready to start"; direct email CTA, social links, resume entry point; completion feedback toast on email copy. **Quality gates ★1–★4, #5, #7, #8, #9, #10, #12, #13.**                                                    |
+| 6.2 Integrate resume access into Contact section                       | 2h     | 6.1                     | —                           | Resume link/download visible within Contact chapter; links to existing `/[lang]/resume` page. **Quality gates ★1–★4, #7 (verify link navigation via Playwright), #10.**                                                                                              |
+| 6.3 Retire old `Contact.astro` from homepage                           | 1h     | 6.1                     | —                           | Old component removed from homepage. **Quality gates ★1–★4, #12, #13.**                                                                                                                                                                                              |
+| 6.4 Wire full page section order in `[lang]/index.astro`               | 4h     | 3.1, 3.5, 4.2, 5.2, 6.1 | —                           | Homepage renders: HeroNarrative → BioChapter → SkillMatrix → WorkLog → ContactChapter; all sections have `class="fade-section"` and unique `id` matching TODO rail targets. **Quality gates ★1–★4, #7 (full-page screenshots all viewports/locales), #8, #10, #13.** |
+| 6.5 Add Contact i18n keys and clean up retired keys                    | 2h     | 6.1                     | `clarify`                   | `contact.*` keys updated; orphaned keys from retired components removed from both locales; CTA microcopy is action-oriented and clear. **Quality gates ★1–★4, #6.**                                                                                                  |
+| 6.6 Ensure non-homepage pages still work (resume, case studies)        | 3h     | 6.4                     | `harden`                    | `/[lang]/resume` and `/[lang]/projects/[slug]` render correctly; may use a simplified layout without TODO rail (or rail disabled); Spanish text expansion tested. **Quality gates ★1–★4, #7 (Playwright navigates all sub-pages), #10, #13.**                        |
+| 6.7 Write tests for ContactChapter                                     | 2h     | 6.1, 6.5                | —                           | Tests validate rendering, CTA functionality, i18n parity. **Quality gates ★1–★4.** Playwright verification for 6.1–6.4 must be complete before this task is done.                                                                                                    |
+| 6.8 **Milestone 3 gate**: Run `critique` on complete page assembly     | 2h     | 6.7                     | `critique`                  | Full-page design review: section flow, visual rhythm, narrative coherence, TODO rail pacing; issues addressed before animation work begins. **Prerequisite: all tasks 6.1–6.7 have passed their quality gates.**                                                     |
+
+### Execution Strategy
+
+```
+Wave 1 ─ sequential: 6.1 (ContactChapter, ←Phase 1+2.4)
+Wave 2 ─ parallel:   6.2 (resume access, ←6.1) + 6.3 (retire old, ←6.1) + 6.5 (i18n, ←6.1)
+Wave 3 ─ parallel:   6.4 (page wiring, ←3.1+3.5+4.2+5.2+6.1) + 6.7 (tests, ←6.1+6.5)
+Wave 4 ─ sequential: 6.6 (sub-page QA, ←6.4)
+Wave 5 ─ sequential: 6.8 (critique gate, ←6.7)
+```
+
+- **Critical path**: 6.1 → 6.5 → 6.7 → 6.8 (12h) or 6.1 → 6.4 → 6.6 (13h) — the page-wiring path is slightly longer
+- **Parallelism savings**: ~5h — Wave 2 saves 3h (three tasks alongside each other), Wave 3 saves 2h (6.7 alongside 6.4)
+- **Cross-phase blockers**: 6.4 is the most dependency-heavy task in the entire plan — it requires completed components from Phases 3, 4, 5, and 6. This is why Phases 4+5 must finish before full page assembly
+- **Early start opportunity**: 6.1 only depends on Phase 1 + task 2.4 (not on Phases 3–5), so ContactChapter can be built in parallel with Phases 4 and 5
 
 **Phase 6 Total**: ~22h
 
@@ -211,18 +347,37 @@ The project uses the **Impeccable** skill suite to enforce design quality at eve
 >
 > **Skills**: `animate` (motion implementation) · `overdrive` (ambitious effects) · `delight` (micro-interaction joy) · `quieter` (tone down if overcorrected)
 
-| Task                                                                                                            | Effort | Depends On    | Skill               | Done Criteria                                                                                                                                                                                   |
-| --------------------------------------------------------------------------------------------------------------- | ------ | ------------- | ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 7.1 Hero load choreography (TODO rail appears → Hello World types → portrait reveals → Boot identity completes) | 6h     | 3.2, 3.4, 2.6 | `animate`           | Load sequence executes in order; no layout shift; reduced-motion fallback shows instant states                                                                                                  |
-| 7.2 TODO rail micro-interactions (cursor sweep, checkmark draw, strike-through)                                 | 6h     | 2.2, 2.6      | `delight` `animate` | Active item gets cursor-like sweep; check draws with overshoot; completed items get left-to-right strike-through; all CSS/SVG based                                                             |
-| 7.3 Chapter-specific reveal families                                                                            | 8h     | 6.4           | `animate`           | Hero types in; Bio wipes on; Skills assemble; Work cascades; Contact resolves — each distinct but within one system                                                                             |
-| 7.4 Theme toggle portrait sequence (frame-by-frame transformation)                                              | 6h     | 2.7, 3.3      | `overdrive`         | Switching to "After Hours" triggers short (4–8 frame) image sequence ending on sunglasses; reverse on return; falls back to instant swap for reduced motion; frames lazy-loaded on first toggle |
-| 7.5 Theme toggle surface choreography (palette + accent swap in ≤650ms)                                         | 4h     | 2.7, 1.2      | `animate`           | CSS variable transitions animate surfaces, accents, and text in one coordinated moment; no layout shift                                                                                         |
-| 7.6 Project card directional hover + metadata tray expand                                                       | 3h     | 5.3           | `delight`           | Pointer-entry-aware motion; keyboard focus mirrors intent                                                                                                                                       |
-| 7.7 Skills chip pulse/align on category hover                                                                   | 3h     | 4.2           | `animate`           | Chips respond to category focus with subtle alignment animation                                                                                                                                 |
-| 7.8 Contact completion feedback (email copy toast, CTA states)                                                  | 2h     | 6.1           | `delight`           | Copy email action shows accessible toast; CTA has pressed/success state                                                                                                                         |
-| 7.9 `prefers-reduced-motion` full pass                                                                          | 3h     | 7.1–7.8       | `animate`           | Every animation replaced with instant state + short opacity transition; checklist logic and theme semantics preserved                                                                           |
-| 7.10 Run `quieter` to calibrate animation intensity                                                             | 2h     | 7.9           | `quieter`           | Review all animations for aggressiveness; tone down any that feel overwhelming while preserving delight; elegance over spectacle                                                                |
+| Task                                                                                                            | Effort | Depends On    | Skill               | Done Criteria                                                                                                                                                                                                                                    |
+| --------------------------------------------------------------------------------------------------------------- | ------ | ------------- | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 7.1 Hero load choreography (TODO rail appears → Hello World types → portrait reveals → Boot identity completes) | 6h     | 3.2, 3.4, 2.6 | `animate`           | Load sequence executes in order; no layout shift; reduced-motion fallback shows instant states. **Quality gates ★1–★4, #7 (record load sequence via Playwright), #10, #11, #13.**                                                                |
+| 7.2 TODO rail micro-interactions (cursor sweep, checkmark draw, strike-through)                                 | 6h     | 2.2, 2.6      | `delight` `animate` | Active item gets cursor-like sweep; check draws with overshoot; completed items get left-to-right strike-through; all CSS/SVG based. **Quality gates ★1–★4, #7, #9, #10, #11.**                                                                  |
+| 7.3 Chapter-specific reveal families                                                                            | 8h     | 6.4           | `animate`           | Hero types in; Bio wipes on; Skills assemble; Work cascades; Contact resolves — each distinct but within one system. **Quality gates ★1–★4, #7 (scroll through all sections via Playwright), #10, #11, #13.**                                    |
+| 7.4 Theme toggle portrait sequence (frame-by-frame transformation)                                              | 6h     | 2.7, 3.3      | `overdrive`         | Switching to "After Hours" triggers short (4–8 frame) image sequence ending on sunglasses; reverse on return; falls back to instant swap for reduced motion; frames lazy-loaded on first toggle. **Quality gates ★1–★4, #7, #8, #10, #11, #13.** |
+| 7.5 Theme toggle surface choreography (palette + accent swap in ≤650ms)                                         | 4h     | 2.7, 1.2      | `animate`           | CSS variable transitions animate surfaces, accents, and text in one coordinated moment; no layout shift. **Quality gates ★1–★4, #7, #8, #10, #11.**                                                                                              |
+| 7.6 Project card directional hover + metadata tray expand                                                       | 3h     | 5.3           | `delight`           | Pointer-entry-aware motion; keyboard focus mirrors intent. **Quality gates ★1–★4, #7 (hover interaction via Playwright), #9, #10, #11.**                                                                                                         |
+| 7.7 Skills chip pulse/align on category hover                                                                   | 3h     | 4.2           | `animate`           | Chips respond to category focus with subtle alignment animation. **Quality gates ★1–★4, #7, #10, #11.**                                                                                                                                          |
+| 7.8 Contact completion feedback (email copy toast, CTA states)                                                  | 2h     | 6.1           | `delight`           | Copy email action shows accessible toast; CTA has pressed/success state. **Quality gates ★1–★4, #7, #9, #10, #11.**                                                                                                                              |
+| 7.9 `prefers-reduced-motion` full pass                                                                          | 3h     | 7.1–7.8       | `animate`           | Every animation replaced with instant state + short opacity transition; checklist logic and theme semantics preserved. **Quality gates ★1–★4, #7 (Playwright with reduced-motion emulation), #11.**                                              |
+| 7.10 Run `quieter` to calibrate animation intensity                                                             | 2h     | 7.9           | `quieter`           | Review all animations for aggressiveness; tone down any that feel overwhelming while preserving delight; elegance over spectacle. **Quality gates ★1–★4, #7 (final animation screenshots), #10, #13.**                                           |
+
+### Execution Strategy
+
+```
+Wave 1 ─ parallel:   7.1 (hero choreography, ←3.2+3.4+2.6)
+                     7.2 (rail micro-interactions, ←2.2+2.6)
+                     7.3 (chapter reveals, ←6.4)
+                     7.4 (portrait sequence, ←2.7+3.3)
+                     7.5 (theme surface anim, ←2.7+1.2)
+                     7.6 (card hover, ←5.3)
+                     7.7 (skills chip anim, ←4.2)
+                     7.8 (contact feedback, ←6.1)
+Wave 2 ─ sequential: 7.9 (reduced-motion pass, ←7.1–7.8)
+Wave 3 ─ sequential: 7.10 (quieter calibration, ←7.9)
+```
+
+- **Critical path**: Wave 1 (longest task is 7.3 at 8h) → 7.9 → 7.10 (13h sequential minimum)
+- **Parallelism savings**: ~25h — **all 8 animation tasks in Wave 1 are fully independent** and can run simultaneously. This is the most parallelizable phase in the plan. Serial execution would take 38h; parallel execution reduces Wave 1 to ~8h (limited by the longest task)
+- **Sequencing constraint**: 7.9 (reduced-motion) and 7.10 (quieter) are strictly sequential gatekeepers — they review and adjust everything from Wave 1, so no animation task can skip them
 
 **Phase 7 Total**: ~43h
 
@@ -234,27 +389,50 @@ The project uses the **Impeccable** skill suite to enforce design quality at eve
 >
 > **Skills**: `audit` (comprehensive audit) · `adapt` (responsive QA) · `optimize` (performance) · `normalize` (design system consistency) · `polish` (final detail pass) · `harden` (resilience)
 
-| Task                                                                                | Effort | Depends On | Skill            | Done Criteria                                                                                                                                 |
-| ----------------------------------------------------------------------------------- | ------ | ---------- | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| 8.1 Desktop QA (≥1024px) — all sections, both themes, both locales                  | 4h     | Phase 7    | `adapt`          | No layout breaks, TODO rail functional, animations smooth, both themes render correctly in en + es                                            |
-| 8.2 Tablet QA (768–1023px) — compressed rail, simplified overlaps                   | 4h     | Phase 7    | `adapt`          | Narrower rail readable; section transitions simpler; no horizontal overflow                                                                   |
-| 8.3 Mobile QA (320–767px) — mission tracker mode, chapter cards                     | 4h     | Phase 7    | `adapt` `harden` | Sticky progress dock works; all content accessible; touch targets ≥44px; Spanish expansion doesn't break layout                               |
-| 8.4 Accessibility audit (keyboard nav, screen reader, contrast, focus rings)        | 6h     | Phase 7    | `audit`          | All interactive elements keyboard-reachable; focus indicators visible and styled; ARIA landmarks correct; WCAG AA contrast met in both themes |
-| 8.5 Performance optimization (Lighthouse ≥90, image optimization, animation budget) | 6h     | Phase 7    | `optimize`       | Lighthouse Performance/Accessibility/SEO ≥90; hero portrait preloaded; supplemental photos lazy-loaded; no scroll jank                        |
-| 8.6 SEO validation (semantic HTML, JSON-LD, OG tags, sitemap)                       | 3h     | 6.4        | —                | Heading hierarchy correct; JSON-LD still present; OG tags updated for new content; sitemap generates cleanly                                  |
-| 8.7 Cross-browser testing (Chrome, Firefox, Safari, Edge)                           | 4h     | 8.1–8.3    | —                | No critical visual or functional differences across evergreen browsers                                                                        |
-| 8.8 Run `normalize` to verify design system consistency                             | 3h     | 8.1–8.3    | `normalize`      | All components use design tokens consistently; no hardcoded colors/spacing outside token system; theme switching uniform across sections      |
-| 8.9 Update/fix all broken tests from component changes                              | 6h     | Phases 3–7 | —                | All 21+ test files pass; new tests added for new components; `npm run build` succeeds cleanly                                                 |
-| 8.10 Run `polish` for final detail pass                                             | 3h     | 8.8, 8.9   | `polish`         | Alignment, spacing, consistency, and micro-detail issues fixed; pixel-level refinements; production-ready quality                             |
-| 8.11 Final lint + format pass                                                       | 1h     | 8.10       | —                | `npm run lint` and `npm run format` pass with no errors                                                                                       |
-| 8.12 **Milestone 4 gate**: Final `critique` before production deploy                | 2h     | 8.10       | `critique`       | Final design review: overall experience quality, narrative flow, theme coherence, interaction delight; sign-off for launch                    |
-| 8.13 Production deploy to Netlify                                                   | 2h     | 8.1–8.12   | —                | Site live at juanelojga.com; cache headers correct; redirects working; no console errors                                                      |
+| Task                                                                                | Effort | Depends On | Skill            | Done Criteria                                                                                                                                                                                                                                                                      |
+| ----------------------------------------------------------------------------------- | ------ | ---------- | ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 8.1 Desktop QA (≥1024px) — all sections, both themes, both locales                  | 4h     | Phase 7    | `adapt`          | No layout breaks, TODO rail functional, animations smooth, both themes render correctly in en + es. **Playwright full-page screenshots at 1280px for all 4 combinations (en/es × build/after-hours).**                                                                             |
+| 8.2 Tablet QA (768–1023px) — compressed rail, simplified overlaps                   | 4h     | Phase 7    | `adapt`          | Narrower rail readable; section transitions simpler; no horizontal overflow. **Playwright full-page screenshots at 768px for all 4 combinations.**                                                                                                                                 |
+| 8.3 Mobile QA (320–767px) — mission tracker mode, chapter cards                     | 4h     | Phase 7    | `adapt` `harden` | Sticky progress dock works; all content accessible; touch targets ≥44px; Spanish expansion doesn't break layout. **Playwright full-page screenshots at 375px for all 4 combinations.**                                                                                             |
+| 8.4 Accessibility audit (keyboard nav, screen reader, contrast, focus rings)        | 6h     | Phase 7    | `audit`          | All interactive elements keyboard-reachable; focus indicators visible and styled; ARIA landmarks correct; WCAG AA contrast met in both themes. **Run axe-core or Lighthouse accessibility audit programmatically; score ≥90.**                                                     |
+| 8.5 Performance optimization (Lighthouse ≥90, image optimization, animation budget) | 6h     | Phase 7    | `optimize`       | Lighthouse Performance/Accessibility/SEO ≥90; hero portrait preloaded; supplemental photos lazy-loaded; no scroll jank. **Lighthouse CI scores recorded and committed.**                                                                                                           |
+| 8.6 SEO validation (semantic HTML, JSON-LD, OG tags, sitemap)                       | 3h     | 6.4        | —                | Heading hierarchy correct; JSON-LD still present; OG tags updated for new content; sitemap generates cleanly. **Quality gates ★1–★4, #10, #13.**                                                                                                                                   |
+| 8.7 Cross-browser testing (Chrome, Firefox, Safari, Edge)                           | 4h     | 8.1–8.3    | —                | No critical visual or functional differences across evergreen browsers. **Playwright screenshots in Chromium, Firefox, and WebKit engines.**                                                                                                                                       |
+| 8.8 Run `normalize` to verify design system consistency                             | 3h     | 8.1–8.3    | `normalize`      | All components use design tokens consistently; no hardcoded colors/spacing outside token system; theme switching uniform across sections. **Quality gates ★1–★4.**                                                                                                                 |
+| 8.9 Update/fix all broken tests from component changes                              | 6h     | Phases 3–7 | —                | All 21+ test files pass; new tests added for new components; `npm run build` succeeds cleanly. **`npm test` exits 0; `npm run build` exits 0; no `.skip` or `.only` in test files.**                                                                                               |
+| 8.10 Run `polish` for final detail pass                                             | 3h     | 8.8, 8.9   | `polish`         | Alignment, spacing, consistency, and micro-detail issues fixed; pixel-level refinements; production-ready quality. **Quality gates ★1–★4, #7 (final golden screenshots), #8, #13.**                                                                                                |
+| 8.11 Final lint + format pass                                                       | 1h     | 8.10       | —                | `npm run lint` and `npm run format` pass with no errors. **Zero ESLint warnings (not just errors). Prettier produces no diff.**                                                                                                                                                    |
+| 8.12 **Milestone 4 gate**: Final `critique` before production deploy                | 2h     | 8.10       | `critique`       | Final design review: overall experience quality, narrative flow, theme coherence, interaction delight; sign-off for launch. **Prerequisite: all tasks 7.1–8.11 have passed their quality gates. Full Playwright screenshot set committed to `.screenshots/` as release baseline.** |
+| 8.13 Production deploy to Netlify                                                   | 2h     | 8.1–8.12   | —                | Site live at juanelojga.com; cache headers correct; redirects working; no console errors                                                                                                                                                                                           |
+
+### Execution Strategy
+
+```
+Wave 1 ─ parallel:   8.1 (desktop QA, ←Phase 7)
+                     8.2 (tablet QA, ←Phase 7)
+                     8.3 (mobile QA, ←Phase 7)
+                     8.4 (accessibility audit, ←Phase 7)
+                     8.5 (performance opt, ←Phase 7)
+                     8.6 (SEO validation, ←6.4)
+                     8.9 (fix broken tests, ←Phases 3–7)
+Wave 2 ─ parallel:   8.7 (cross-browser, ←8.1–8.3) + 8.8 (normalize, ←8.1–8.3)
+Wave 3 ─ sequential: 8.10 (polish, ←8.8+8.9)
+Wave 4 ─ parallel:   8.11 (lint/format, ←8.10) + 8.12 (critique gate, ←8.10)
+Wave 5 ─ sequential: 8.13 (deploy, ←8.1–8.12)
+```
+
+- **Critical path**: Wave 1 (longest: 8.9 at 6h or 8.5 at 6h) → 8.8 (3h) → 8.10 (3h) → 8.12 (2h) → 8.13 (2h) = 16h sequential minimum
+- **Parallelism savings**: ~22h — Wave 1 runs 7 tasks simultaneously (28h serial → ~6h parallel), Wave 2 saves 3h (8.7 alongside 8.8), Wave 4 saves 1h (8.11 alongside 8.12)
+- **Key constraint**: 8.10 (polish) is the convergence point — it needs both the normalize pass (8.8) and test fixes (8.9) complete. If test fixes run long, they block the entire polish → deploy pipeline
+- **Risk mitigation**: Start 8.9 (test fixes) early — it can begin as soon as component phases complete, even before Phase 7 finishes, since it addresses test breakage from Phases 3–7
 
 **Phase 8 Total**: ~48h
 
 ---
 
 ## Dependencies Map
+
+### Phase-Level Dependency Graph
 
 ```
 Phase 0 (teach-impeccable) ──> Phase 1 (Tokens/Theme) ──────────────────────────┐
@@ -274,17 +452,52 @@ Phase 3 (Hero/Bio) ────────────────────�
   ├── 3.5 BioChapter ──> 3.6 Retire old ──> 3.7 i18n ──> 3.8 Tests│    │      ││
   └────────────────────────────────────────────────────────────────┘    │      ││
                                                                        │      ││
-Phase 4 (Skills) & Phase 5 (Work Log) — can run in partial parallel    │      ││
-  ├── 4.1–4.6 (Skills) ──────────────────────────────────>─┐           │      ││
-  ├── 5.1–5.7 (Work Log) ──> 5.8 critique gate (M2) ─────>├─> 6.4    │      ││
-  └────────────────────────────────────────────────────────┘           │      ││
-                                                                       │      ││
-Phase 6 (Contact + Page Wiring) ──> 6.8 critique gate (M3)                    ││
-  ──────> Phase 7 (Animation) ──> 7.10 quieter calibration                     ││
-  ──────> Phase 8 (QA) ──> 8.8 normalize ──> 8.10 polish ──> 8.12 critique (M4)││
+Phase 4 (Skills) & Phase 5 (Work Log) — FULLY PARALLEL STREAMS ───────┐│      ││
+  ├── 4.1–4.6 (Skills) ──────────────────────────────────>─┐          ││      ││
+  ├── 5.1–5.7 (Work Log) ────────────────────────────────>─┤  ┌──────┘│      ││
+  │                                                        ├──┤       │      ││
+  │   6.1 (Contact, ←Phase 1+2.4) — EARLY START ─────────>┤  │       │      ││
+  │                                                        │  │       │      ││
+  └── 5.8 critique gate (M2, ←3.8+4.6+5.7) ──────────────>┘  │       │      ││
+                                                               │       │      ││
+Phase 6 (Contact + Page Wiring) ──> 6.8 critique gate (M3) ──>│       │      ││
+  ──────> Phase 7 (Animation — 8 PARALLEL tracks) ──> 7.9 ──> 7.10    │      ││
+  ──────> Phase 8 (QA — 7 PARALLEL tracks) ──> 8.10 ──> 8.12 ──> 8.13││
 ```
 
-**Critical Path**: Phase 0 → Phase 1 → Phase 2 (Layout + critique gate) → Phase 3 (Hero) → Phase 6.4 (Page wiring) → Phase 6.8 (critique gate) → Phase 7 (Animation + quieter calibration) → Phase 8 (audit → normalize → optimize → polish → critique gate → deploy)
+### Cross-Phase Parallelism Opportunities
+
+These are tasks that can start **before their phase officially begins**, reducing the overall timeline:
+
+| Task                 | Can Start During | Prerequisite             | Savings |
+| -------------------- | ---------------- | ------------------------ | ------- |
+| 2.1 (data model)     | Phase 1 Wave 2   | No Phase 1 dependency    | ~4h     |
+| 2.7 (theme toggle)   | Phase 1 Wave 3   | Only needs 1.2 + 1.6     | ~2h     |
+| 6.1 (ContactChapter) | Phase 3 start    | Only needs Phase 1 + 2.4 | ~8h     |
+| 8.9 (test fixes)     | Phase 7          | Phases 3–6 components    | ~6h     |
+
+### Critical Path (End-to-End)
+
+```
+0.1 ─> 0.2 ─> 1.1 ─> 1.2 ─> 2.2 ─> 2.3 ─> 2.4 ─> 2.9 ─> 2.10 ─>
+─> 3.1 ─> 3.2 ─> 3.4 ─> ... ─> 6.4 ─> 6.8 ─> 7.3 ─> 7.9 ─> 7.10 ─>
+─> 8.1 ─> 8.8 ─> 8.10 ─> 8.12 ─> 8.13
+```
+
+**Critical path duration**: ~110h (out of 255h total)
+
+The remaining ~145h runs on parallel tracks. Maximum parallelism reduces the elapsed calendar time from ~255h serial to ~110h effective.
+
+### Milestone Convergence Points
+
+These are the 4 synchronization barriers where all parallel streams must converge:
+
+| Milestone | Gate Task | Waits For                                     | Blocks         |
+| --------- | --------- | --------------------------------------------- | -------------- |
+| M1        | 2.10      | All of Phase 1 + Phase 2 (2.1–2.9)            | Phases 3, 4, 5 |
+| M2        | 5.8       | Phase 3 (3.8) + Phase 4 (4.6) + Phase 5 (5.7) | Phase 6.4+     |
+| M3        | 6.8       | Phase 6 (6.1–6.7)                             | Phase 7        |
+| M4        | 8.12      | Phase 7 + Phase 8 (8.1–8.11)                  | Deploy (8.13)  |
 
 Phases 4 and 5 can proceed in parallel once Phase 2 is complete, but must finish before Phase 6.4 (page assembly).
 
@@ -292,16 +505,18 @@ Phases 4 and 5 can proceed in parallel once Phase 2 is complete, but must finish
 
 ## Risks & Mitigation
 
-| Risk                                                  | Impact | Probability | Mitigation                                                                                                                                                         |
-| ----------------------------------------------------- | ------ | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Portrait photography assets not ready                 | High   | Medium      | Use placeholder images for development; design portrait containers to accept any same-dimension image pair; block only Phase 7.4 (frame sequence) on actual assets |
-| TODO rail feels gimmicky instead of useful            | High   | Medium      | Implement 3-state logic early (Proposal 1) and user-test with real scrolling; simplify labels if playful phrasing confuses recruiters                              |
-| Animation performance issues on low-end devices       | Medium | Medium      | Set strict animation budget (opacity + transform only); test on throttled CPU early in Phase 7; have reduced-motion as full fallback                               |
-| Spanish text expansion breaks layouts                 | Medium | High        | Test with Spanish locale from Phase 2 onward; use flexible containers (`min-width` not fixed `width`) for TODO labels and CTAs                                     |
-| Scope creep from design direction proposals           | High   | High        | Prioritize Proposals 1, 3, 4, 9, 10 per design doc; defer Proposals 2, 5, 6, 7, 8 to post-launch iteration                                                         |
-| Existing tests break during component retirement      | Low    | High        | Update tests alongside component changes in each phase (not deferred to Phase 8); run `npm test` after each phase                                                  |
-| Theme toggle portrait sequence too heavy              | Medium | Medium      | Limit to 4–8 optimized WebP frames; lazy-load on first toggle; disable for reduced motion; measure transfer size                                                   |
-| Case study and resume pages break from layout changes | Medium | Medium      | Keep sub-pages on a simplified layout variant without TODO rail; test in Phase 6.6                                                                                 |
+| Risk                                                  | Impact | Probability | Mitigation                                                                                                                                                                                                                                          |
+| ----------------------------------------------------- | ------ | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Portrait photography assets not ready                 | High   | Medium      | Use placeholder images for development; design portrait containers to accept any same-dimension image pair; block only Phase 7.4 (frame sequence) on actual assets                                                                                  |
+| TODO rail feels gimmicky instead of useful            | High   | Medium      | Implement 3-state logic early (Proposal 1) and user-test with real scrolling; simplify labels if playful phrasing confuses recruiters                                                                                                               |
+| Animation performance issues on low-end devices       | Medium | Medium      | Set strict animation budget (opacity + transform only); test on throttled CPU early in Phase 7; have reduced-motion as full fallback                                                                                                                |
+| Spanish text expansion breaks layouts                 | Medium | High        | Test with Spanish locale from Phase 2 onward; use flexible containers (`min-width` not fixed `width`) for TODO labels and CTAs                                                                                                                      |
+| Scope creep from design direction proposals           | High   | High        | Prioritize Proposals 1, 3, 4, 9, 10 per design doc; defer Proposals 2, 5, 6, 7, 8 to post-launch iteration                                                                                                                                          |
+| Existing tests break during component retirement      | Low    | High        | Update tests alongside component changes in each phase (not deferred to Phase 8); run `npm test` after each phase                                                                                                                                   |
+| Theme toggle portrait sequence too heavy              | Medium | Medium      | Limit to 4–8 optimized WebP frames; lazy-load on first toggle; disable for reduced motion; measure transfer size                                                                                                                                    |
+| Case study and resume pages break from layout changes | Medium | Medium      | Keep sub-pages on a simplified layout variant without TODO rail; test in Phase 6.6                                                                                                                                                                  |
+| Quality gate enforcement slows velocity               | Low    | Medium      | Gates catch issues early, reducing rework in later phases. Automate lint/format/type-check via pre-commit hook. Batch Playwright screenshots per phase, not per micro-task. Budget ~15% overhead for quality gates, offset by fewer late-stage bugs |
+| Playwright visual regressions accumulate unnoticed    | Medium | Medium      | Commit `.screenshots/` baseline at each milestone gate. Review diffs in PR. Name files consistently (`{component}-{viewport}-{locale}-{theme}.png`) for easy comparison                                                                             |
 
 ---
 
