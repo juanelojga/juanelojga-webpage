@@ -52,14 +52,41 @@ Plain JSON arrays in `src/content/` (projects, experience, core-technologies, to
 
 ## Design Language
 
-Green-on-black hacker theme:
+> Full design context is in [`.impeccable.md`](.impeccable.md). Key points below.
 
-- Accents: `text-green-400`, `bg-green-500`, glow via `shadow-[0_0_15px_#00FF80]`
-- Backgrounds: `bg-black`
-- Text: `text-white`, `text-gray-300`, `text-gray-400`
+**Redesign concept**: Narrative TODO-rail interface — the page behaves like a personal execution board, not a brochure. A persistent TODO rail drives navigation with playful developer labels (_Boot identity_, _Compile strengths_, _Unlock work log_, _Open channel_).
+
+**Brand personality**: Precise · Playful · High-Agency
+
+**Theme system**: Dual-theme with named modes:
+
+- **Build Mode** (light): chalk/concrete/pale graphite surfaces, acid green primary signal (~#00FF80)
+- **After Hours** (dark): charcoal/ink/smoked teal surfaces, bright accents, sunglasses portrait variant
+
+**Color roles**:
+
+- Primary signal: acid green / digital lime — completion, focus, active rail states
+- Secondary signal: electric cyan — hover trails, info accents
+- Warm counter-accent: muted amber — warnings, timestamps
 - Styling priority: Tailwind utilities → arbitrary values → scoped `<style>` → imported CSS (`src/css/global.css`)
 
-Custom animations defined in `tailwind.config.mjs`: `fade-in-left`, `fade-in-right`, `fadeInUp`.
+**Typography**: JetBrains Mono (display/system cues) + Inter (editorial body copy). 5-level hierarchy from 64–88px hero display down to 13–15px meta.
+
+**Photography**: Editorial portraits as core design material — hero pair for theme switching (4–8 frame sequence), 2–3 supporting editorial crops, 1 detail crop.
+
+**Motion**: Task-resolution metaphor. Each chapter has a distinct reveal family. `prefers-reduced-motion: reduce` replaces all transforms with instant state + short opacity fades.
+
+**Anti-references**: Generic dev portfolio templates, corporate SaaS landing pages, futuristic particle/neon clichés.
+
+**Design principles**:
+
+1. Narrative over brochure
+2. Developer culture as native metaphor
+3. Motion confirms progress
+4. Photography carries personality
+5. Machine-readable always (WCAG AA minimum)
+6. Reward exploration with layered detail
+7. Right rail is sacred
 
 ## Deployment
 

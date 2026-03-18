@@ -39,7 +39,7 @@ npm run format       # Prettier format
 
 ## Project Conventions
 
-- **Design language**: green-on-black theme — accents use `text-green-400`, `bg-green-500`, glow via `shadow-[0_0_15px_#00FF80]`; backgrounds `bg-black`; text `text-white`/`text-gray-300`/`text-gray-400`
+- **Design language**: full design context in [`.impeccable.md`](../.impeccable.md). Dual-theme system: "Build Mode" (light) with chalk/concrete surfaces and acid green primary signal (~#00FF80), "After Hours" (dark) with charcoal/ink/smoked teal surfaces. Narrative TODO-rail interface — persistent right rail drives navigation with developer-language labels.
 - **Styling hierarchy**: Tailwind utilities → arbitrary values → scoped `<style>` → imported CSS → [src/css/global.css](src/css/global.css)
 - **Component structure**: frontmatter (imports, logic) → HTML template with Tailwind → scoped `<style>` for animations → `<script is:inline>` for DOM logic
 - **Images**: use `Image` from `astro:assets` with explicit `width`/`height`; hero uses `loading="eager"`, others `loading="lazy"`
