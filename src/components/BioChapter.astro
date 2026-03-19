@@ -31,23 +31,18 @@ const paragraphs = bio.narrative.split('\n').filter(p => p.trim());
       </div>
     </div>
 
-    <!-- Portrait crop placeholder -->
+    <!-- Portrait crop -->
     <div
       class="relative flex aspect-square w-full items-center justify-center overflow-hidden rounded-xl lg:order-2 lg:w-[280px] lg:shrink-0 xl:w-[320px]"
     >
-      <div
-        class="absolute inset-0 bg-gradient-to-tl from-surface-tertiary via-surface-secondary to-surface-primary"
-      >
-      </div>
-      <div class="absolute inset-0 opacity-15">
-        <div
-          class="border-signal-secondary/30 absolute right-0 top-0 size-1/2 rounded-bl-[3rem] border-b border-l"
-        >
-        </div>
-        <div class="bg-signal-warm/50 absolute bottom-6 right-6 size-2.5 rounded-full"></div>
-        <div class="bg-signal-primary/40 absolute left-6 top-6 size-2 rounded-full"></div>
-      </div>
-      <span class="text-text-secondary/50 relative z-10 font-mono text-meta">{'{ detail }'}</span>
+      <img
+        src="/images/detail-hands-keyboard.jpg"
+        alt="Detail — hands on keyboard"
+        width={640}
+        height={640}
+        loading="lazy"
+        class="absolute inset-0 size-full object-cover"
+      />
     </div>
   </div>
 </section>

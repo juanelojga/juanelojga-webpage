@@ -219,28 +219,34 @@ export default function HeroNarrative({ labels }: Props) {
           </AnimatePresence>
         </div>
 
-        {/* Portrait placeholder */}
+        {/* Portrait */}
         <div
           ref={portraitRef}
-          className={`relative flex aspect-[3/4] w-full items-center justify-center overflow-hidden rounded-xl lg:w-[340px] lg:shrink-0 xl:w-[380px] ${
+          className={`relative flex aspect-[4/5] w-full items-center justify-center overflow-hidden rounded-xl lg:w-[340px] lg:shrink-0 xl:w-[380px] ${
             portraitRevealed || reducedMotion ? 'hero-portrait-revealed' : 'hero-portrait-hidden'
           }`}
           data-portrait-slot
           role="img"
           aria-label={`${labels.name} portrait`}
         >
-          {/* Themed gradient background */}
-          <div className="absolute inset-0 bg-gradient-to-br from-surface-secondary via-surface-tertiary to-surface-secondary" />
-          {/* Geometric accent */}
-          <div className="absolute inset-0 opacity-20">
-            <div className="border-signal-primary/30 absolute bottom-0 right-0 size-2/3 rounded-tl-[4rem] border-l border-t" />
-            <div className="bg-signal-primary/40 absolute left-4 top-4 size-3 rounded-full" />
-            <div className="bg-signal-secondary/40 absolute bottom-8 left-8 size-2 rounded-full" />
-          </div>
-          {/* Placeholder label */}
-          <span className="text-text-secondary/50 relative z-10 font-mono text-meta">
-            {'{ portrait }'}
-          </span>
+          {/* Build Mode portrait */}
+          <img
+            src="/images/hero-build-final.jpg"
+            alt={`${labels.name} — Build Mode`}
+            width={760}
+            height={950}
+            loading="eager"
+            className="absolute inset-0 size-full object-cover [[data-theme='after-hours']_&]:hidden"
+          />
+          {/* After Hours portrait */}
+          <img
+            src="/images/hero-after-hours-final.jpg"
+            alt={`${labels.name} — After Hours`}
+            width={760}
+            height={950}
+            loading="eager"
+            className="absolute inset-0 hidden size-full object-cover [[data-theme='after-hours']_&]:block"
+          />
         </div>
       </div>
     </section>

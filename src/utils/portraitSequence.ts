@@ -10,7 +10,7 @@ const FRAME_BASE = '/images/portrait-frames/frame-';
 
 function frameSrc(index: number): string {
   const padded = String(index).padStart(2, '0');
-  return `${FRAME_BASE}${padded}.svg`;
+  return `${FRAME_BASE}${padded}.jpg`;
 }
 
 /** All frame URLs in order (1-based). */

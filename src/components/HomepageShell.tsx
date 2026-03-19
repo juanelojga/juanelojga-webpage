@@ -54,7 +54,9 @@ export default function HomepageShell({ lang, labels }: Props) {
         {/* Utility strip at the top of the rail column */}
         <div className="flex items-center justify-end gap-1 border-b border-l border-border px-4 py-2">
           <a
-            href={`/${lang}/resume`}
+            href="/documents/resume.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
             className="border-signal-primary/50 hover:bg-signal-primary/10 rounded-lg border px-4 py-2 font-mono text-meta font-medium text-signal-primary transition-all hover:border-signal-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal-primary"
           >
             {labels.resumeLabel}

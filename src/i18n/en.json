@@ -33,40 +33,6 @@
       "backToPortfolio": "Back to Portfolio"
     }
   },
-  "resume": {
-    "pageTitle": "Resume",
-    "subtitle": "A summary of my professional experience, skills, and education.",
-    "breadcrumb": { "home": "Home", "resume": "Resume" },
-    "sections": {
-      "experience": "Professional Experience",
-      "skills": "Skills",
-      "education": "Education"
-    },
-    "seo": {
-      "title": "Resume | Juan Almeida — Full Stack & AI Engineer",
-      "description": "Explore the professional resume of Juan Almeida — full-stack and AI engineer with expertise in TypeScript, Python, React, and scalable system design."
-    },
-    "skillCategories": {
-      "frameworks": "Frameworks",
-      "languages": "Languages",
-      "deployment": "Deployment",
-      "specialization": "Specialization"
-    },
-    "form": {
-      "heading": "Download My Resume",
-      "fullName": "Full Name",
-      "fullNamePlaceholder": "Your full name",
-      "email": "Email",
-      "emailPlaceholder": "you@example.com",
-      "submit": "Download Resume (PDF)",
-      "submitting": "Submitting…",
-      "successMessage": "Thank you! Your download will start shortly.",
-      "errorMessage": "Something went wrong. Please try again.",
-      "privacyNotice": "Your information is used only to send the resume and will not be shared with third parties.",
-      "requiredField": "This field is required.",
-      "invalidEmail": "Please enter a valid email address."
-    }
-  },
   "todoRail": {
     "label": "Progress",
     "bootIdentity": "Boot identity",
@@ -119,13 +85,12 @@
   },
   "workLog": {
     "sectionTitle": "// work log",
-    "subtitle": "Projects and milestones — what I've built and where.",
+    "subtitle": "Projects I've built and the problems they solve.",
     "featuredLabel": "Featured",
     "viewCaseStudy": "View case study",
     "role": "Role",
     "duration": "Duration",
-    "techStack": "Tech Stack",
-    "milestone": "Milestone"
+    "techStack": "Tech Stack"
   },
   "contact": {
     "sectionTitle": "// open channel",

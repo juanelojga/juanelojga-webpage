@@ -51,7 +51,9 @@ const lang = Astro.currentLocale === 'es' ? 'es' : 'en';
     <!-- Desktop Navigation -->
     <div class="hidden items-center gap-1 md:flex">
       <a
-        href={`/${lang}/resume`}
+        href="/documents/resume.pdf"
+        target="_blank"
+        rel="noopener noreferrer"
         class="border-signal-primary/50 hover:bg-signal-primary/10 ml-4 rounded-lg border px-4 py-2 font-mono text-sm font-medium text-signal-primary transition-all hover:border-signal-primary hover:shadow-[0_0_12px_rgba(0,179,89,0.25)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal-primary"
         >{t('navbar.resume')}</a
       >
@@ -76,7 +78,9 @@ const lang = Astro.currentLocale === 'es' ? 'es' : 'en';
   >
     <div class="flex animate-menu-slide-down flex-col px-6 py-4">
       <a
-        href={`/${lang}/resume`}
+        href="/documents/resume.pdf"
+        target="_blank"
+        rel="noopener noreferrer"
         class="border-signal-primary/50 hover:bg-signal-primary/10 block rounded-lg border px-4 py-3 text-center font-mono text-sm font-medium text-signal-primary transition-all"
         >{t('navbar.resume')}</a
       >

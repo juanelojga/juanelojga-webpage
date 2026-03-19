@@ -1,16 +1,15 @@
 import { describe, it, expect, afterEach, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent, cleanup } from '@testing-library/react';
+import { render, screen, cleanup } from '@testing-library/react';
 import WorkLog, { type WorkLogLabels } from '../WorkLog';
 
 const mockLabels: WorkLogLabels = {
   sectionTitle: '// work log',
-  subtitle: "Projects and milestones — what I've built and where.",
+  subtitle: "Projects I've built and the problems they solve.",
   featuredLabel: 'Featured',
   viewCaseStudy: 'View case study',
   role: 'Role',
   duration: 'Duration',
   techStack: 'Tech Stack',
-  milestone: 'Milestone',
 };
 
 // Mock IntersectionObserver
@@ -65,7 +64,7 @@ describe('WorkLog', () => {
   it('should render section title and subtitle', () => {
     render(<WorkLog labels={mockLabels} lang="en" />);
     expect(screen.getByText('// work log')).toBeTruthy();
-    expect(screen.getByText("Projects and milestones — what I've built and where.")).toBeTruthy();
+    expect(screen.getByText("Projects I've built and the problems they solve.")).toBeTruthy();
   });
 
   it('should render h2 heading with correct id', () => {
@@ -75,42 +74,30 @@ describe('WorkLog', () => {
     expect(heading.id).toBe('projects-headline');
   });
 
-  it('should render case study projects (excludes projects without metadata)', () => {
+  it('should render case study projects', () => {
     render(<WorkLog labels={mockLabels} lang="en" />);
     // 3 case study projects should render
-    expect(screen.getByText('Upwork - Search & Jobs Section')).toBeTruthy();
-    expect(screen.getByText('Narbox')).toBeTruthy();
-    expect(screen.getByText('Personal Page')).toBeTruthy();
-    // JuaneloJGAC Tech should NOT be rendered (no metadata)
-    expect(screen.queryByText('JuaneloJGAC Tech LLC')).toBeNull();
+    expect(
+      screen.getByText('AIEcommerce - Autonomous PC Assembly & Marketplace Pipeline')
+    ).toBeTruthy();
+    expect(screen.getByText('Narbox - Package Consolidation & Global Logistics')).toBeTruthy();
+    expect(screen.getByText('PBXAI - Real-time Voice AI Orchestration Engine')).toBeTruthy();
   });
 
-  it('should render featured label on the featured project', () => {
+  it('should render featured label on featured projects', () => {
     render(<WorkLog labels={mockLabels} lang="en" />);
-    expect(screen.getByText('Featured')).toBeTruthy();
+    expect(screen.getAllByText('Featured').length).toBe(3);
   });
 
   it('should render project descriptions', () => {
     render(<WorkLog labels={mockLabels} lang="en" />);
-    expect(screen.getByText(/Led Vue\.js and TypeScript development for Upwork/)).toBeTruthy();
+    expect(screen.getByText(/Architected a distributed system using LangGraph/)).toBeTruthy();
   });
 
   it('should render project tags', () => {
     render(<WorkLog labels={mockLabels} lang="en" />);
-    expect(screen.getAllByText('Vue').length).toBeGreaterThanOrEqual(1);
-    expect(screen.getAllByText('TypeScript').length).toBeGreaterThanOrEqual(1);
-  });
-
-  it('should render milestone markers', () => {
-    const { container } = render(<WorkLog labels={mockLabels} lang="en" />);
-    const separators = container.querySelectorAll('[role="separator"]');
-    expect(separators.length).toBeGreaterThanOrEqual(1);
-  });
-
-  it('should render milestone marker with role and company text', () => {
-    render(<WorkLog labels={mockLabels} lang="en" />);
-    // Milestones from experience.json
-    expect(screen.getAllByText(/Full-Stack Lead & Co-Founder/).length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText('Python').length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText('Django').length).toBeGreaterThanOrEqual(1);
   });
 
   it('should render project articles with aria-label', () => {
@@ -118,9 +105,9 @@ describe('WorkLog', () => {
     const articles = screen.getAllByRole('article');
     expect(articles.length).toBe(3);
     const labels = articles.map(a => a.getAttribute('aria-label'));
-    expect(labels).toContain('Upwork - Search & Jobs Section');
-    expect(labels).toContain('Narbox');
-    expect(labels).toContain('Personal Page');
+    expect(labels).toContain('AIEcommerce - Autonomous PC Assembly & Marketplace Pipeline');
+    expect(labels).toContain('Narbox - Package Consolidation & Global Logistics');
+    expect(labels).toContain('PBXAI - Real-time Voice AI Orchestration Engine');
   });
 
   it('should have case study links with correct hrefs', () => {
@@ -128,14 +115,14 @@ describe('WorkLog', () => {
     // Only the featured project's tray is open by default; non-featured trays are collapsed
     const caseStudyLinks = container.querySelectorAll('a[href*="/projects/"]');
     const hrefs = Array.from(caseStudyLinks).map(a => a.getAttribute('href'));
-    expect(hrefs).toContain('/en/projects/upwork-search-jobs');
+    expect(hrefs).toContain('/en/projects/aiecommerce-agent-pipeline');
   });
 
   it('should render case study links for Spanish locale', () => {
     const { container } = render(<WorkLog labels={mockLabels} lang="es" />);
     const caseStudyLinks = container.querySelectorAll('a[href*="/projects/"]');
     const hrefs = Array.from(caseStudyLinks).map(a => a.getAttribute('href'));
-    expect(hrefs).toContain('/es/projects/upwork-search-jobs');
+    expect(hrefs).toContain('/es/projects/aiecommerce-agent-pipeline');
   });
 
   it('should render "View case study" text on links', () => {
@@ -147,7 +134,9 @@ describe('WorkLog', () => {
   it('should show featured project metadata tray expanded by default', () => {
     render(<WorkLog labels={mockLabels} lang="en" />);
     // Featured project's tray should not be aria-hidden
-    const featuredArticle = screen.getByLabelText('Upwork - Search & Jobs Section');
+    const featuredArticle = screen.getByLabelText(
+      'AIEcommerce - Autonomous PC Assembly & Marketplace Pipeline'
+    );
     const tray = featuredArticle.querySelector('[id^="card-tray-"]');
     expect(tray?.getAttribute('aria-hidden')).toBe('false');
   });
@@ -162,27 +151,8 @@ describe('WorkLog', () => {
 
   it('should show metadata values for featured project', () => {
     render(<WorkLog labels={mockLabels} lang="en" />);
-    expect(screen.getAllByText('Senior Frontend Engineer').length).toBeGreaterThanOrEqual(1);
-    expect(screen.getAllByText('2+ Years').length).toBeGreaterThanOrEqual(1);
-  });
-
-  it('should toggle non-featured card tray on click', () => {
-    render(<WorkLog labels={mockLabels} lang="en" />);
-    // Find a non-featured card's toggle button
-    const narboxArticle = screen.getByLabelText('Narbox');
-    const toggleBtn = narboxArticle.querySelector('[role="button"]');
-    expect(toggleBtn).toBeTruthy();
-
-    // Initially collapsed
-    expect(toggleBtn?.getAttribute('aria-expanded')).toBe('false');
-
-    // Click to expand
-    fireEvent.click(toggleBtn!);
-    expect(toggleBtn?.getAttribute('aria-expanded')).toBe('true');
-
-    // Click to collapse
-    fireEvent.click(toggleBtn!);
-    expect(toggleBtn?.getAttribute('aria-expanded')).toBe('false');
+    expect(screen.getAllByText('Lead Software Architect').length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText('6+ Months').length).toBeGreaterThanOrEqual(1);
   });
 
   it('should not apply transform when reduced motion is preferred', () => {

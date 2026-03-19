@@ -16,7 +16,6 @@ export interface ContactLabels {
 
 interface Props {
   labels: ContactLabels;
-  lang: string;
 }
 
 const EMAIL = 'juanelojga@gmail.com';
@@ -46,7 +45,7 @@ const SOCIALS = [
 /*  ContactChapter                                                     */
 /* ------------------------------------------------------------------ */
 
-export default function ContactChapter({ labels, lang }: Props) {
+export default function ContactChapter({ labels }: Props) {
   const [isVisible, setIsVisible] = useState(false);
   const [copied, setCopied] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
@@ -305,7 +304,9 @@ export default function ContactChapter({ labels, lang }: Props) {
 
             {/* Resume link — from bottom */}
             <motion.a
-              href={`/${lang}/resume`}
+              href="/documents/resume.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
               className="hover:border-signal-primary/50 flex h-11 items-center gap-2 rounded-lg border border-border px-4 font-mono text-meta font-medium text-text-secondary transition-all hover:text-signal-primary"
               initial={reducedMotion ? false : { opacity: 0, y: 12 }}
               animate={
