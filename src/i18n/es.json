@@ -117,6 +117,16 @@
     "expandLabel": "Mostrar habilidades",
     "collapseLabel": "Ocultar habilidades"
   },
+  "workLog": {
+    "sectionTitle": "// historial",
+    "subtitle": "Proyectos e hitos — lo que he construido y dónde.",
+    "featuredLabel": "Destacado",
+    "viewCaseStudy": "Ver caso de estudio",
+    "role": "Rol",
+    "duration": "Duración",
+    "techStack": "Stack Técnico",
+    "milestone": "Hito"
+  },
   "seo": {
     "title": "Juan Almeida | Ingeniero Full Stack y de IA",
     "description": "Ingeniero apasionado por crear software inteligente, escalable y centrado en las personas mediante desarrollo full-stack e innovación en IA.",

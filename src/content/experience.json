@@ -1,0 +1,26 @@
+[
+  {
+    "id": "upwork",
+    "company": "Upwork",
+    "role": "Senior Frontend Engineer",
+    "duration": "2+ Years",
+    "type": "role",
+    "projectSlug": "upwork-search-jobs"
+  },
+  {
+    "id": "narbox",
+    "company": "Narbox",
+    "role": "Full-Stack Lead & Co-Founder",
+    "duration": "1.5 Years",
+    "type": "role",
+    "projectSlug": "narbox"
+  },
+  {
+    "id": "freelance",
+    "company": "JuaneloJGAC Tech",
+    "role": "Freelance Engineer & Consultant",
+    "duration": "Ongoing",
+    "type": "role",
+    "projectSlug": null
+  }
+]

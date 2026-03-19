@@ -2,6 +2,7 @@
   {
     "title": "Upwork - Search & Jobs Section",
     "slug": "upwork-search-jobs",
+    "featured": true,
     "description": "Led Vue.js and TypeScript development for Upwork's search and jobs section, building scalable frontend architecture with GraphQL integration.",
     "category": "Frontend",
     "tags": ["Vue", "Node.js", "Typescript", "GraphQL"],
