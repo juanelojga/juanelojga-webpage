@@ -36,7 +36,6 @@ describe('WorkLog i18n parity', () => {
       'role',
       'duration',
       'techStack',
-      'milestone',
     ];
     for (const key of requiredKeys) {
       expect(enJson.workLog).toHaveProperty(key);

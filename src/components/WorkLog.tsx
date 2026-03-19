@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { WORK_LOG_ENTRIES, type ProjectEntry, type ExperienceEntry } from '../utils/workLog';
+import { CASE_STUDY_PROJECTS, type ProjectEntry } from '../utils/workLog';
 import { useReducedMotion } from '../utils/useReducedMotion';
 import { DURATION, EASE_OUT } from '../utils/animation';
 
@@ -12,68 +12,11 @@ export interface WorkLogLabels {
   role: string;
   duration: string;
   techStack: string;
-  milestone: string;
 }
 
 interface Props {
   labels: WorkLogLabels;
   lang: string;
-}
-
-/* ------------------------------------------------------------------ */
-/*  MilestoneMarker                                                    */
-/* ------------------------------------------------------------------ */
-
-interface MilestoneMarkerProps {
-  entry: ExperienceEntry;
-  milestoneLabel: string;
-  isVisible: boolean;
-  reducedMotion: boolean;
-  delay: number;
-}
-
-function MilestoneMarker({
-  entry,
-  milestoneLabel,
-  isVisible,
-  reducedMotion,
-  delay,
-}: MilestoneMarkerProps) {
-  return (
-    <motion.div
-      role="separator"
-      aria-label={`${milestoneLabel}: ${entry.role} at ${entry.company}`}
-      className="flex items-center gap-4 py-4"
-      initial={reducedMotion ? false : { opacity: 0 }}
-      animate={isVisible ? { opacity: 1 } : reducedMotion ? {} : { opacity: 0 }}
-      transition={{
-        duration: reducedMotion ? 0 : DURATION.normal,
-        delay: reducedMotion ? 0 : delay / 1000,
-        ease: EASE_OUT,
-      }}
-    >
-      {/* Completed checkpoint */}
-      <span className="bg-signal-primary/10 flex size-6 shrink-0 items-center justify-center rounded-full border-2 border-signal-primary">
-        <svg
-          className="size-3 text-signal-primary"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="3"
-          viewBox="0 0 24 24"
-          aria-hidden="true"
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-        </svg>
-      </span>
-
-      {/* Label */}
-      <div className="border-border/40 flex flex-1 items-baseline gap-2 border-b pb-1">
-        <span className="font-mono text-meta font-medium text-text-primary">{entry.role}</span>
-        <span className="font-mono text-meta text-text-secondary">@ {entry.company}</span>
-        <span className="ml-auto font-mono text-meta text-text-secondary">{entry.duration}</span>
-      </div>
-    </motion.div>
-  );
 }
 
 /* ------------------------------------------------------------------ */
@@ -334,9 +277,6 @@ export default function WorkLog({ labels, lang }: Props) {
     return () => observer.disconnect();
   }, []);
 
-  // Separate entries by kind for layout
-  let entryIndex = 0;
-
   return (
     <section
       ref={sectionRef}
@@ -360,38 +300,19 @@ export default function WorkLog({ labels, lang }: Props) {
 
         {/* Work log entries — cascade layout */}
         <div className="grid gap-6 lg:grid-cols-2">
-          {WORK_LOG_ENTRIES.map(entry => {
-            const delay = entryIndex * 100 + 200;
-            entryIndex++;
-
-            if (entry.kind === 'milestone') {
-              return (
-                <div key={`milestone-${entry.data.id}`} className="col-span-full">
-                  <MilestoneMarker
-                    entry={entry.data}
-                    milestoneLabel={labels.milestone}
-                    isVisible={isVisible}
-                    reducedMotion={reducedMotion}
-                    delay={delay}
-                  />
-                </div>
-              );
-            }
-
-            return (
-              <ProjectCard
-                key={`project-${entry.data.slug}`}
-                project={entry.data}
-                isFeatured={!!entry.data.featured}
-                labels={labels}
-                lang={lang}
-                isVisible={isVisible}
-                reducedMotion={reducedMotion}
-                delay={delay}
-                entryIndex={entryIndex - 1}
-              />
-            );
-          })}
+          {CASE_STUDY_PROJECTS.map((project, idx) => (
+            <ProjectCard
+              key={`project-${project.slug}`}
+              project={project}
+              isFeatured={!!project.featured}
+              labels={labels}
+              lang={lang}
+              isVisible={isVisible}
+              reducedMotion={reducedMotion}
+              delay={idx * 100 + 200}
+              entryIndex={idx}
+            />
+          ))}
         </div>
       </div>
     </section>

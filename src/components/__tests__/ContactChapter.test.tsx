@@ -67,19 +67,19 @@ describe('ContactChapter', () => {
   });
 
   it('should render section with correct id and aria-labelledby', () => {
-    const { container } = render(<ContactChapter labels={mockLabels} lang="en" />);
+    const { container } = render(<ContactChapter labels={mockLabels} />);
     const section = container.querySelector('section#contact');
     expect(section).toBeTruthy();
     expect(section?.getAttribute('aria-labelledby')).toBe('contact-headline');
   });
 
   it('should render section title', () => {
-    render(<ContactChapter labels={mockLabels} lang="en" />);
+    render(<ContactChapter labels={mockLabels} />);
     expect(screen.getByText('// open channel')).toBeTruthy();
   });
 
   it('should render h2 heading with correct id', () => {
-    render(<ContactChapter labels={mockLabels} lang="en" />);
+    render(<ContactChapter labels={mockLabels} />);
     const heading = screen.getByRole('heading', { level: 2 });
     expect(heading).toBeTruthy();
     expect(heading.id).toBe('contact-headline');
@@ -87,27 +87,27 @@ describe('ContactChapter', () => {
   });
 
   it('should render description text', () => {
-    render(<ContactChapter labels={mockLabels} lang="en" />);
+    render(<ContactChapter labels={mockLabels} />);
     expect(
       screen.getByText('Always open to interesting projects and collaborations.')
     ).toBeTruthy();
   });
 
   it('should render email CTA button with correct label', () => {
-    render(<ContactChapter labels={mockLabels} lang="en" />);
+    render(<ContactChapter labels={mockLabels} />);
     const button = screen.getByRole('button', { name: 'Copy email' });
     expect(button).toBeTruthy();
     expect(button.textContent).toContain('Copy email');
   });
 
   it('should display email address', () => {
-    render(<ContactChapter labels={mockLabels} lang="en" />);
+    render(<ContactChapter labels={mockLabels} />);
     expect(screen.getByText('juanelojga@gmail.com')).toBeTruthy();
   });
 
   it('should copy email to clipboard on button click', async () => {
     vi.useFakeTimers();
-    render(<ContactChapter labels={mockLabels} lang="en" />);
+    render(<ContactChapter labels={mockLabels} />);
     const button = screen.getByRole('button', { name: 'Copy email' });
 
     await act(async () => {
@@ -120,7 +120,7 @@ describe('ContactChapter', () => {
 
   it('should show toast after copying email', async () => {
     vi.useFakeTimers();
-    render(<ContactChapter labels={mockLabels} lang="en" />);
+    render(<ContactChapter labels={mockLabels} />);
     const button = screen.getByRole('button', { name: 'Copy email' });
 
     await act(async () => {
@@ -137,14 +137,14 @@ describe('ContactChapter', () => {
   });
 
   it('should have ARIA live region for toast', () => {
-    const { container } = render(<ContactChapter labels={mockLabels} lang="en" />);
+    const { container } = render(<ContactChapter labels={mockLabels} />);
     const liveRegion = container.querySelector('[role="status"][aria-live="polite"]');
     expect(liveRegion).toBeTruthy();
   });
 
   it('should auto-dismiss toast after 3 seconds', async () => {
     vi.useFakeTimers();
-    render(<ContactChapter labels={mockLabels} lang="en" />);
+    render(<ContactChapter labels={mockLabels} />);
     const button = screen.getByRole('button', { name: 'Copy email' });
 
     await act(async () => {
@@ -168,7 +168,7 @@ describe('ContactChapter', () => {
   });
 
   it('should render social links with correct attributes', () => {
-    render(<ContactChapter labels={mockLabels} lang="en" />);
+    render(<ContactChapter labels={mockLabels} />);
 
     const linkedin = screen.getByLabelText('LinkedIn');
     expect(linkedin).toBeTruthy();
@@ -184,26 +184,30 @@ describe('ContactChapter', () => {
   });
 
   it('should render resume link for English locale', () => {
-    render(<ContactChapter labels={mockLabels} lang="en" />);
+    render(<ContactChapter labels={mockLabels} />);
     const resumeLink = screen.getByText('View resume');
     expect(resumeLink).toBeTruthy();
-    expect(resumeLink.closest('a')?.getAttribute('href')).toBe('/en/resume');
+    expect(resumeLink.closest('a')?.getAttribute('href')).toBe('/documents/resume.pdf');
+    expect(resumeLink.closest('a')?.getAttribute('target')).toBe('_blank');
+    expect(resumeLink.closest('a')?.getAttribute('rel')).toBe('noopener noreferrer');
   });
 
   it('should render resume link for Spanish locale', () => {
-    render(<ContactChapter labels={mockLabels} lang="es" />);
+    render(<ContactChapter labels={mockLabels} />);
     const resumeLink = screen.getByText('View resume');
-    expect(resumeLink.closest('a')?.getAttribute('href')).toBe('/es/resume');
+    expect(resumeLink.closest('a')?.getAttribute('href')).toBe('/documents/resume.pdf');
+    expect(resumeLink.closest('a')?.getAttribute('target')).toBe('_blank');
+    expect(resumeLink.closest('a')?.getAttribute('rel')).toBe('noopener noreferrer');
   });
 
   it('should render social links navigation with aria-label', () => {
-    render(<ContactChapter labels={mockLabels} lang="en" />);
+    render(<ContactChapter labels={mockLabels} />);
     const nav = screen.getByRole('navigation', { name: 'Find me elsewhere' });
     expect(nav).toBeTruthy();
   });
 
   it('should render social label text', () => {
-    render(<ContactChapter labels={mockLabels} lang="en" />);
+    render(<ContactChapter labels={mockLabels} />);
     expect(screen.getByText('Find me elsewhere')).toBeTruthy();
   });
 
@@ -222,7 +226,7 @@ describe('ContactChapter', () => {
       })),
     });
 
-    const { container } = render(<ContactChapter labels={mockLabels} lang="en" />);
+    const { container } = render(<ContactChapter labels={mockLabels} />);
     const contentDiv = container.querySelector('section > div');
     const style = contentDiv?.getAttribute('style') || '';
     expect(style).not.toContain('translateY');
@@ -230,7 +234,7 @@ describe('ContactChapter', () => {
 
   it('should update button aria-label when copied', async () => {
     vi.useFakeTimers();
-    render(<ContactChapter labels={mockLabels} lang="en" />);
+    render(<ContactChapter labels={mockLabels} />);
     const button = screen.getByRole('button', { name: 'Copy email' });
 
     await act(async () => {
@@ -244,7 +248,7 @@ describe('ContactChapter', () => {
   });
 
   it('should have minimum touch target sizes', () => {
-    const { container } = render(<ContactChapter labels={mockLabels} lang="en" />);
+    const { container } = render(<ContactChapter labels={mockLabels} />);
     const button = container.querySelector('button');
     expect(button?.classList.contains('min-h-[44px]')).toBe(true);
     expect(button?.classList.contains('min-w-[44px]')).toBe(true);

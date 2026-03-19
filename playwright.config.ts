@@ -19,7 +19,7 @@ export default defineConfig({
     command:
       'PUBLIC_E2E=true npm run build && PUBLIC_E2E=true npm run preview -- --host 127.0.0.1 --port 4322',
     port: 4322,
-    reuseExistingServer: false,
+    reuseExistingServer: true,
   },
   projects: [
     { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
