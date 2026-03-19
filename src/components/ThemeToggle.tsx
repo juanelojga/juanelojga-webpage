@@ -48,7 +48,7 @@ export default function ThemeToggle({ labels }: Props) {
       aria-checked={isDark}
       aria-label={labels.label}
       onClick={handleToggle}
-      className="flex items-center gap-2 rounded-lg px-3 py-2 font-mono text-meta transition-colors hover:bg-surface-secondary"
+      className="flex items-center gap-2 rounded-lg px-3 py-2.5 font-mono text-meta transition-colors hover:bg-surface-secondary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal-primary"
     >
       <span
         className="relative inline-flex h-5 w-9 shrink-0 items-center rounded-full border border-border bg-surface-tertiary transition-colors"

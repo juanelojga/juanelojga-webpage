@@ -97,7 +97,7 @@ export default function LeadCaptureForm({ lang, labels }: Props) {
     <div className="mx-auto w-full max-w-md">
       <h2
         id="lead-capture-heading"
-        className="mb-6 text-2xl font-bold tracking-tight text-slate-900"
+        className="mb-6 text-2xl font-bold tracking-tight text-text-primary"
       >
         {labels.heading}
       </h2>
@@ -105,10 +105,10 @@ export default function LeadCaptureForm({ lang, labels }: Props) {
       {status === 'success' ? (
         <div
           role="alert"
-          className="rounded-lg border border-green-200 bg-green-50 p-6 text-center"
+          className="border-status-success/30 rounded-lg border bg-status-success-muted p-6 text-center"
         >
           <svg
-            className="mx-auto mb-3 size-10 text-green-500"
+            className="mx-auto mb-3 size-10 text-status-success"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -121,7 +121,7 @@ export default function LeadCaptureForm({ lang, labels }: Props) {
               d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
             />
           </svg>
-          <p className="text-lg font-semibold text-green-800">{labels.successMessage}</p>
+          <p className="text-lg font-semibold text-status-success">{labels.successMessage}</p>
         </div>
       ) : (
         <form
@@ -148,7 +148,7 @@ export default function LeadCaptureForm({ lang, labels }: Props) {
           <div className="mb-4">
             <label
               htmlFor="lead-fullname"
-              className="mb-1.5 block text-sm font-medium text-slate-700"
+              className="mb-1.5 block text-sm font-medium text-text-primary"
             >
               {labels.fullName}
             </label>
@@ -166,14 +166,14 @@ export default function LeadCaptureForm({ lang, labels }: Props) {
               }}
               aria-invalid={!!errors.fullName}
               aria-describedby={errors.fullName ? 'lead-fullname-error' : undefined}
-              className={`w-full rounded-lg border px-4 py-2.5 text-sm text-slate-900 shadow-sm transition placeholder:text-slate-400 focus:outline-none focus:ring-2 ${
+              className={`placeholder:text-text-secondary/60 w-full rounded-lg border bg-surface-primary px-4 py-2.5 text-sm text-text-primary shadow-sm transition focus:outline-none focus:ring-2 ${
                 errors.fullName
-                  ? 'border-red-400 focus:border-red-500 focus:ring-red-200'
-                  : 'focus:ring-primary/50 border-slate-300 focus:border-primary'
+                  ? 'focus:ring-status-error/20 border-status-error focus:border-status-error'
+                  : 'focus:ring-signal-primary/30 border-border focus:border-signal-primary'
               }`}
             />
             {errors.fullName && (
-              <p id="lead-fullname-error" role="alert" className="mt-1 text-sm text-red-600">
+              <p id="lead-fullname-error" role="alert" className="mt-1 text-sm text-status-error">
                 {errors.fullName}
               </p>
             )}
@@ -181,7 +181,10 @@ export default function LeadCaptureForm({ lang, labels }: Props) {
 
           {/* Email */}
           <div className="mb-4">
-            <label htmlFor="lead-email" className="mb-1.5 block text-sm font-medium text-slate-700">
+            <label
+              htmlFor="lead-email"
+              className="mb-1.5 block text-sm font-medium text-text-primary"
+            >
               {labels.email}
             </label>
             <input
@@ -198,14 +201,14 @@ export default function LeadCaptureForm({ lang, labels }: Props) {
               }}
               aria-invalid={!!errors.email}
               aria-describedby={errors.email ? 'lead-email-error' : undefined}
-              className={`w-full rounded-lg border px-4 py-2.5 text-sm text-slate-900 shadow-sm transition placeholder:text-slate-400 focus:outline-none focus:ring-2 ${
+              className={`placeholder:text-text-secondary/60 w-full rounded-lg border bg-surface-primary px-4 py-2.5 text-sm text-text-primary shadow-sm transition focus:outline-none focus:ring-2 ${
                 errors.email
-                  ? 'border-red-400 focus:border-red-500 focus:ring-red-200'
-                  : 'focus:ring-primary/50 border-slate-300 focus:border-primary'
+                  ? 'focus:ring-status-error/20 border-status-error focus:border-status-error'
+                  : 'focus:ring-signal-primary/30 border-border focus:border-signal-primary'
               }`}
             />
             {errors.email && (
-              <p id="lead-email-error" role="alert" className="mt-1 text-sm text-red-600">
+              <p id="lead-email-error" role="alert" className="mt-1 text-sm text-status-error">
                 {errors.email}
               </p>
             )}
@@ -218,7 +221,7 @@ export default function LeadCaptureForm({ lang, labels }: Props) {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="hover:bg-primary/90 focus:ring-primary/50 flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-white shadow-sm transition focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
+            className="hover:bg-primary/90 focus:ring-signal-primary/30 flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-text-inverse shadow-sm transition focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
           >
             {isSubmitting ? (
               <>
@@ -251,13 +254,16 @@ export default function LeadCaptureForm({ lang, labels }: Props) {
 
           {/* Error message */}
           {status === 'error' && (
-            <div role="alert" className="mt-4 rounded-lg border border-red-200 bg-red-50 p-3">
-              <p className="text-sm text-red-700">{labels.errorMessage}</p>
+            <div
+              role="alert"
+              className="border-status-error/30 mt-4 rounded-lg border bg-status-error-muted p-3"
+            >
+              <p className="text-sm text-status-error">{labels.errorMessage}</p>
             </div>
           )}
 
           {/* Privacy notice */}
-          <p className="mt-4 text-center text-xs leading-relaxed text-slate-500">
+          <p className="mt-4 text-center text-xs leading-relaxed text-text-secondary">
             {labels.privacyNotice}
           </p>
         </form>

@@ -12,7 +12,10 @@ const lang = Astro.currentLocale === 'es' ? 'es' : 'en';
 >
   <div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-3">
     <!-- Left: Logo -->
-    <a href={`/${lang}/`} class="group flex items-center font-mono text-sm no-underline">
+    <a
+      href={`/${lang}/`}
+      class="group flex items-center rounded font-mono text-sm no-underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal-primary"
+    >
       <span id="logo-typed" class="logo-typed" aria-hidden="true"></span>
       <span id="logo-cursor" class="logo-cursor-hidden ml-0.5 select-none text-signal-primary"
         >_</span
@@ -27,7 +30,7 @@ const lang = Astro.currentLocale === 'es' ? 'es' : 'en';
         aria-label="Open navigation menu"
         aria-controls="mobile-menu"
         aria-expanded="false"
-        class="rounded-md p-2 text-text-secondary transition hover:text-text-primary"
+        class="rounded-md p-2 text-text-secondary transition hover:text-text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal-primary"
       >
         <svg
           class="size-6"
@@ -49,14 +52,14 @@ const lang = Astro.currentLocale === 'es' ? 'es' : 'en';
     <div class="hidden items-center gap-1 md:flex">
       <a
         href={`/${lang}/resume`}
-        class="border-signal-primary/50 hover:bg-signal-primary/10 ml-4 rounded-lg border px-4 py-1.5 font-mono text-sm font-medium text-signal-primary transition-all hover:border-signal-primary hover:shadow-[0_0_12px_rgba(0,179,89,0.25)]"
+        class="border-signal-primary/50 hover:bg-signal-primary/10 ml-4 rounded-lg border px-4 py-2 font-mono text-sm font-medium text-signal-primary transition-all hover:border-signal-primary hover:shadow-[0_0_12px_rgba(0,179,89,0.25)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal-primary"
         >{t('navbar.resume')}</a
       >
 
       <button
         id="language-switcher-desktop"
         aria-label="Change language"
-        class="ml-3 flex items-center gap-1 rounded px-2 py-1.5 font-mono text-sm text-text-secondary transition-colors hover:text-text-primary"
+        class="ml-3 flex items-center gap-1 rounded-lg px-3 py-2 font-mono text-sm text-text-secondary transition-colors hover:text-text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal-primary"
       >
         <span aria-hidden="true" class="text-text-secondary/60 select-none">//</span>
         <span class={lang === 'en' ? 'text-text-primary' : ''}>EN</span>

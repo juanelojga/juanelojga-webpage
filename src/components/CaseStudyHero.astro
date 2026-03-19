@@ -14,7 +14,7 @@ const { category, title, description, heroImage, liveLink, githubLink, liveLabel
   Astro.props;
 ---
 
-<header class="bg-background-light relative w-full overflow-hidden px-6 py-20 lg:py-32">
+<header class="relative w-full overflow-hidden bg-surface-secondary px-6 py-20 lg:py-32">
   <div
     class="relative z-10 mx-auto flex w-full max-w-6xl flex-col-reverse items-center gap-12 lg:flex-row lg:justify-between"
   >
@@ -25,11 +25,13 @@ const { category, title, description, heroImage, liveLink, githubLink, liveLabel
         {category}
       </span>
 
-      <h1 class="mb-6 text-4xl font-extrabold leading-tight text-slate-900 md:text-5xl lg:text-6xl">
+      <h1
+        class="mb-6 text-4xl font-extrabold leading-tight text-text-primary md:text-5xl lg:text-6xl"
+      >
         {title}
       </h1>
 
-      <p class="mb-8 max-w-xl text-base leading-relaxed text-slate-600 md:text-lg">
+      <p class="mb-8 max-w-xl text-base leading-relaxed text-text-secondary md:text-lg">
         {description}
       </p>
 
@@ -40,7 +42,7 @@ const { category, title, description, heroImage, liveLink, githubLink, liveLabel
               href={liveLink}
               target="_blank"
               rel="noopener noreferrer"
-              class="hover:bg-primary/90 rounded-lg bg-primary px-6 py-3 font-semibold text-white shadow-lg transition"
+              class="hover:bg-primary/90 rounded-lg bg-primary px-6 py-3 font-semibold text-text-inverse shadow-lg transition"
             >
               {liveLabel}
             </a>
@@ -52,7 +54,7 @@ const { category, title, description, heroImage, liveLink, githubLink, liveLabel
               href={githubLink}
               target="_blank"
               rel="noopener noreferrer"
-              class="rounded-lg border border-slate-300 bg-white px-6 py-3 font-semibold text-slate-700 transition hover:border-primary hover:text-primary"
+              class="rounded-lg border border-border bg-surface-primary px-6 py-3 font-semibold text-text-secondary transition hover:border-primary hover:text-primary"
             >
               {sourceLabel}
             </a>

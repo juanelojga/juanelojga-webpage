@@ -52,7 +52,7 @@ export default function HomepageShell({ lang, labels }: Props) {
         <div className="flex items-center justify-end gap-1 border-b border-l border-border px-4 py-2">
           <a
             href={`/${lang}/resume`}
-            className="border-signal-primary/50 hover:bg-signal-primary/10 rounded-lg border px-3 py-1.5 font-mono text-meta font-medium text-signal-primary transition-all hover:border-signal-primary"
+            className="border-signal-primary/50 hover:bg-signal-primary/10 rounded-lg border px-4 py-2 font-mono text-meta font-medium text-signal-primary transition-all hover:border-signal-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal-primary"
           >
             {labels.resumeLabel}
           </a>

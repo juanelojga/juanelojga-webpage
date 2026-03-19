@@ -25,6 +25,12 @@ export default {
 
         // Border
         border: 'var(--color-border)',
+
+        // Status colors (form feedback)
+        'status-success': 'var(--color-status-success)',
+        'status-success-muted': 'var(--color-status-success-muted)',
+        'status-error': 'var(--color-status-error)',
+        'status-error-muted': 'var(--color-status-error-muted)',
       },
       fontFamily: {
         display: ['Inter', 'sans-serif'],

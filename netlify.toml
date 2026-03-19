@@ -20,6 +20,12 @@
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
 
+# Cache images
+[[headers]]
+  for = "/images/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
 # Optional: Explicit redirect from root to default locale
 # (Your index.astro already handles this, but this can help with direct access)
 [[redirects]]

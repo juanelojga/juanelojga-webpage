@@ -18,7 +18,7 @@ interface Props {
   lang: string;
 }
 
-export default function HeroNarrative({ labels, lang }: Props) {
+export default function HeroNarrative({ labels }: Props) {
   const headlineRef = useRef<HTMLHeadingElement>(null);
   const portraitRef = useRef<HTMLDivElement>(null);
   const [animationDone, setAnimationDone] = useState(false);

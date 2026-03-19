@@ -30,7 +30,7 @@ export default function LocaleSwitcher({ currentLang, labels }: Props) {
       type="button"
       aria-label={labels.label}
       onClick={handleSwitch}
-      className="flex items-center gap-1 rounded-lg px-3 py-2 font-mono text-meta transition-colors hover:bg-surface-secondary"
+      className="flex items-center gap-1 rounded-lg px-3 py-2.5 font-mono text-meta transition-colors hover:bg-surface-secondary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal-primary"
     >
       <span aria-hidden="true" className="text-text-secondary/60 select-none">
         //

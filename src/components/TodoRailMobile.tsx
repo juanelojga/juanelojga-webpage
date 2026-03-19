@@ -70,7 +70,7 @@ export default function TodoRailMobile({ items, labels, onItemClick }: Props) {
   const panelId = 'todo-rail-mobile-panel';
 
   return (
-    <div className="bg-surface-primary/95 sticky top-0 z-50 border-b border-border backdrop-blur-md lg:hidden">
+    <div className="bg-surface-primary/95 sticky top-0 z-40 border-b border-border backdrop-blur-md lg:hidden">
       {/* Collapsed progress strip */}
       <button
         type="button"

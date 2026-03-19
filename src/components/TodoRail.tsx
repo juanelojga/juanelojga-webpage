@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { motion, useReducedMotion as useFramerReducedMotion } from 'framer-motion';
 import type { TodoItem } from '../utils/todoRail';
-import { RAIL_TIMING, EASE_OUT, DURATION } from '../utils/animation';
+import { RAIL_TIMING, EASE_OUT } from '../utils/animation';
 
 export interface TodoRailLabels {
   label: string;
@@ -172,7 +172,7 @@ export default function TodoRail({ items, labels, onItemClick }: Props) {
       aria-label={labels.label}
       className="hidden h-screen w-[280px] shrink-0 flex-col justify-center border-l border-border px-6 lg:sticky lg:top-0 lg:flex xl:w-[300px]"
     >
-      <ol className="flex flex-col gap-1">
+      <ol className="flex min-h-0 flex-col gap-1 overflow-y-auto">
         {items.map(item => {
           const labelProp = labelKeyMap[item.labelKey];
           const displayLabel = labelProp ? labels[labelProp] : item.labelKey;

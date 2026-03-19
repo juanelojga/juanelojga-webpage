@@ -11,12 +11,16 @@ const { bio } = Astro.props;
 const paragraphs = bio.narrative.split('\n').filter(p => p.trim());
 ---
 
-<section id="about" class="bio-chapter flex min-h-screen items-center px-6 py-20 lg:px-12 xl:px-20">
+<section
+  id="about"
+  aria-labelledby="bio-headline"
+  class="bio-chapter flex min-h-screen items-center px-6 py-20 lg:px-12 xl:px-20"
+>
   <div class="mx-auto flex w-full max-w-6xl flex-col gap-10 lg:flex-row lg:items-center lg:gap-16">
     <!-- Text column (wider) -->
     <div class="flex flex-1 flex-col justify-center lg:order-1">
       <p class="mb-2 font-mono text-meta text-signal-primary">{bio.highlightLabel}</p>
-      <h2 class="font-mono text-section text-text-primary">{bio.sectionTitle}</h2>
+      <h2 id="bio-headline" class="font-mono text-section text-text-primary">{bio.sectionTitle}</h2>
 
       <div class="mt-8 space-y-5">
         {

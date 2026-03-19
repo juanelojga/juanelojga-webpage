@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { WORK_LOG_ENTRIES, type ProjectEntry, type ExperienceEntry } from '../utils/workLog';
 import { useReducedMotion } from '../utils/useReducedMotion';
-import { DURATION, EASE_OUT, STAGGER } from '../utils/animation';
+import { DURATION, EASE_OUT } from '../utils/animation';
 
 export interface WorkLogLabels {
   sectionTitle: string;
@@ -170,7 +170,7 @@ function ProjectCard({
       }}
     >
       <div
-        className={`${isFeatured ? 'p-8' : 'p-6'} cursor-default`}
+        className={`${isFeatured ? 'p-5 lg:p-8' : 'p-4 lg:p-6'} cursor-default`}
         onClick={handleToggleTray}
         onKeyDown={handleKeyDown}
         tabIndex={isFeatured ? undefined : 0}

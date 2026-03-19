@@ -36,7 +36,7 @@ describe('ResumePreview component contract', () => {
 
   it('should contain a gradient overlay element', () => {
     expect(componentSource).toContain('bg-gradient-to-t');
-    expect(componentSource).toContain('from-white');
+    expect(componentSource).toContain('from-surface-primary');
     expect(componentSource).toContain('to-transparent');
   });
 });
