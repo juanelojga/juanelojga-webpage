@@ -1,4 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useReducedMotion } from '../utils/useReducedMotion';
+import { DURATION, EASE_OUT, STAGGER } from '../utils/animation';
 
 export interface ContactLabels {
   sectionTitle: string;
@@ -38,25 +41,6 @@ const SOCIALS = [
     ),
   },
 ];
-
-/* ------------------------------------------------------------------ */
-/*  useReducedMotion                                                    */
-/* ------------------------------------------------------------------ */
-
-function useReducedMotion(): boolean {
-  const [reduced, setReduced] = useState(
-    () =>
-      typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  );
-  useEffect(() => {
-    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
-    setReduced(mq.matches);
-    const handler = (e: MediaQueryListEvent) => setReduced(e.matches);
-    mq.addEventListener('change', handler);
-    return () => mq.removeEventListener('change', handler);
-  }, []);
-  return reduced;
-}
 
 /* ------------------------------------------------------------------ */
 /*  ContactChapter                                                     */
@@ -126,34 +110,70 @@ export default function ContactChapter({ labels, lang }: Props) {
       aria-labelledby="contact-headline"
       className="flex min-h-screen items-center px-6 py-20 lg:px-12 xl:px-20"
     >
-      <div
+      <motion.div
         className="mx-auto w-full max-w-2xl text-center"
-        style={{
-          transition: reducedMotion
-            ? 'opacity 0.15s ease-out'
-            : 'opacity 0.6s ease-out, transform 0.6s ease-out',
-          opacity: isVisible ? 1 : 0,
-          transform: reducedMotion ? undefined : isVisible ? 'translateY(0)' : 'translateY(24px)',
-        }}
+        initial={reducedMotion ? false : { opacity: 0 }}
+        animate={isVisible ? { opacity: 1 } : reducedMotion ? {} : { opacity: 0 }}
+        transition={{ duration: reducedMotion ? 0 : DURATION.normal, ease: EASE_OUT }}
       >
-        {/* Section label */}
-        <p className="mb-2 font-mono text-meta text-signal-primary">{labels.sectionTitle}</p>
+        {/* Section label — from top */}
+        <motion.p
+          className="mb-2 font-mono text-meta text-signal-primary"
+          initial={reducedMotion ? false : { opacity: 0, y: -16 }}
+          animate={isVisible ? { opacity: 1, y: 0 } : reducedMotion ? {} : { opacity: 0, y: -16 }}
+          transition={{
+            duration: reducedMotion ? 0 : DURATION.normal,
+            delay: reducedMotion ? 0 : STAGGER.child,
+            ease: EASE_OUT,
+          }}
+        >
+          {labels.sectionTitle}
+        </motion.p>
 
-        {/* Headline */}
-        <h2 id="contact-headline" className="font-mono text-section text-text-primary">
+        {/* Headline — from top */}
+        <motion.h2
+          id="contact-headline"
+          className="font-mono text-section text-text-primary"
+          initial={reducedMotion ? false : { opacity: 0, y: -20 }}
+          animate={isVisible ? { opacity: 1, y: 0 } : reducedMotion ? {} : { opacity: 0, y: -20 }}
+          transition={{
+            duration: reducedMotion ? 0 : DURATION.normal,
+            delay: reducedMotion ? 0 : STAGGER.child * 2,
+            ease: EASE_OUT,
+          }}
+        >
           {labels.headline}
-        </h2>
+        </motion.h2>
 
         {/* Description */}
-        <p className="mx-auto mt-4 max-w-lg text-body leading-relaxed text-text-secondary">
+        <motion.p
+          className="mx-auto mt-4 max-w-lg text-body leading-relaxed text-text-secondary"
+          initial={reducedMotion ? false : { opacity: 0 }}
+          animate={isVisible ? { opacity: 1 } : reducedMotion ? {} : { opacity: 0 }}
+          transition={{
+            duration: reducedMotion ? 0 : DURATION.normal,
+            delay: reducedMotion ? 0 : STAGGER.child * 3,
+            ease: EASE_OUT,
+          }}
+        >
           {labels.description}
-        </p>
+        </motion.p>
 
         {/* Primary CTA — Copy email */}
-        <div className="mt-10 flex flex-col items-center gap-3">
-          <button
+        <motion.div
+          className="mt-10 flex flex-col items-center gap-3"
+          initial={reducedMotion ? false : { opacity: 0, y: -12 }}
+          animate={isVisible ? { opacity: 1, y: 0 } : reducedMotion ? {} : { opacity: 0, y: -12 }}
+          transition={{
+            duration: reducedMotion ? 0 : DURATION.normal,
+            delay: reducedMotion ? 0 : STAGGER.child * 4,
+            ease: EASE_OUT,
+          }}
+        >
+          <motion.button
             type="button"
             onClick={handleCopyEmail}
+            whileTap={reducedMotion ? undefined : { scale: 0.97 }}
             className={`inline-flex min-h-[44px] min-w-[44px] items-center gap-3 rounded-xl border px-6 py-3 font-mono text-label font-medium transition-all ${
               copied
                 ? 'bg-signal-primary/15 border-signal-primary text-signal-primary'
@@ -161,71 +181,139 @@ export default function ContactChapter({ labels, lang }: Props) {
             }`}
             aria-label={copied ? labels.ariaEmailCopied : labels.emailCta}
           >
-            {copied ? (
-              <svg
-                className="size-5"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.5"
-                viewBox="0 0 24 24"
-                aria-hidden="true"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-              </svg>
-            ) : (
-              <svg
-                className="size-5"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                viewBox="0 0 24 24"
-                aria-hidden="true"
-              >
-                <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
-                <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
-              </svg>
-            )}
+            <AnimatePresence mode="wait">
+              {copied ? (
+                <motion.svg
+                  key="check"
+                  className="size-5"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                  initial={reducedMotion ? false : { opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: DURATION.micro }}
+                >
+                  <motion.path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M5 13l4 4L19 7"
+                    initial={reducedMotion ? undefined : { pathLength: 0 }}
+                    animate={{ pathLength: 1 }}
+                    transition={{
+                      duration: reducedMotion ? 0 : DURATION.fast,
+                      ease: EASE_OUT,
+                    }}
+                  />
+                </motion.svg>
+              ) : (
+                <motion.svg
+                  key="copy"
+                  className="size-5"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                  initial={reducedMotion ? false : { opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: DURATION.micro }}
+                >
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                  <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
+                </motion.svg>
+              )}
+            </AnimatePresence>
             {copied ? labels.emailToast : labels.emailCta}
-          </button>
+          </motion.button>
 
           {/* Email address displayed as text */}
           <span className="font-mono text-meta text-text-secondary">{EMAIL}</span>
 
           {/* Toast — ARIA live region */}
           <div role="status" aria-live="polite" className="h-6">
-            {copied && (
-              <span className="font-mono text-meta text-signal-primary">
-                {labels.ariaEmailCopied}
-              </span>
-            )}
+            <AnimatePresence>
+              {copied && (
+                <motion.span
+                  className="font-mono text-meta text-signal-primary"
+                  initial={reducedMotion ? false : { opacity: 0, y: 4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -4 }}
+                  transition={{
+                    type: reducedMotion ? 'tween' : 'spring',
+                    stiffness: 400,
+                    damping: 25,
+                    duration: reducedMotion ? 0 : undefined,
+                  }}
+                >
+                  {labels.ariaEmailCopied}
+                </motion.span>
+              )}
+            </AnimatePresence>
           </div>
-        </div>
+        </motion.div>
 
         {/* Secondary actions — socials + resume */}
-        <div className="mt-12">
+        <motion.div
+          className="mt-12"
+          initial={reducedMotion ? false : { opacity: 0 }}
+          animate={isVisible ? { opacity: 1 } : reducedMotion ? {} : { opacity: 0 }}
+          transition={{
+            duration: reducedMotion ? 0 : DURATION.normal,
+            delay: reducedMotion ? 0 : STAGGER.child * 5,
+            ease: EASE_OUT,
+          }}
+        >
           <p className="mb-4 font-mono text-meta text-text-secondary">{labels.socialLabel}</p>
 
           <nav aria-label={labels.socialLabel} className="flex items-center justify-center gap-4">
-            {SOCIALS.map(social => (
-              <a
+            {SOCIALS.map((social, i) => (
+              <motion.a
                 key={social.name}
                 href={social.href}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={social.name}
                 className="hover:border-signal-primary/50 flex size-11 items-center justify-center rounded-lg border border-border text-text-secondary transition-all hover:text-signal-primary"
+                initial={reducedMotion ? false : { opacity: 0, x: i === 0 ? -16 : 16 }}
+                animate={
+                  isVisible
+                    ? { opacity: 1, x: 0 }
+                    : reducedMotion
+                      ? {}
+                      : { opacity: 0, x: i === 0 ? -16 : 16 }
+                }
+                whileHover={reducedMotion ? undefined : { scale: 1.1, y: -2 }}
+                transition={{
+                  duration: reducedMotion ? 0 : DURATION.normal,
+                  delay: reducedMotion ? 0 : STAGGER.child * (6 + i),
+                  ease: EASE_OUT,
+                }}
               >
                 {social.icon}
-              </a>
+              </motion.a>
             ))}
 
             {/* Divider */}
             <span className="mx-1 h-6 w-px bg-border" aria-hidden="true" />
 
-            {/* Resume link */}
-            <a
+            {/* Resume link — from bottom */}
+            <motion.a
               href={`/${lang}/resume`}
               className="hover:border-signal-primary/50 flex h-11 items-center gap-2 rounded-lg border border-border px-4 font-mono text-meta font-medium text-text-secondary transition-all hover:text-signal-primary"
+              initial={reducedMotion ? false : { opacity: 0, y: 12 }}
+              animate={
+                isVisible ? { opacity: 1, y: 0 } : reducedMotion ? {} : { opacity: 0, y: 12 }
+              }
+              whileHover={reducedMotion ? undefined : { scale: 1.03 }}
+              transition={{
+                duration: reducedMotion ? 0 : DURATION.normal,
+                delay: reducedMotion ? 0 : STAGGER.child * 8,
+                ease: EASE_OUT,
+              }}
             >
               <svg
                 className="size-4"
@@ -242,10 +330,10 @@ export default function ContactChapter({ labels, lang }: Props) {
                 />
               </svg>
               {labels.resumeLink}
-            </a>
+            </motion.a>
           </nav>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
     </section>
   );
 }

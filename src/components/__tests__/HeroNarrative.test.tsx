@@ -51,6 +51,20 @@ describe('HeroNarrative', () => {
   });
 
   it('should render primary and secondary CTAs', () => {
+    // CTAs require reduced motion or a timer to become visible
+    Object.defineProperty(window, 'matchMedia', {
+      writable: true,
+      value: vi.fn().mockImplementation((query: string) => ({
+        matches: query === '(prefers-reduced-motion: reduce)',
+        media: query,
+        onchange: null,
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        dispatchEvent: vi.fn(),
+      })),
+    });
     render(<HeroNarrative labels={mockLabels} lang="en" />);
     expect(screen.getByRole('button', { name: 'Explore my work' })).toBeTruthy();
     expect(screen.getByRole('button', { name: 'Get in touch' })).toBeTruthy();
@@ -78,6 +92,19 @@ describe('HeroNarrative', () => {
   });
 
   it('should scroll to target section when primary CTA is clicked', () => {
+    Object.defineProperty(window, 'matchMedia', {
+      writable: true,
+      value: vi.fn().mockImplementation((query: string) => ({
+        matches: query === '(prefers-reduced-motion: reduce)',
+        media: query,
+        onchange: null,
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        dispatchEvent: vi.fn(),
+      })),
+    });
     const mockScrollIntoView = vi.fn();
     const projectsSection = document.createElement('section');
     projectsSection.id = 'projects';
@@ -92,6 +119,19 @@ describe('HeroNarrative', () => {
   });
 
   it('should scroll to contact section when secondary CTA is clicked', () => {
+    Object.defineProperty(window, 'matchMedia', {
+      writable: true,
+      value: vi.fn().mockImplementation((query: string) => ({
+        matches: query === '(prefers-reduced-motion: reduce)',
+        media: query,
+        onchange: null,
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        dispatchEvent: vi.fn(),
+      })),
+    });
     const mockScrollIntoView = vi.fn();
     const contactSection = document.createElement('section');
     contactSection.id = 'contact';

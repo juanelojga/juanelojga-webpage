@@ -200,8 +200,9 @@ describe('SkillMatrix', () => {
 
     const { container } = render(<SkillMatrix labels={mockLabels} lang="en" />);
     const section = container.querySelector('section#skills');
-    // With reduced motion + visible, should have opacity-100 but not translate-y-0
-    expect(section?.className).toContain('opacity-100');
-    expect(section?.className).not.toContain('translate-y-0');
+    // With reduced motion, section should exist and not have translateY in inline style
+    expect(section).toBeTruthy();
+    const style = section?.getAttribute('style') || '';
+    expect(style).not.toContain('translateY');
   });
 });

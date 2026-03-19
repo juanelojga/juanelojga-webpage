@@ -1,4 +1,8 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useReducedMotion } from '../utils/useReducedMotion';
+import { DURATION, EASE_OUT, HERO_DELAYS } from '../utils/animation';
+import { preloadFrames, playSequence } from '../utils/portraitSequence';
 
 export interface HeroNarrativeLabels {
   name: string;
@@ -14,25 +18,12 @@ interface Props {
   lang: string;
 }
 
-function useReducedMotion(): boolean {
-  const [reduced, setReduced] = useState(
-    () =>
-      typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  );
-  useEffect(() => {
-    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
-    setReduced(mq.matches);
-    const handler = (e: MediaQueryListEvent) => setReduced(e.matches);
-    mq.addEventListener('change', handler);
-    return () => mq.removeEventListener('change', handler);
-  }, []);
-  return reduced;
-}
-
 export default function HeroNarrative({ labels, lang }: Props) {
   const headlineRef = useRef<HTMLHeadingElement>(null);
+  const portraitRef = useRef<HTMLDivElement>(null);
   const [animationDone, setAnimationDone] = useState(false);
   const [portraitRevealed, setPortraitRevealed] = useState(false);
+  const [ctasReady, setCtasReady] = useState(false);
   const reducedMotion = useReducedMotion();
   const animationRan = useRef(false);
 
@@ -41,7 +32,7 @@ export default function HeroNarrative({ labels, lang }: Props) {
     if (el) el.scrollIntoView({ behavior: 'smooth' });
   }, []);
 
-  // Typing/resolve animation for the headline
+  // Typing/resolve animation for the headline with choreographed sequence
   useEffect(() => {
     if (animationRan.current) return;
     animationRan.current = true;
@@ -53,6 +44,7 @@ export default function HeroNarrative({ labels, lang }: Props) {
     if (reducedMotion) {
       setAnimationDone(true);
       setPortraitRevealed(true);
+      setCtasReady(true);
       window.dispatchEvent(new CustomEvent('hero:boot-complete'));
       return;
     }
@@ -72,29 +64,89 @@ export default function HeroNarrative({ labels, lang }: Props) {
       return span;
     });
 
-    // Reveal portrait after a short delay
-    const portraitTimer = setTimeout(() => setPortraitRevealed(true), 400);
+    const timers: ReturnType<typeof setTimeout>[] = [];
 
-    // Animate characters sequentially
+    // Step 1: Animate characters sequentially (starts after HERO_DELAYS.headline)
     const charDelay = Math.min(70, 1800 / Math.max(chars.length, 1));
+    const typingStart = HERO_DELAYS.headline * 1000;
+
     chars.forEach((span, i) => {
-      setTimeout(() => {
-        span.style.opacity = '1';
-        span.classList.add('hero-char-reveal');
-      }, i * charDelay);
+      timers.push(
+        setTimeout(
+          () => {
+            span.style.opacity = '1';
+            span.classList.add('hero-char-reveal');
+          },
+          typingStart + i * charDelay
+        )
+      );
     });
 
-    // On completion, dispatch event
-    const totalDuration = chars.length * charDelay + 300;
-    const completeTimer = setTimeout(() => {
-      setAnimationDone(true);
-      window.dispatchEvent(new CustomEvent('hero:boot-complete'));
-    }, totalDuration);
+    const typingEnd = typingStart + chars.length * charDelay;
 
-    return () => {
-      clearTimeout(portraitTimer);
-      clearTimeout(completeTimer);
+    // Step 2: Translator line fades in after typing completes
+    timers.push(
+      setTimeout(
+        () => {
+          setAnimationDone(true);
+        },
+        typingEnd + HERO_DELAYS.translatorLine * 1000
+      )
+    );
+
+    // Step 3: Portrait reveals after translator line
+    timers.push(
+      setTimeout(
+        () => {
+          setPortraitRevealed(true);
+        },
+        typingEnd + (HERO_DELAYS.translatorLine + HERO_DELAYS.portrait) * 1000
+      )
+    );
+
+    // Step 4: CTAs slide up after portrait
+    timers.push(
+      setTimeout(
+        () => {
+          setCtasReady(true);
+        },
+        typingEnd + (HERO_DELAYS.translatorLine + HERO_DELAYS.portrait + HERO_DELAYS.ctas) * 1000
+      )
+    );
+
+    // Step 5: Dispatch boot-complete after all animations
+    const totalDuration =
+      typingEnd +
+      (HERO_DELAYS.translatorLine + HERO_DELAYS.portrait + HERO_DELAYS.ctas) * 1000 +
+      300;
+    timers.push(
+      setTimeout(() => {
+        window.dispatchEvent(new CustomEvent('hero:boot-complete'));
+      }, totalDuration)
+    );
+
+    return () => timers.forEach(clearTimeout);
+  }, [reducedMotion]);
+
+  // Listen for theme toggle to play portrait frame sequence
+  useEffect(() => {
+    if (reducedMotion) return;
+
+    const handleThemeToggle = (e: Event) => {
+      const detail = (e as CustomEvent).detail as { theme: string } | undefined;
+      const container = portraitRef.current;
+      if (!container || !detail) return;
+
+      preloadFrames().then(() => {
+        const direction = detail.theme === 'after-hours' ? 'forward' : 'reverse';
+        playSequence(container, direction, () => {
+          window.dispatchEvent(new CustomEvent('theme:toggle-complete'));
+        });
+      });
     };
+
+    window.addEventListener('theme:toggle-start', handleThemeToggle);
+    return () => window.removeEventListener('theme:toggle-start', handleThemeToggle);
   }, [reducedMotion]);
 
   return (
@@ -107,13 +159,18 @@ export default function HeroNarrative({ labels, lang }: Props) {
         {/* Text column */}
         <div className="flex flex-1 flex-col justify-center lg:py-12">
           {/* Name + role meta */}
-          <p className="mb-4 font-mono text-meta text-text-secondary">
+          <motion.p
+            className="mb-4 font-mono text-meta text-text-secondary"
+            initial={reducedMotion ? false : { opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: reducedMotion ? 0 : DURATION.normal, ease: EASE_OUT }}
+          >
             <span>{labels.name}</span>
             <span className="mx-2 text-border" aria-hidden="true">
               /
             </span>
             <span className="text-signal-primary">{labels.role}</span>
-          </p>
+          </motion.p>
 
           {/* Headline */}
           <h1
@@ -125,39 +182,46 @@ export default function HeroNarrative({ labels, lang }: Props) {
           </h1>
 
           {/* Translator line */}
-          <p
-            className={`mt-6 max-w-lg text-body text-text-secondary transition-opacity duration-500 ${
-              animationDone || reducedMotion ? 'opacity-100' : 'opacity-0'
-            }`}
+          <motion.p
+            className="mt-6 max-w-lg text-body text-text-secondary"
+            initial={reducedMotion ? false : { opacity: 0, y: 8 }}
+            animate={animationDone || reducedMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 8 }}
+            transition={{ duration: reducedMotion ? 0 : DURATION.slow, ease: EASE_OUT }}
           >
             {labels.translatorLine}
-          </p>
+          </motion.p>
 
           {/* CTAs */}
-          <div
-            className={`mt-10 flex flex-wrap gap-4 transition-opacity duration-500 ${
-              animationDone || reducedMotion ? 'opacity-100' : 'opacity-0'
-            }`}
-          >
-            <button
-              type="button"
-              onClick={() => scrollTo('projects')}
-              className="rounded-lg bg-signal-primary px-6 py-3 font-mono text-label font-semibold text-text-inverse transition-all hover:brightness-110 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal-primary"
-            >
-              {labels.primaryCta}
-            </button>
-            <button
-              type="button"
-              onClick={() => scrollTo('contact')}
-              className="rounded-lg border border-border px-6 py-3 font-mono text-label text-text-primary transition-all hover:border-signal-primary hover:text-signal-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal-primary"
-            >
-              {labels.secondaryCta}
-            </button>
-          </div>
+          <AnimatePresence>
+            {(ctasReady || reducedMotion) && (
+              <motion.div
+                className="mt-10 flex flex-wrap gap-4"
+                initial={reducedMotion ? false : { opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: reducedMotion ? 0 : DURATION.slow, ease: EASE_OUT }}
+              >
+                <button
+                  type="button"
+                  onClick={() => scrollTo('projects')}
+                  className="rounded-lg bg-signal-primary px-6 py-3 font-mono text-label font-semibold text-text-inverse transition-all hover:brightness-110 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal-primary"
+                >
+                  {labels.primaryCta}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => scrollTo('contact')}
+                  className="rounded-lg border border-border px-6 py-3 font-mono text-label text-text-primary transition-all hover:border-signal-primary hover:text-signal-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal-primary"
+                >
+                  {labels.secondaryCta}
+                </button>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
 
         {/* Portrait placeholder */}
         <div
+          ref={portraitRef}
           className={`relative flex aspect-[3/4] w-full items-center justify-center overflow-hidden rounded-xl lg:w-[340px] lg:shrink-0 xl:w-[380px] ${
             portraitRevealed || reducedMotion ? 'hero-portrait-revealed' : 'hero-portrait-hidden'
           }`}

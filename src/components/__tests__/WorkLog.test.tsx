@@ -125,11 +125,10 @@ describe('WorkLog', () => {
 
   it('should have case study links with correct hrefs', () => {
     const { container } = render(<WorkLog labels={mockLabels} lang="en" />);
+    // Only the featured project's tray is open by default; non-featured trays are collapsed
     const caseStudyLinks = container.querySelectorAll('a[href*="/projects/"]');
     const hrefs = Array.from(caseStudyLinks).map(a => a.getAttribute('href'));
     expect(hrefs).toContain('/en/projects/upwork-search-jobs');
-    expect(hrefs).toContain('/en/projects/narbox');
-    expect(hrefs).toContain('/en/projects/personal-page');
   });
 
   it('should render case study links for Spanish locale', () => {
@@ -137,7 +136,6 @@ describe('WorkLog', () => {
     const caseStudyLinks = container.querySelectorAll('a[href*="/projects/"]');
     const hrefs = Array.from(caseStudyLinks).map(a => a.getAttribute('href'));
     expect(hrefs).toContain('/es/projects/upwork-search-jobs');
-    expect(hrefs).toContain('/es/projects/narbox');
   });
 
   it('should render "View case study" text on links', () => {

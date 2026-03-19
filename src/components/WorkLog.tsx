@@ -1,5 +1,8 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { WORK_LOG_ENTRIES, type ProjectEntry, type ExperienceEntry } from '../utils/workLog';
+import { useReducedMotion } from '../utils/useReducedMotion';
+import { DURATION, EASE_OUT, STAGGER } from '../utils/animation';
 
 export interface WorkLogLabels {
   sectionTitle: string;
@@ -15,25 +18,6 @@ export interface WorkLogLabels {
 interface Props {
   labels: WorkLogLabels;
   lang: string;
-}
-
-/* ------------------------------------------------------------------ */
-/*  useReducedMotion                                                    */
-/* ------------------------------------------------------------------ */
-
-function useReducedMotion(): boolean {
-  const [reduced, setReduced] = useState(
-    () =>
-      typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  );
-  useEffect(() => {
-    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
-    setReduced(mq.matches);
-    const handler = (e: MediaQueryListEvent) => setReduced(e.matches);
-    mq.addEventListener('change', handler);
-    return () => mq.removeEventListener('change', handler);
-  }, []);
-  return reduced;
 }
 
 /* ------------------------------------------------------------------ */
@@ -56,14 +40,16 @@ function MilestoneMarker({
   delay,
 }: MilestoneMarkerProps) {
   return (
-    <div
+    <motion.div
       role="separator"
       aria-label={`${milestoneLabel}: ${entry.role} at ${entry.company}`}
       className="flex items-center gap-4 py-4"
-      style={{
-        transition: reducedMotion ? 'opacity 0.15s ease-out' : 'opacity 0.6s ease-out',
-        transitionDelay: reducedMotion ? '0ms' : `${delay}ms`,
-        opacity: isVisible ? 1 : 0,
+      initial={reducedMotion ? false : { opacity: 0 }}
+      animate={isVisible ? { opacity: 1 } : reducedMotion ? {} : { opacity: 0 }}
+      transition={{
+        duration: reducedMotion ? 0 : DURATION.normal,
+        delay: reducedMotion ? 0 : delay / 1000,
+        ease: EASE_OUT,
       }}
     >
       {/* Completed checkpoint */}
@@ -86,7 +72,7 @@ function MilestoneMarker({
         <span className="font-mono text-meta text-text-secondary">@ {entry.company}</span>
         <span className="ml-auto font-mono text-meta text-text-secondary">{entry.duration}</span>
       </div>
-    </div>
+    </motion.div>
   );
 }
 
@@ -102,6 +88,7 @@ interface ProjectCardProps {
   isVisible: boolean;
   reducedMotion: boolean;
   delay: number;
+  entryIndex: number;
 }
 
 function ProjectCard({
@@ -112,8 +99,11 @@ function ProjectCard({
   isVisible,
   reducedMotion,
   delay,
+  entryIndex,
 }: ProjectCardProps) {
   const [isTrayOpen, setIsTrayOpen] = useState(isFeatured);
+  const [hoverDirection, setHoverDirection] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
+  const cardRef = useRef<HTMLElement>(null);
 
   const handleToggleTray = useCallback(() => {
     if (!isFeatured) setIsTrayOpen(prev => !prev);
@@ -129,26 +119,55 @@ function ProjectCard({
     [isFeatured]
   );
 
+  // Directional hover detection
+  const handleMouseEnter = useCallback(
+    (e: React.MouseEvent<HTMLElement>) => {
+      if (isFeatured) return;
+      const rect = e.currentTarget.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+      const dx = e.clientX - centerX;
+      const dy = e.clientY - centerY;
+      // Normalize to a subtle 2px shift
+      const mag = Math.max(Math.sqrt(dx * dx + dy * dy), 1);
+      setHoverDirection({ x: (dx / mag) * 2, y: (dy / mag) * 2 });
+      setIsTrayOpen(true);
+    },
+    [isFeatured]
+  );
+
+  // Cascade reveal: odd entries slide from left, even from right
+  const slideX = reducedMotion ? 0 : entryIndex % 2 === 0 ? -24 : 24;
+
   return (
-    <article
+    <motion.article
+      ref={cardRef}
       aria-label={project.title}
-      className={`group overflow-hidden rounded-xl border transition-all ${
-        reducedMotion ? 'duration-150' : 'duration-500'
-      } ${
+      className={`group overflow-hidden rounded-xl border transition-shadow ${
         isFeatured
           ? 'border-signal-primary/30 col-span-full bg-surface-secondary shadow-lg'
           : 'bg-surface-secondary/50 hover:border-border/80 border-border hover:bg-surface-secondary hover:shadow-md'
       }`}
-      style={{
-        transition: reducedMotion
-          ? 'opacity 0.15s ease-out'
-          : `opacity 0.6s ease-out, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)`,
-        transitionDelay: reducedMotion ? '0ms' : `${delay}ms`,
-        opacity: isVisible ? 1 : 0,
-        transform: reducedMotion ? undefined : isVisible ? 'translateY(0)' : 'translateY(24px)',
+      initial={reducedMotion ? false : { opacity: 0, x: slideX }}
+      animate={isVisible ? { opacity: 1, x: 0 } : reducedMotion ? {} : { opacity: 0, x: slideX }}
+      whileHover={
+        !isFeatured && !reducedMotion
+          ? { x: hoverDirection.x, y: hoverDirection.y, transition: { duration: DURATION.fast } }
+          : undefined
+      }
+      whileFocus={!isFeatured && !reducedMotion ? { scale: 1.01 } : undefined}
+      transition={{
+        duration: reducedMotion ? 0 : DURATION.slow,
+        delay: reducedMotion ? 0 : delay / 1000,
+        ease: EASE_OUT,
       }}
-      onMouseEnter={() => !isFeatured && setIsTrayOpen(true)}
-      onMouseLeave={() => !isFeatured && setIsTrayOpen(false)}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={() => {
+        if (!isFeatured) {
+          setIsTrayOpen(false);
+          setHoverDirection({ x: 0, y: 0 });
+        }
+      }}
     >
       <div
         className={`${isFeatured ? 'p-8' : 'p-6'} cursor-default`}
@@ -214,64 +233,72 @@ function ProjectCard({
       </div>
 
       {/* Metadata tray */}
-      <div
-        id={`card-tray-${project.slug}`}
-        className={`border-border/40 border-t transition-all ${
-          reducedMotion ? 'duration-150' : 'duration-300'
-        } ${isTrayOpen ? 'max-h-80 opacity-100' : 'max-h-0 overflow-hidden opacity-0'}`}
-        aria-hidden={!isTrayOpen}
-      >
-        <div className={`${isFeatured ? 'px-8 py-5' : 'px-6 py-4'}`}>
-          {/* Metadata grid */}
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
-            <div>
-              <span className="block font-mono text-meta text-text-secondary">{labels.role}</span>
-              <span className="font-mono text-meta font-medium text-text-primary">
-                {project.metadata.role}
-              </span>
-            </div>
-            <div>
-              <span className="block font-mono text-meta text-text-secondary">
-                {labels.duration}
-              </span>
-              <span className="font-mono text-meta font-medium text-text-primary">
-                {project.metadata.duration}
-              </span>
-            </div>
-            <div className="col-span-2 sm:col-span-1">
-              <span className="block font-mono text-meta text-text-secondary">
-                {labels.techStack}
-              </span>
-              <span className="font-mono text-meta font-medium text-text-primary">
-                {project.metadata.techStack.slice(0, 4).join(', ')}
-              </span>
-            </div>
-          </div>
-
-          {/* Case study CTA */}
-          <a
-            href={`/${lang}/projects/${project.slug}`}
-            className={`mt-4 inline-flex items-center gap-2 font-mono text-meta font-medium transition-colors ${
-              isFeatured
-                ? 'border-signal-primary/50 bg-signal-primary/10 hover:bg-signal-primary/20 rounded-lg border px-4 py-2 text-signal-primary hover:border-signal-primary'
-                : 'hover:text-signal-primary-vivid text-signal-primary'
-            }`}
+      <AnimatePresence initial={false}>
+        {isTrayOpen && (
+          <motion.div
+            id={`card-tray-${project.slug}`}
+            className="border-border/40 overflow-hidden border-t"
+            aria-hidden={!isTrayOpen}
+            initial={reducedMotion ? false : { height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: reducedMotion ? 0 : DURATION.fast, ease: EASE_OUT }}
           >
-            {labels.viewCaseStudy}
-            <svg
-              className="size-3.5"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              viewBox="0 0 24 24"
-              aria-hidden="true"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-            </svg>
-          </a>
-        </div>
-      </div>
-    </article>
+            <div className={`${isFeatured ? 'px-8 py-5' : 'px-6 py-4'}`}>
+              {/* Metadata grid */}
+              <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+                <div>
+                  <span className="block font-mono text-meta text-text-secondary">
+                    {labels.role}
+                  </span>
+                  <span className="font-mono text-meta font-medium text-text-primary">
+                    {project.metadata.role}
+                  </span>
+                </div>
+                <div>
+                  <span className="block font-mono text-meta text-text-secondary">
+                    {labels.duration}
+                  </span>
+                  <span className="font-mono text-meta font-medium text-text-primary">
+                    {project.metadata.duration}
+                  </span>
+                </div>
+                <div className="col-span-2 sm:col-span-1">
+                  <span className="block font-mono text-meta text-text-secondary">
+                    {labels.techStack}
+                  </span>
+                  <span className="font-mono text-meta font-medium text-text-primary">
+                    {project.metadata.techStack.slice(0, 4).join(', ')}
+                  </span>
+                </div>
+              </div>
+
+              {/* Case study CTA */}
+              <a
+                href={`/${lang}/projects/${project.slug}`}
+                className={`mt-4 inline-flex items-center gap-2 font-mono text-meta font-medium transition-colors ${
+                  isFeatured
+                    ? 'border-signal-primary/50 bg-signal-primary/10 hover:bg-signal-primary/20 rounded-lg border px-4 py-2 text-signal-primary hover:border-signal-primary'
+                    : 'hover:text-signal-primary-vivid text-signal-primary'
+                }`}
+              >
+                {labels.viewCaseStudy}
+                <svg
+                  className="size-3.5"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                </svg>
+              </a>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.article>
   );
 }
 
@@ -319,21 +346,17 @@ export default function WorkLog({ labels, lang }: Props) {
     >
       <div className="mx-auto w-full max-w-6xl">
         {/* Section header */}
-        <div
+        <motion.div
           className="mb-12"
-          style={{
-            transition: reducedMotion
-              ? 'opacity 0.15s ease-out'
-              : 'opacity 0.6s ease-out, transform 0.6s ease-out',
-            opacity: isVisible ? 1 : 0,
-            transform: reducedMotion ? undefined : isVisible ? 'translateY(0)' : 'translateY(24px)',
-          }}
+          initial={reducedMotion ? false : { opacity: 0, y: 24 }}
+          animate={isVisible ? { opacity: 1, y: 0 } : reducedMotion ? {} : { opacity: 0, y: 24 }}
+          transition={{ duration: reducedMotion ? 0 : DURATION.normal, ease: EASE_OUT }}
         >
           <h2 id="projects-headline" className="font-mono text-section text-text-primary">
             {labels.sectionTitle}
           </h2>
           <p className="mt-2 max-w-xl text-body text-text-secondary">{labels.subtitle}</p>
-        </div>
+        </motion.div>
 
         {/* Work log entries — cascade layout */}
         <div className="grid gap-6 lg:grid-cols-2">
@@ -365,6 +388,7 @@ export default function WorkLog({ labels, lang }: Props) {
                 isVisible={isVisible}
                 reducedMotion={reducedMotion}
                 delay={delay}
+                entryIndex={entryIndex - 1}
               />
             );
           })}

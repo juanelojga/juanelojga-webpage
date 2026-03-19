@@ -1,5 +1,8 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { motion } from 'framer-motion';
 import { SKILL_CLUSTERS } from '../utils/skillMatrix';
+import { useReducedMotion } from '../utils/useReducedMotion';
+import { DURATION, EASE_OUT, STAGGER } from '../utils/animation';
 
 export interface SkillMatrixLabels {
   sectionTitle: string;
@@ -13,21 +16,6 @@ export interface SkillMatrixLabels {
 interface Props {
   labels: SkillMatrixLabels;
   lang: string;
-}
-
-function useReducedMotion(): boolean {
-  const [reduced, setReduced] = useState(
-    () =>
-      typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  );
-  useEffect(() => {
-    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
-    setReduced(mq.matches);
-    const handler = (e: MediaQueryListEvent) => setReduced(e.matches);
-    mq.addEventListener('change', handler);
-    return () => mq.removeEventListener('change', handler);
-  }, []);
-  return reduced;
 }
 
 function ClusterIcon({ name }: { name: string }) {
@@ -77,34 +65,31 @@ export default function SkillMatrix({ labels }: Props) {
       ref={sectionRef}
       id="skills"
       aria-labelledby="skills-headline"
-      className={`flex min-h-screen items-center px-6 py-20 lg:px-12 xl:px-20 ${
-        reducedMotion
-          ? isVisible
-            ? 'opacity-100'
-            : 'opacity-0'
-          : isVisible
-            ? 'translate-y-0 opacity-100'
-            : 'translate-y-6 opacity-0'
-      }`}
-      style={{
-        transition: reducedMotion
-          ? 'opacity 0.15s ease-out'
-          : 'opacity 0.6s ease-out, transform 0.6s ease-out',
-      }}
+      className="flex min-h-screen items-center px-6 py-20 lg:px-12 xl:px-20"
     >
-      <div className="mx-auto w-full max-w-6xl">
+      <motion.div
+        className="mx-auto w-full max-w-6xl"
+        initial={reducedMotion ? false : { opacity: 0 }}
+        animate={isVisible ? { opacity: 1 } : { opacity: 0 }}
+        transition={{ duration: reducedMotion ? 0 : DURATION.slow, ease: EASE_OUT }}
+      >
         {/* Section header */}
-        <div className="mb-12">
+        <motion.div
+          className="mb-12"
+          initial={reducedMotion ? false : { opacity: 0, y: 16 }}
+          animate={isVisible ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: reducedMotion ? 0 : DURATION.slow, ease: EASE_OUT }}
+        >
           <h2 id="skills-headline" className="font-mono text-section text-text-primary">
             {labels.sectionTitle}
           </h2>
           <p className="mt-2 max-w-xl text-body text-text-secondary">{labels.subtitle}</p>
-        </div>
+        </motion.div>
 
         {/* Desktop grid (≥1024px) */}
         <div className="hidden gap-6 lg:grid lg:grid-cols-2 xl:grid-cols-4">
           {SKILL_CLUSTERS.map((cluster, clusterIdx) => (
-            <div
+            <motion.div
               key={cluster.id}
               onMouseEnter={() => setFocusedCluster(cluster.id)}
               onMouseLeave={() => setFocusedCluster(null)}
@@ -116,10 +101,24 @@ export default function SkillMatrix({ labels }: Props) {
               className={`bg-surface-secondary/50 cursor-default rounded-xl border border-border p-6 transition-all duration-300 ${
                 focusedCluster === cluster.id
                   ? 'border-signal-primary/40 shadow-signal-primary/5 bg-surface-secondary shadow-lg'
-                  : 'hover:border-border/80'
+                  : focusedCluster !== null
+                    ? 'opacity-70'
+                    : 'hover:border-border/80'
               }`}
-              style={{
-                transitionDelay: reducedMotion ? '0ms' : `${clusterIdx * 80}ms`,
+              initial={reducedMotion ? false : { opacity: 0, y: 16, scale: 0.97 }}
+              animate={
+                isVisible
+                  ? {
+                      opacity: focusedCluster !== null && focusedCluster !== cluster.id ? 0.7 : 1,
+                      y: 0,
+                      scale: 1,
+                    }
+                  : {}
+              }
+              transition={{
+                duration: reducedMotion ? 0 : DURATION.slow,
+                delay: reducedMotion ? 0 : clusterIdx * STAGGER.cluster,
+                ease: EASE_OUT,
               }}
             >
               {/* Cluster header */}
@@ -138,28 +137,40 @@ export default function SkillMatrix({ labels }: Props) {
                 </h3>
               </div>
 
-              {/* Skill chips */}
-              <div className="flex flex-wrap gap-2">
+              {/* Skill chips with pulse on cluster hover */}
+              <motion.div
+                className="flex flex-wrap gap-2"
+                animate={
+                  focusedCluster === cluster.id && !reducedMotion ? { gap: '6px' } : { gap: '8px' }
+                }
+                transition={{ duration: DURATION.fast, ease: EASE_OUT }}
+              >
                 {cluster.skills.map((skill, skillIdx) => (
-                  <span
+                  <motion.span
                     key={skill}
-                    className={`border-border/60 rounded-full border bg-surface-primary px-3 py-1 font-mono text-meta text-text-secondary transition-all ${
-                      reducedMotion ? '' : 'duration-300'
-                    } ${isVisible && !reducedMotion ? 'translate-y-0 opacity-100' : ''}`}
-                    style={
-                      !reducedMotion && isVisible
+                    className="border-border/60 rounded-full border bg-surface-primary px-3 py-1 font-mono text-meta text-text-secondary"
+                    initial={reducedMotion ? false : { opacity: 0, scale: 0.8 }}
+                    animate={
+                      isVisible
                         ? {
-                            transitionDelay: `${clusterIdx * 80 + skillIdx * 40 + 200}ms`,
+                            opacity: 1,
+                            scale:
+                              focusedCluster === cluster.id && !reducedMotion ? [1, 1.05, 1] : 1,
                           }
-                        : !reducedMotion
-                          ? { opacity: 0, transform: 'translateY(8px)' }
-                          : undefined
+                        : {}
                     }
+                    transition={{
+                      duration: reducedMotion ? 0 : DURATION.normal,
+                      delay: reducedMotion
+                        ? 0
+                        : clusterIdx * STAGGER.cluster + skillIdx * STAGGER.chip + 0.2,
+                      ease: EASE_OUT,
+                    }}
                   >
                     {skill}
-                  </span>
+                  </motion.span>
                 ))}
-              </div>
+              </motion.div>
 
               {/* Proof point (revealed on hover/focus) */}
               <div
@@ -172,7 +183,7 @@ export default function SkillMatrix({ labels }: Props) {
                   {labels.proofPoints[cluster.id]}
                 </p>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
 
@@ -245,7 +256,7 @@ export default function SkillMatrix({ labels }: Props) {
             );
           })}
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 }
