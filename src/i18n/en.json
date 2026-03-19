@@ -117,6 +117,16 @@
     "expandLabel": "Show skills",
     "collapseLabel": "Hide skills"
   },
+  "workLog": {
+    "sectionTitle": "// work log",
+    "subtitle": "Projects and milestones — what I've built and where.",
+    "featuredLabel": "Featured",
+    "viewCaseStudy": "View case study",
+    "role": "Role",
+    "duration": "Duration",
+    "techStack": "Tech Stack",
+    "milestone": "Milestone"
+  },
   "seo": {
     "title": "Juan Almeida | Full Stack & AI Engineer",
     "description": "Engineer passionate about building smart, scalable, and human-centered software through full-stack development and AI innovation.",

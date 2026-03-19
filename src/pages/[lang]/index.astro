@@ -4,6 +4,7 @@ import HomepageShell from '../../components/HomepageShell';
 import HeroNarrative from '../../components/HeroNarrative';
 import BioChapter from '../../components/BioChapter.astro';
 import SkillMatrix from '../../components/SkillMatrix';
+import WorkLog from '../../components/WorkLog';
 
 export async function getStaticPaths() {
   return [{ params: { lang: 'en' } }, { params: { lang: 'es' } }];
@@ -21,6 +22,7 @@ const shellLabels = {
 
 const heroLabels = t.heroNarrative;
 const skillMatrixLabels = t.skillMatrix;
+const workLogLabels = t.workLog;
 ---
 
 <Layout title="Juan Almeida | Full Stack & AI Engineer" variant="homepage">
@@ -33,13 +35,8 @@ const skillMatrixLabels = t.skillMatrix;
   <!-- Skills / Skill Matrix -->
   <SkillMatrix client:visible labels={skillMatrixLabels} lang={lang} />
 
-  <!-- About / Bio Chapter -->
-  <BioChapter bio={t.bio} />
-
-  <!-- Projects placeholder -->
-  <section id="projects" class="flex min-h-screen items-center justify-center px-6 py-20">
-    <p class="font-mono text-label text-text-secondary">// projects — coming soon</p>
-  </section>
+  <!-- Projects / Work Log -->
+  <WorkLog client:visible labels={workLogLabels} lang={lang} />
 
   <!-- Contact placeholder -->
   <section id="contact" class="flex min-h-screen items-center justify-center px-6 py-20">
