@@ -10,6 +10,7 @@ interface Props {
 
 const labelKeyMap: Record<string, keyof TodoRailLabels> = {
   'todoRail.bootIdentity': 'bootIdentity',
+  'todoRail.loadProfile': 'loadProfile',
   'todoRail.compileStrengths': 'compileStrengths',
   'todoRail.unlockWorkLog': 'unlockWorkLog',
   'todoRail.openChannel': 'openChannel',

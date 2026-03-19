@@ -1,0 +1,38 @@
+[
+  {
+    "id": "build",
+    "icon": "construction",
+    "order": 1,
+    "skills": ["React", "Next.js", "Vue.js", "Astro", "TypeScript", "JavaScript", "HTML", "CSS"],
+    "proofPointKey": "skillMatrix.proofPoints.build"
+  },
+  {
+    "id": "scale",
+    "icon": "dns",
+    "order": 2,
+    "skills": [
+      "Django",
+      "Express",
+      "PostgreSQL",
+      "MongoDB",
+      "REST APIs",
+      "GraphQL",
+      "System Design"
+    ],
+    "proofPointKey": "skillMatrix.proofPoints.scale"
+  },
+  {
+    "id": "ai",
+    "icon": "psychology",
+    "order": 3,
+    "skills": ["Python", "LangChain", "OpenAI API", "RAG Pipelines", "ML Workflows", "AI/ML"],
+    "proofPointKey": "skillMatrix.proofPoints.ai"
+  },
+  {
+    "id": "ship",
+    "icon": "rocket_launch",
+    "order": 4,
+    "skills": ["AWS", "Docker", "CI/CD", "GitHub Actions", "Netlify", "Vercel"],
+    "proofPointKey": "skillMatrix.proofPoints.ship"
+  }
+]
