@@ -193,7 +193,7 @@ export default function TodoRailMobile({ items, labels, onItemClick }: Props) {
                                 : { duration: RAIL_TIMING.strikeThrough, ease: EASE_OUT }
                             }
                           >
-                            <span className="bg-text-secondary/50 block h-px w-full" />
+                            <span className="block h-px w-full bg-text-secondary opacity-50" />
                           </motion.span>
                         )}
                       </span>

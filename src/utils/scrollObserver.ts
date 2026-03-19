@@ -5,8 +5,20 @@ export const SECTION_OBSERVER_OPTIONS = {
   rootMargin: '0px 0px -10% 0px',
 } as const;
 
+const ACTIVATION_DEBOUNCE_MS = 150;
+
 /**
  * Observe sections and fire a callback when one becomes active.
+ *
+ * Activation uses a single source of truth: the section whose centre is
+ * closest to the viewport centre among all currently-visible sections.
+ * IntersectionObserver handles `is-visible` class toggling for CSS reveal
+ * animations but does **not** call `onActivate` directly — that avoids
+ * competing activation calls that cause the rail to flicker.
+ *
+ * Scroll / resize events schedule a debounced activation check so the
+ * callback only fires once the user has settled (~150 ms).
+ *
  * Returns a cleanup function that disconnects the observer.
  */
 export function observeSections(
@@ -23,11 +35,10 @@ export function observeSections(
   const observedElements = new Map<string, HTMLElement>();
   let rafId: number | null = null;
   let readyDispatched = false;
-  let fallbackFrameId: number | null = null;
+  let debounceTimer: ReturnType<typeof setTimeout> | null = null;
+  let currentActiveId: string | null = null;
 
-  const runFallbackActivation = () => {
-    fallbackFrameId = null;
-
+  const runActivation = () => {
     const viewportHeight = window.innerHeight;
     let activeSectionId: string | null = null;
     let bestDistance = Number.POSITIVE_INFINITY;
@@ -50,25 +61,24 @@ export function observeSections(
       }
     }
 
-    if (activeSectionId) {
+    if (activeSectionId && activeSectionId !== currentActiveId) {
+      currentActiveId = activeSectionId;
       onActivate(activeSectionId);
     }
   };
 
-  const scheduleFallbackActivation = () => {
-    if (fallbackFrameId !== null) return;
-    fallbackFrameId = window.requestAnimationFrame(runFallbackActivation);
+  const scheduleActivation = () => {
+    if (debounceTimer !== null) clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(runActivation, ACTIVATION_DEBOUNCE_MS);
   };
 
   const observer = new IntersectionObserver(entries => {
     for (const entry of entries) {
       if (entry.isIntersecting) {
         entry.target.classList.add('is-visible');
-        onActivate(entry.target.id);
       }
     }
-
-    scheduleFallbackActivation();
+    scheduleActivation();
   }, SECTION_OBSERVER_OPTIONS);
 
   const connectSections = () => {
@@ -89,7 +99,8 @@ export function observeSections(
 
     if (missingIds === 0 && !readyDispatched) {
       readyDispatched = true;
-      scheduleFallbackActivation();
+      // Initial activation on page load — run immediately via rAF
+      window.requestAnimationFrame(runActivation);
       onReady?.();
       return;
     }
@@ -100,18 +111,18 @@ export function observeSections(
   };
 
   connectSections();
-  window.addEventListener('scroll', scheduleFallbackActivation, { passive: true });
-  window.addEventListener('resize', scheduleFallbackActivation);
+  window.addEventListener('scroll', scheduleActivation, { passive: true });
+  window.addEventListener('resize', scheduleActivation);
 
   return () => {
     if (rafId !== null) {
       window.cancelAnimationFrame(rafId);
     }
-    if (fallbackFrameId !== null) {
-      window.cancelAnimationFrame(fallbackFrameId);
+    if (debounceTimer !== null) {
+      clearTimeout(debounceTimer);
     }
-    window.removeEventListener('scroll', scheduleFallbackActivation);
-    window.removeEventListener('resize', scheduleFallbackActivation);
+    window.removeEventListener('scroll', scheduleActivation);
+    window.removeEventListener('resize', scheduleActivation);
     observer.disconnect();
   };
 }

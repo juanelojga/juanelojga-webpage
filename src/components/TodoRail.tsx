@@ -143,7 +143,7 @@ function RailItem({
                     }
               }
             >
-              <span className="bg-text-secondary/50 block h-px w-full" />
+              <span className="block h-px w-full bg-text-secondary opacity-50" />
             </motion.span>
           )}
           {item.state === 'completed' && <span className="opacity-60" aria-hidden="true" />}
