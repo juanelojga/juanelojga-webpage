@@ -125,10 +125,10 @@ const isHomepage = variant === 'homepage';
     {
       isHomepage ? (
         <div class="flex min-h-screen flex-col lg:flex-row">
-          <main id="main" class="flex-1">
+          <slot name="rail" />
+          <main id="main" class="flex-1 lg:order-first">
             <slot />
           </main>
-          <slot name="rail" />
         </div>
       ) : (
         <>

@@ -47,7 +47,7 @@ export default function HomepageShell({ lang, labels }: Props) {
       <TodoRailMobile items={items} labels={labels.todoRail} onItemClick={handleItemClick} />
 
       {/* Desktop rail — sticky right column, visible >= lg */}
-      <div className="hidden lg:flex lg:flex-col">
+      <div className="hidden lg:flex lg:shrink-0 lg:flex-col">
         {/* Utility strip at the top of the rail column */}
         <div className="flex items-center justify-end gap-1 border-b border-l border-border px-4 py-2">
           <a
