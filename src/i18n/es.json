@@ -67,6 +67,24 @@
       "invalidEmail": "Por favor, ingresa una dirección de correo válida."
     }
   },
+  "todoRail": {
+    "label": "Progreso",
+    "bootIdentity": "Iniciar identidad",
+    "compileStrengths": "Compilar fortalezas",
+    "unlockWorkLog": "Desbloquear historial",
+    "openChannel": "Abrir canal",
+    "statePending": "Pendiente",
+    "stateActive": "En progreso",
+    "stateCompleted": "Completado"
+  },
+  "themeToggle": {
+    "label": "Cambiar tema",
+    "buildMode": "Modo Build",
+    "afterHours": "After Hours"
+  },
+  "localeSwitcher": {
+    "label": "Cambiar idioma"
+  },
   "seo": {
     "title": "Juan Almeida | Ingeniero Full Stack y de IA",
     "description": "Ingeniero apasionado por crear software inteligente, escalable y centrado en las personas mediante desarrollo full-stack e innovación en IA.",
