@@ -127,6 +127,16 @@
     "techStack": "Tech Stack",
     "milestone": "Milestone"
   },
+  "contact": {
+    "sectionTitle": "// open channel",
+    "headline": "Let's build something.",
+    "description": "I'm always open to interesting projects, collaborations, or just a good technical conversation.",
+    "emailCta": "Copy email",
+    "emailToast": "Email copied to clipboard",
+    "resumeLink": "View resume",
+    "socialLabel": "Find me elsewhere",
+    "ariaEmailCopied": "Email address copied to clipboard"
+  },
   "seo": {
     "title": "Juan Almeida | Full Stack & AI Engineer",
     "description": "Engineer passionate about building smart, scalable, and human-centered software through full-stack development and AI innovation.",
