@@ -1,5 +1,5 @@
 import { describe, it, expect, afterEach, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent, cleanup, act } from '@testing-library/react';
+import { render, screen, fireEvent, cleanup, act, waitFor } from '@testing-library/react';
 import ContactChapter, { type ContactLabels } from '../ContactChapter';
 
 const mockLabels: ContactLabels = {
@@ -155,14 +155,16 @@ describe('ContactChapter', () => {
     expect(screen.getByText('Email address copied to clipboard')).toBeTruthy();
 
     // Advance past 3s timeout
-    act(() => {
-      vi.advanceTimersByTime(3000);
+    await act(async () => {
+      vi.advanceTimersByTime(3500);
     });
 
-    // Toast should be dismissed
-    expect(screen.queryByText('Email address copied to clipboard')).toBeNull();
-
     vi.useRealTimers();
+
+    // Toast should be dismissed (may need to wait for AnimatePresence exit)
+    await waitFor(() => {
+      expect(screen.queryByText('Email address copied to clipboard')).toBeNull();
+    });
   });
 
   it('should render social links with correct attributes', () => {

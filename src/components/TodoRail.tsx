@@ -1,4 +1,7 @@
+import { useEffect, useRef } from 'react';
+import { motion, useReducedMotion as useFramerReducedMotion } from 'framer-motion';
 import type { TodoItem } from '../utils/todoRail';
+import { RAIL_TIMING, EASE_OUT, DURATION } from '../utils/animation';
 
 export interface TodoRailLabels {
   label: string;
@@ -26,7 +29,10 @@ const labelKeyMap: Record<string, keyof TodoRailLabels> = {
   'todoRail.openChannel': 'openChannel',
 };
 
-function CheckIcon() {
+/* ── Animated check icon with SVG path draw ──────────────────────── */
+
+function AnimatedCheckIcon({ animate }: { animate: boolean }) {
+  const reducedMotion = useFramerReducedMotion();
   return (
     <svg
       className="size-4 text-signal-primary"
@@ -36,12 +42,131 @@ function CheckIcon() {
       strokeWidth="2"
       aria-hidden="true"
     >
-      <path d="M3 8.5L6.5 12L13 4" strokeLinecap="round" strokeLinejoin="round" />
+      <motion.path
+        d="M3 8.5L6.5 12L13 4"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        initial={{ pathLength: 0 }}
+        animate={animate ? { pathLength: 1 } : { pathLength: 0 }}
+        transition={
+          reducedMotion
+            ? { duration: 0 }
+            : {
+                duration: RAIL_TIMING.checkDraw,
+                ease: EASE_OUT,
+                type: 'spring',
+                stiffness: 300,
+                damping: 20,
+              }
+        }
+      />
     </svg>
   );
 }
 
+/* ── Rail item with micro-interactions ────────────────────────────── */
+
+function RailItem({
+  item,
+  displayLabel,
+  stateLabel,
+  onItemClick,
+  prevState,
+}: {
+  item: TodoItem;
+  displayLabel: string;
+  stateLabel: string;
+  onItemClick: (sectionId: string) => void;
+  prevState: TodoItem['state'] | undefined;
+}) {
+  const reducedMotion = useFramerReducedMotion();
+  const justActivated =
+    prevState !== undefined && prevState !== 'active' && item.state === 'active';
+  const justCompleted =
+    prevState !== undefined && prevState !== 'completed' && item.state === 'completed';
+
+  return (
+    <li>
+      <button
+        type="button"
+        onClick={() => onItemClick(item.sectionId)}
+        aria-current={item.state === 'active' ? 'step' : undefined}
+        aria-label={`${displayLabel} — ${stateLabel}`}
+        className={`group relative flex w-full items-center gap-3 rounded-lg p-3 text-left font-mono transition-colors ${
+          item.state === 'active'
+            ? 'bg-signal-primary/10 text-signal-primary'
+            : item.state === 'completed'
+              ? 'text-text-secondary hover:bg-surface-secondary'
+              : 'text-text-secondary hover:bg-surface-secondary hover:text-text-primary'
+        }`}
+      >
+        {/* Cursor sweep overlay */}
+        {justActivated && !reducedMotion && (
+          <motion.span
+            className="bg-signal-primary/5 absolute inset-0 rounded-lg"
+            initial={{ scaleX: 0, transformOrigin: 'left' }}
+            animate={{ scaleX: [0, 1, 0] }}
+            transition={{ duration: RAIL_TIMING.sweep, ease: EASE_OUT }}
+            aria-hidden="true"
+          />
+        )}
+
+        {/* State indicator */}
+        <span className="flex size-5 shrink-0 items-center justify-center" aria-hidden="true">
+          {item.state === 'completed' ? (
+            <AnimatedCheckIcon animate={justCompleted} />
+          ) : item.state === 'active' ? (
+            <span className="rail-pulse size-2.5 rounded-full bg-signal-primary" />
+          ) : (
+            <span className="size-2.5 rounded-full border border-border" />
+          )}
+        </span>
+
+        {/* Label with strike-through animation */}
+        <span className="relative text-label">
+          {displayLabel}
+          {item.state === 'completed' && (
+            <motion.span
+              className="absolute inset-0 flex items-center"
+              aria-hidden="true"
+              initial={justCompleted && !reducedMotion ? { scaleX: 0 } : { scaleX: 1 }}
+              animate={{ scaleX: 1 }}
+              style={{ transformOrigin: 'left' }}
+              transition={
+                reducedMotion
+                  ? { duration: 0 }
+                  : {
+                      duration: RAIL_TIMING.strikeThrough,
+                      delay:
+                        RAIL_TIMING.sweep + RAIL_TIMING.checkDraw - RAIL_TIMING.sweepCheckOverlap,
+                      ease: EASE_OUT,
+                    }
+              }
+            >
+              <span className="bg-text-secondary/50 block h-px w-full" />
+            </motion.span>
+          )}
+          {item.state === 'completed' && <span className="opacity-60" aria-hidden="true" />}
+        </span>
+      </button>
+    </li>
+  );
+}
+
 export default function TodoRail({ items, labels, onItemClick }: Props) {
+  // Track previous states for animation triggers
+  const prevStatesRef = useRef<Map<string, TodoItem['state']>>(new Map());
+
+  useEffect(() => {
+    const map = new Map<string, TodoItem['state']>();
+    items.forEach(item => map.set(item.id, item.state));
+    // Defer update to allow render to read previous values
+    const timer = setTimeout(() => {
+      prevStatesRef.current = map;
+    }, 0);
+    return () => clearTimeout(timer);
+  }, [items]);
+
   return (
     <nav
       aria-label={labels.label}
@@ -59,44 +184,14 @@ export default function TodoRail({ items, labels, onItemClick }: Props) {
                 : labels.statePending;
 
           return (
-            <li key={item.id}>
-              <button
-                type="button"
-                onClick={() => onItemClick(item.sectionId)}
-                aria-current={item.state === 'active' ? 'step' : undefined}
-                aria-label={`${displayLabel} — ${stateLabel}`}
-                className={`group flex w-full items-center gap-3 rounded-lg p-3 text-left font-mono transition-colors ${
-                  item.state === 'active'
-                    ? 'bg-signal-primary/10 text-signal-primary'
-                    : item.state === 'completed'
-                      ? 'text-text-secondary hover:bg-surface-secondary'
-                      : 'text-text-secondary hover:bg-surface-secondary hover:text-text-primary'
-                }`}
-              >
-                {/* State indicator */}
-                <span
-                  className="flex size-5 shrink-0 items-center justify-center"
-                  aria-hidden="true"
-                >
-                  {item.state === 'completed' ? (
-                    <CheckIcon />
-                  ) : item.state === 'active' ? (
-                    <span className="rail-pulse size-2.5 rounded-full bg-signal-primary" />
-                  ) : (
-                    <span className="size-2.5 rounded-full border border-border" />
-                  )}
-                </span>
-
-                {/* Label */}
-                <span
-                  className={`text-label ${
-                    item.state === 'completed' ? 'line-through opacity-60' : ''
-                  }`}
-                >
-                  {displayLabel}
-                </span>
-              </button>
-            </li>
+            <RailItem
+              key={item.id}
+              item={item}
+              displayLabel={displayLabel as string}
+              stateLabel={stateLabel}
+              onItemClick={onItemClick}
+              prevState={prevStatesRef.current.get(item.id)}
+            />
           );
         })}
       </ol>

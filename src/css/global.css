@@ -66,11 +66,35 @@ html {
   scroll-behavior: smooth;
 }
 
-/* Theme transition — smooth swap on toggle, no transition on initial load */
+/* Theme transition — choreographed surface swap (surfaces first, then accents) */
 [data-theme] body {
   transition:
-    background-color 0.3s ease,
-    color 0.3s ease;
+    background-color 0.65s cubic-bezier(0.16, 1, 0.3, 1),
+    color 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Surface elements transition slightly faster (leading the swap) */
+[data-theme] .bg-surface-primary,
+[data-theme] .bg-surface-secondary,
+[data-theme] .bg-surface-tertiary {
+  transition:
+    background-color 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Accent/signal colors transition after surfaces settle */
+[data-theme] .text-signal-primary,
+[data-theme] .text-signal-secondary,
+[data-theme] .border-signal-primary {
+  transition:
+    color 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.1s,
+    border-color 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.1s;
+}
+
+/* Text transitions at body pace */
+[data-theme] .text-text-primary,
+[data-theme] .text-text-secondary {
+  transition: color 0.65s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* =============================================
