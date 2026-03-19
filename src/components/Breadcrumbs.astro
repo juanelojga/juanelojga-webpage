@@ -17,10 +17,12 @@ const { items } = Astro.props;
       items.map((item, index) => (
         <li class="flex items-center gap-1">
           {index > 0 && (
-            <span class="material-symbols-outlined text-base text-slate-400">chevron_right</span>
+            <span class="material-symbols-outlined text-base text-text-secondary">
+              chevron_right
+            </span>
           )}
           {item.href && index < items.length - 1 ? (
-            <a href={item.href} class="text-slate-500 transition hover:text-primary">
+            <a href={item.href} class="text-text-secondary transition hover:text-primary">
               {item.label}
             </a>
           ) : (

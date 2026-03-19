@@ -39,6 +39,10 @@ describe('Design tokens', () => {
       'text-secondary',
       'text-inverse',
       'border',
+      'status-success',
+      'status-success-muted',
+      'status-error',
+      'status-error-muted',
     ];
 
     it('should define all semantic color tokens', () => {
@@ -151,6 +155,10 @@ describe('CSS theme variables', () => {
     '--color-text-secondary',
     '--color-text-inverse',
     '--color-border',
+    '--color-status-success',
+    '--color-status-success-muted',
+    '--color-status-error',
+    '--color-status-error-muted',
   ];
 
   it('should define all required CSS variables in Build Mode', () => {

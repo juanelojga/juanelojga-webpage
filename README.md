@@ -50,16 +50,25 @@ text juanelojga-webpage/ ├── public/ # Static assets │ ├── favicon
 
 All commands are run from the root of the project:
 
-| Command             | Action                                              |
-| :------------------ | :-------------------------------------------------- |
-| `npm install`       | Install dependencies                                |
-| `npm run dev`       | Start local dev server at `localhost:4321`          |
-| `npm run build`     | Build production site to `./dist/`                  |
-| `npm run preview`   | Preview your build locally before deploying         |
-| `npm run lint`      | Run ESLint to check for code issues                 |
-| `npm run lint:fix`  | Fix ESLint issues automatically                     |
-| `npm run format`    | Format code with Prettier                           |
-| `npm run astro ...` | Run Astro CLI commands (`astro add`, `astro check`) |
+| Command              | Action                                              |
+| :------------------- | :-------------------------------------------------- |
+| `npm install`        | Install dependencies                                |
+| `npm run dev`        | Start local dev server at `localhost:4321`          |
+| `npm run build`      | Build production site to `./dist/`                  |
+| `npm run preview`    | Preview your build locally before deploying         |
+| `npm run e2e`        | Run Playwright end-to-end tests                     |
+| `npm run e2e:headed` | Run Playwright tests in headed mode                 |
+| `npm run e2e:debug`  | Run Playwright tests in Playwright debug mode       |
+| `npm run lint`       | Run ESLint to check for code issues                 |
+| `npm run lint:fix`   | Fix ESLint issues automatically                     |
+| `npm run format`     | Format code with Prettier                           |
+| `npm run astro ...`  | Run Astro CLI commands (`astro add`, `astro check`) |
+
+Playwright notes:
+
+- The E2E preview server builds with `PUBLIC_E2E=true`, which disables analytics during test runs.
+- On Linux, WebKit is excluded by default because the Playwright WebKit runtime can be unstable on some hosts even after installing Playwright dependencies.
+- To opt back into WebKit on a Linux machine where it is known to work, run `PLAYWRIGHT_ENABLE_WEBKIT=true npm run e2e`.
 
 ## 🌍 Internationalization (i18n)
 

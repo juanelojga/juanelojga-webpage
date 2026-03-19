@@ -77,6 +77,12 @@ const isHomepage = variant === 'homepage';
     </script>
     <GoogleAnalytics />
     <meta name="description" content={pageDescription} />
+    <meta
+      name="robots"
+      content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={pageCanonicalUrl} />
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={pageDescription} />
     <meta name="twitter:title" content={pageTitle} />
@@ -104,7 +110,7 @@ const isHomepage = variant === 'homepage';
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
     />
     <link
       rel="stylesheet"

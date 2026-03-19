@@ -7,14 +7,14 @@ interface Props {
 const { language, code } = Astro.props;
 ---
 
-<div class="overflow-hidden rounded-xl bg-slate-900">
-  <div class="flex items-center gap-2 border-b border-slate-700 px-4 py-3">
-    <span class="size-3 rounded-full bg-red-500"></span>
-    <span class="size-3 rounded-full bg-yellow-500"></span>
-    <span class="size-3 rounded-full bg-green-500"></span>
-    <span class="ml-2 text-xs text-slate-400">{language}</span>
+<div class="overflow-hidden rounded-xl bg-surface-tertiary">
+  <div class="flex items-center gap-2 border-b border-border px-4 py-3">
+    <span class="size-3 rounded-full bg-[#FF5F57]"></span>
+    <span class="size-3 rounded-full bg-[#FEBC2E]"></span>
+    <span class="size-3 rounded-full bg-[#28C840]"></span>
+    <span class="ml-2 text-xs text-text-secondary">{language}</span>
   </div>
   <div class="overflow-x-auto p-4">
-    <pre><code class="text-sm leading-relaxed text-slate-300">{code}</code></pre>
+    <pre><code class="text-sm leading-relaxed text-text-primary">{code}</code></pre>
   </div>
 </div>

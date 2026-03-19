@@ -13,7 +13,16 @@ const compat = new FlatCompat({
 
 export default [
   {
-    ignores: ['node_modules', 'dist', '.astro', '.vercel', '.netlify', '*.css', '*.md'],
+    ignores: [
+      'node_modules',
+      'dist',
+      '.astro',
+      '.vercel',
+      '.netlify',
+      '.screenshots',
+      '*.css',
+      '*.md',
+    ],
   },
   ...compat.config({
     env: {

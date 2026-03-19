@@ -269,7 +269,10 @@ export default function ContactChapter({ labels, lang }: Props) {
         >
           <p className="mb-4 font-mono text-meta text-text-secondary">{labels.socialLabel}</p>
 
-          <nav aria-label={labels.socialLabel} className="flex items-center justify-center gap-4">
+          <nav
+            aria-label={labels.socialLabel}
+            className="flex flex-wrap items-center justify-center gap-4"
+          >
             {SOCIALS.map((social, i) => (
               <motion.a
                 key={social.name}

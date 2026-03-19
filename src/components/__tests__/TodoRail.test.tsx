@@ -86,14 +86,12 @@ describe('TodoRail', () => {
 
   it('should apply line-through on completed items', () => {
     const items = makeItems(['completed', 'completed', 'active', 'pending', 'pending']);
-    const { container } = render(
-      <TodoRail items={items} labels={mockLabels} onItemClick={() => {}} />
-    );
+    render(<TodoRail items={items} labels={mockLabels} onItemClick={() => {}} />);
 
     // Strike-through is now an animated overlay span with a bg-text-secondary line
     const completedLabel = screen.getByText('Boot identity');
     const parentSpan = completedLabel.closest('span.relative');
-    const strikeLine = parentSpan?.querySelector('span.bg-text-secondary\\/50');
+    const strikeLine = parentSpan?.querySelector('span.bg-text-secondary.opacity-50');
     expect(strikeLine).toBeTruthy();
   });
 });

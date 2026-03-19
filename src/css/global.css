@@ -16,6 +16,10 @@
   --color-text-secondary: #636b78;
   --color-text-inverse: #f5f5f0;
   --color-border: #d1d5db;
+  --color-status-success: #16a34a;
+  --color-status-success-muted: #f0fdf4;
+  --color-status-error: #dc2626;
+  --color-status-error-muted: #fef2f2;
 
   /* Decorative signal variants (full vibrancy, not for text on light bg) */
   --color-signal-primary-vivid: #00ff80;
@@ -34,6 +38,10 @@
   --color-text-secondary: #9ca3af;
   --color-text-inverse: #1a1a1a;
   --color-border: #3f3f46;
+  --color-status-success: #22c55e;
+  --color-status-success-muted: #052e16;
+  --color-status-error: #f87171;
+  --color-status-error-muted: #450a0a;
 
   --color-signal-primary-vivid: #00ff80;
   --color-signal-secondary-vivid: #00e5ff;
@@ -52,6 +60,10 @@
     --color-text-secondary: #9ca3af;
     --color-text-inverse: #1a1a1a;
     --color-border: #3f3f46;
+    --color-status-success: #22c55e;
+    --color-status-success-muted: #052e16;
+    --color-status-error: #f87171;
+    --color-status-error-muted: #450a0a;
 
     --color-signal-primary-vivid: #00ff80;
     --color-signal-secondary-vivid: #00e5ff;
