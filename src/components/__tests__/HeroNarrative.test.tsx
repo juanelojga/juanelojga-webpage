@@ -33,7 +33,8 @@ describe('HeroNarrative', () => {
 
   it('should render the headline', () => {
     render(<HeroNarrative labels={mockLabels} lang="en" />);
-    expect(screen.getByText('Hello World')).toBeTruthy();
+    // Animation splits headline into character spans; match via accessible name (aria-label)
+    expect(screen.getByRole('heading', { name: 'Hello World' })).toBeTruthy();
   });
 
   it('should render name and role meta', () => {
