@@ -85,6 +85,19 @@
   "localeSwitcher": {
     "label": "Change language"
   },
+  "heroNarrative": {
+    "name": "Juan Almeida",
+    "role": "Full Stack & AI Engineer",
+    "headline": "Hello World",
+    "translatorLine": "I build AI systems, automations, and applications that ship.",
+    "primaryCta": "Explore my work",
+    "secondaryCta": "Get in touch"
+  },
+  "bio": {
+    "sectionTitle": "// about",
+    "narrative": "I'm a full-stack engineer who builds end-to-end — from data pipelines and AI integrations to the interfaces people actually use. I've shipped search platforms handling millions of records, courier logistics systems, and machine-learning workflows that run in production.\n\nMy work sits at the intersection of product thinking and engineering depth. I don't just write code; I figure out what needs to exist, then build it. TypeScript, Python, React, Django, cloud infrastructure — I pick the right tool for the problem, not the other way around.\n\nI care about software that works reliably, scales gracefully, and solves real problems. No over-engineering, no hype — just useful things, built well.",
+    "highlightLabel": "What I bring"
+  },
   "seo": {
     "title": "Juan Almeida | Full Stack & AI Engineer",
     "description": "Engineer passionate about building smart, scalable, and human-centered software through full-stack development and AI innovation.",

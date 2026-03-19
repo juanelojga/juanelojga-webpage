@@ -189,3 +189,69 @@ html {
 .rail-pulse {
   animation: rail-pulse 2s ease-in-out infinite;
 }
+
+/* =============================================
+   Hero Character Reveal Animation
+   ============================================= */
+
+@keyframes hero-char-flash {
+  0% {
+    color: var(--color-signal-primary);
+    opacity: 0.6;
+  }
+  40% {
+    color: var(--color-signal-primary);
+    opacity: 1;
+  }
+  100% {
+    color: var(--color-text-primary);
+    opacity: 1;
+  }
+}
+
+.hero-char {
+  display: inline-block;
+  will-change: opacity, color;
+}
+
+.hero-char-reveal {
+  animation: hero-char-flash 0.4s ease-out forwards;
+}
+
+/* =============================================
+   Hero Portrait Reveal
+   ============================================= */
+
+.hero-portrait-hidden {
+  clip-path: inset(50% 50% 50% 50% round 12px);
+  opacity: 0;
+  transition:
+    clip-path 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    opacity 0.5s ease-out;
+}
+
+.hero-portrait-revealed {
+  clip-path: inset(0% 0% 0% 0% round 12px);
+  opacity: 1;
+  transition:
+    clip-path 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    opacity 0.5s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-char-reveal {
+    animation: none;
+    color: var(--color-text-primary);
+    opacity: 1;
+  }
+
+  .hero-portrait-hidden,
+  .hero-portrait-revealed {
+    clip-path: none;
+    transition: opacity 0.15s ease-out;
+  }
+
+  .hero-portrait-revealed {
+    opacity: 1;
+  }
+}

@@ -19,13 +19,20 @@ interface Props {
 }
 
 export default function HomepageShell({ lang, labels }: Props) {
-  const { items, activate } = useTodoRail(DEFAULT_RAIL_ITEMS);
+  const { items, activate, complete } = useTodoRail(DEFAULT_RAIL_ITEMS);
 
   // Wire IntersectionObserver to drive rail state
   useEffect(() => {
     const sectionIds = DEFAULT_RAIL_ITEMS.map(i => i.sectionId);
     return observeSections(sectionIds, activate);
   }, [activate]);
+
+  // Listen for hero animation completion to drive boot→completed teaching moment
+  useEffect(() => {
+    const handler = () => complete('home');
+    window.addEventListener('hero:boot-complete', handler);
+    return () => window.removeEventListener('hero:boot-complete', handler);
+  }, [complete]);
 
   const handleItemClick = useCallback((sectionId: string) => {
     const el = document.getElementById(sectionId);
