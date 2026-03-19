@@ -12,6 +12,7 @@ interface Props {
   canonicalUrl?: string;
   ogImage?: string;
   structuredData?: Record<string, unknown>[];
+  variant?: 'homepage' | 'subpage';
 }
 
 const t = useTranslations(Astro);
@@ -54,6 +55,9 @@ const personSchema = {
     'Vue.js',
   ],
 };
+
+const variant = Astro.props.variant ?? 'subpage';
+const isHomepage = variant === 'homepage';
 ---
 
 <!doctype html>
@@ -118,8 +122,23 @@ const personSchema = {
   </head>
   <body class="bg-surface-primary font-display text-text-primary">
     <a href="#main" class="sr-only focus:not-sr-only">Skip to content</a>
-    <Navbar />
-    <main id="main"><slot /></main>
-    <Footer />
+    {
+      isHomepage ? (
+        <div class="flex min-h-screen flex-col lg:flex-row">
+          <main id="main" class="flex-1">
+            <slot />
+          </main>
+          <slot name="rail" />
+        </div>
+      ) : (
+        <>
+          <Navbar />
+          <main id="main">
+            <slot />
+          </main>
+          <Footer />
+        </>
+      )
+    }
   </body>
 </html>
