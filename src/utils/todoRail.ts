@@ -15,7 +15,8 @@ export interface TodoItem {
 
 export const DEFAULT_RAIL_ITEMS: TodoItem[] = [
   { id: 'boot', labelKey: 'todoRail.bootIdentity', sectionId: 'home', state: 'pending' },
-  { id: 'compile', labelKey: 'todoRail.compileStrengths', sectionId: 'about', state: 'pending' },
+  { id: 'profile', labelKey: 'todoRail.loadProfile', sectionId: 'about', state: 'pending' },
+  { id: 'compile', labelKey: 'todoRail.compileStrengths', sectionId: 'skills', state: 'pending' },
   { id: 'unlock', labelKey: 'todoRail.unlockWorkLog', sectionId: 'projects', state: 'pending' },
   { id: 'open', labelKey: 'todoRail.openChannel', sectionId: 'contact', state: 'pending' },
 ];

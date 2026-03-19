@@ -31,6 +31,7 @@ describe('TODO Rail i18n parity', () => {
     const requiredKeys = [
       'label',
       'bootIdentity',
+      'loadProfile',
       'compileStrengths',
       'unlockWorkLog',
       'openChannel',

@@ -70,6 +70,7 @@
   "todoRail": {
     "label": "Progreso",
     "bootIdentity": "Iniciar identidad",
+    "loadProfile": "Cargar perfil",
     "compileStrengths": "Compilar fortalezas",
     "unlockWorkLog": "Desbloquear historial",
     "openChannel": "Abrir canal",
@@ -97,6 +98,24 @@
     "sectionTitle": "// sobre mí",
     "narrative": "Soy un ingeniero full-stack que construye de principio a fin — desde pipelines de datos e integraciones de IA hasta las interfaces que la gente realmente usa. He lanzado plataformas de búsqueda que manejan millones de registros, sistemas de logística de mensajería y flujos de machine learning que corren en producción.\n\nMi trabajo se sitúa en la intersección entre pensamiento de producto y profundidad técnica. No solo escribo código; identifico lo que necesita existir y lo construyo. TypeScript, Python, React, Django, infraestructura cloud — elijo la herramienta correcta para el problema, no al revés.\n\nMe importa el software que funciona de forma confiable, escala con gracia y resuelve problemas reales. Sin sobre-ingeniería, sin hype — solo cosas útiles, bien construidas.",
     "highlightLabel": "Lo que aporto"
+  },
+  "skillMatrix": {
+    "sectionTitle": "// herramientas",
+    "subtitle": "El stack que uso — agrupado por lo que hace.",
+    "categories": {
+      "build": "Construir",
+      "scale": "Escalar",
+      "ai": "IA",
+      "ship": "Desplegar"
+    },
+    "proofPoints": {
+      "build": "Interfaces reactivas y apps SSR sirviendo millones de vistas con React, Next.js y Astro.",
+      "scale": "Sistemas backend y APIs manejando 10M+ registros — plataformas de búsqueda, motores logísticos, pipelines de datos.",
+      "ai": "Flujos de ML en producción, pipelines RAG e integraciones de IA que funcionan de forma confiable a escala.",
+      "ship": "Despliegues containerizados, CI/CD automatizado e infraestructura como código en AWS, Docker y plataformas edge."
+    },
+    "expandLabel": "Mostrar habilidades",
+    "collapseLabel": "Ocultar habilidades"
   },
   "seo": {
     "title": "Juan Almeida | Ingeniero Full Stack y de IA",

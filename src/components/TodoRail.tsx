@@ -3,6 +3,7 @@ import type { TodoItem } from '../utils/todoRail';
 export interface TodoRailLabels {
   label: string;
   bootIdentity: string;
+  loadProfile: string;
   compileStrengths: string;
   unlockWorkLog: string;
   openChannel: string;
@@ -19,6 +20,7 @@ interface Props {
 
 const labelKeyMap: Record<string, keyof TodoRailLabels> = {
   'todoRail.bootIdentity': 'bootIdentity',
+  'todoRail.loadProfile': 'loadProfile',
   'todoRail.compileStrengths': 'compileStrengths',
   'todoRail.unlockWorkLog': 'unlockWorkLog',
   'todoRail.openChannel': 'openChannel',

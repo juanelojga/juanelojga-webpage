@@ -70,6 +70,7 @@
   "todoRail": {
     "label": "Progress",
     "bootIdentity": "Boot identity",
+    "loadProfile": "Load profile",
     "compileStrengths": "Compile strengths",
     "unlockWorkLog": "Unlock work log",
     "openChannel": "Open channel",
@@ -97,6 +98,24 @@
     "sectionTitle": "// about",
     "narrative": "I'm a full-stack engineer who builds end-to-end — from data pipelines and AI integrations to the interfaces people actually use. I've shipped search platforms handling millions of records, courier logistics systems, and machine-learning workflows that run in production.\n\nMy work sits at the intersection of product thinking and engineering depth. I don't just write code; I figure out what needs to exist, then build it. TypeScript, Python, React, Django, cloud infrastructure — I pick the right tool for the problem, not the other way around.\n\nI care about software that works reliably, scales gracefully, and solves real problems. No over-engineering, no hype — just useful things, built well.",
     "highlightLabel": "What I bring"
+  },
+  "skillMatrix": {
+    "sectionTitle": "// toolkit",
+    "subtitle": "The stack I reach for — grouped by what it does.",
+    "categories": {
+      "build": "Build",
+      "scale": "Scale",
+      "ai": "AI",
+      "ship": "Ship"
+    },
+    "proofPoints": {
+      "build": "Shipped reactive interfaces and SSR apps serving millions of page views with React, Next.js, and Astro.",
+      "scale": "Designed backend systems and APIs handling 10M+ records — search platforms, logistics engines, data pipelines.",
+      "ai": "Built production ML workflows, RAG pipelines, and AI integrations that run reliably at scale.",
+      "ship": "Containerized deployments, automated CI/CD, and infrastructure-as-code across AWS, Docker, and edge platforms."
+    },
+    "expandLabel": "Show skills",
+    "collapseLabel": "Hide skills"
   },
   "seo": {
     "title": "Juan Almeida | Full Stack & AI Engineer",
