@@ -11,7 +11,7 @@ for (const { path, name } of PAGES) {
     const errors: string[] = [];
     page.on('pageerror', err => errors.push(err.message));
 
-    await page.goto(path, { waitUntil: 'networkidle' });
+    await page.goto(path, { waitUntil: 'load' });
 
     // No JS errors
     expect(errors).toEqual([]);

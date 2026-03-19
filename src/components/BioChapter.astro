@@ -78,21 +78,3 @@ const paragraphs = bio.narrative.split('\n').filter(p => p.trim());
     }
   }
 </style>
-
-<script is:inline>
-  (function () {
-    var bio = document.querySelector('.bio-chapter');
-    if (!bio) return;
-
-    function check() {
-      var rect = bio.getBoundingClientRect();
-      if (rect.top < window.innerHeight * 0.85 && rect.bottom > 0) {
-        bio.classList.add('is-visible');
-        window.removeEventListener('scroll', check);
-      }
-    }
-
-    window.addEventListener('scroll', check, { passive: true });
-    check();
-  })();
-</script>

@@ -24,7 +24,10 @@ export default function HomepageShell({ lang, labels }: Props) {
   // Wire IntersectionObserver to drive rail state
   useEffect(() => {
     const sectionIds = DEFAULT_RAIL_ITEMS.map(i => i.sectionId);
-    return observeSections(sectionIds, activate);
+    const cleanup = observeSections(sectionIds, activate, () => {
+      window.dispatchEvent(new CustomEvent('homepage-shell-ready'));
+    });
+    return cleanup;
   }, [activate]);
 
   // Listen for hero animation completion to drive boot→completed teaching moment

@@ -1,20 +1,25 @@
 ---
 const GA_MEASUREMENT_ID = 'G-CVN94FSM0K';
+const isE2E = import.meta.env.PUBLIC_E2E === 'true';
+const gaSetupScript = `
+window.dataLayer = window.dataLayer || [];
+function gtag(){window.dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', '${GA_MEASUREMENT_ID}');
+`;
 ---
 
-<script
-  is:inline
-  async
-  type="text/partytown"
-  src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}></script>
+{
+  !isE2E && (
+    <>
+      <script
+        is:inline
+        async
+        type="text/partytown"
+        src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
+      />
 
-<script is:inline type="text/partytown">
-  window.dataLayer = window.dataLayer || [];
-  function gtag() {
-    window.dataLayer.push(arguments);
-  }
-  gtag('js', new Date());
-
-  // Configure Google Analytics with your Measurement ID
-  gtag('config', 'G-CVN94FSM0K');
-</script>
+      <script is:inline type="text/partytown" set:html={gaSetupScript} />
+    </>
+  )
+}
