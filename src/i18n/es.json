@@ -127,6 +127,16 @@
     "techStack": "Stack Técnico",
     "milestone": "Hito"
   },
+  "contact": {
+    "sectionTitle": "// abrir canal",
+    "headline": "Construyamos algo.",
+    "description": "Siempre estoy abierto a proyectos interesantes, colaboraciones, o simplemente una buena conversación técnica.",
+    "emailCta": "Copiar correo",
+    "emailToast": "Correo copiado al portapapeles",
+    "resumeLink": "Ver currículum",
+    "socialLabel": "Encuéntrame en",
+    "ariaEmailCopied": "Dirección de correo copiada al portapapeles"
+  },
   "seo": {
     "title": "Juan Almeida | Ingeniero Full Stack y de IA",
     "description": "Ingeniero apasionado por crear software inteligente, escalable y centrado en las personas mediante desarrollo full-stack e innovación en IA.",
