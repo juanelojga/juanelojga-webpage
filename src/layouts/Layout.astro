@@ -17,7 +17,7 @@ interface Props {
 
 const t = useTranslations(Astro);
 const { lang } = Astro.params || { lang: 'en' };
-const canonicalBase = 'https://juanelojga.com';
+const canonicalBase = 'https://www.juanelojga.com';
 const localePath = lang === 'en' ? '' : `/${lang}`;
 const defaultCanonicalUrl = `${canonicalBase}${localePath}/`;
 

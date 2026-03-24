@@ -1,4 +1,5 @@
 import { test, expect, type Page } from '@playwright/test';
+import AxeBuilder from '@axe-core/playwright';
 
 const PROJECTS = [
   { slug: 'aiecommerce-agent-pipeline', title: 'AIEcommerce Agent Pipeline' },
@@ -725,5 +726,55 @@ test.describe('Reduced motion', () => {
       path: '.screenshots/inheritance-reduced-motion.png',
       fullPage: false,
     });
+  });
+});
+
+// ─── 5.1 Accessibility Audit ────────────────────────────────────────────────
+
+test.describe('5.1 Accessibility Audit', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 800 });
+  });
+
+  for (const project of PROJECTS) {
+    test(`axe-core — ${project.slug} has no critical or serious violations`, async ({ page }) => {
+      await page.goto(projectUrl('en', project.slug), { waitUntil: 'load' });
+      await waitForSection(page);
+
+      const results = await new AxeBuilder({ page }).include('#class-lineage').analyze();
+
+      const serious = results.violations.filter(
+        v => v.impact === 'critical' || v.impact === 'serious'
+      );
+      expect(serious).toEqual([]);
+    });
+  }
+
+  for (const theme of ['build', 'after-hours'] as const) {
+    test(`axe-core — ${theme} theme passes accessibility checks`, async ({ page }) => {
+      await page.addInitScript(t => {
+        localStorage.setItem('theme', t);
+      }, theme);
+
+      await page.goto(projectUrl('en', PROJECTS[0].slug), { waitUntil: 'load' });
+      await waitForSection(page);
+
+      const results = await new AxeBuilder({ page }).include('#class-lineage').analyze();
+
+      const serious = results.violations.filter(
+        v => v.impact === 'critical' || v.impact === 'serious'
+      );
+      expect(serious).toEqual([]);
+    });
+  }
+
+  test('full case study page has no critical violations', async ({ page }) => {
+    await page.goto(projectUrl('en', PROJECTS[0].slug), { waitUntil: 'load' });
+    await waitForSection(page);
+
+    const results = await new AxeBuilder({ page }).analyze();
+
+    const critical = results.violations.filter(v => v.impact === 'critical');
+    expect(critical).toEqual([]);
   });
 });
