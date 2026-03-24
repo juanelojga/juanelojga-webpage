@@ -26,7 +26,7 @@
       "techStack": "Tech Stack",
       "target": "Target"
     },
-    "hero": { "livePreview": "Live Preview", "viewSource": "View Source" },
+    "hero": { "viewSource": "View Source" },
     "cta": {
       "headline": "Have a similar project in mind?",
       "getInTouch": "Get in Touch",

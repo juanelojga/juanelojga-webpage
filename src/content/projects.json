@@ -8,7 +8,6 @@
     "tags": ["Python", "Django", "LangGraph", "MedusaJS", "PostgreSQL"],
     "image": "/images/aiecommerce-pipeline.jpg",
     "links": {
-      "live": "https://juanelojga.com",
       "github": "#"
     },
     "heroImage": "/images/aiecommerce-hero.jpg",
@@ -119,7 +118,6 @@
     "tags": ["Next.js", "Django", "GraphQL", "PostgreSQL", "Tailwind CSS"],
     "image": "/images/narbox-thumbnail.jpg",
     "links": {
-      "live": "https://narbox.com",
       "github": "#"
     },
     "heroImage": "/images/narbox-hero.jpg",
@@ -230,7 +228,6 @@
     "tags": ["Node.js", "TypeScript", "Asterisk ARI", "WebSockets", "VoIP"],
     "image": "/images/pbxai-orchestrator.jpg",
     "links": {
-      "live": "#",
       "github": "#"
     },
     "heroImage": "/images/pbxai-hero.jpg",

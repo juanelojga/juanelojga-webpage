@@ -4,14 +4,11 @@ interface Props {
   title: string;
   description: string;
   heroImage: string;
-  liveLink?: string;
   githubLink?: string;
-  liveLabel: string;
   sourceLabel: string;
 }
 
-const { category, title, description, heroImage, liveLink, githubLink, liveLabel, sourceLabel } =
-  Astro.props;
+const { category, title, description, heroImage, githubLink, sourceLabel } = Astro.props;
 ---
 
 <header class="relative w-full overflow-hidden bg-surface-secondary px-6 py-20 lg:py-32">
@@ -36,18 +33,6 @@ const { category, title, description, heroImage, liveLink, githubLink, liveLabel
       </p>
 
       <div class="flex flex-wrap justify-center gap-4 lg:justify-start">
-        {
-          liveLink && liveLink !== '#' && (
-            <a
-              href={liveLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="hover:bg-primary/90 rounded-lg bg-primary px-6 py-3 font-semibold text-text-inverse shadow-lg transition"
-            >
-              {liveLabel}
-            </a>
-          )
-        }
         {
           githubLink && githubLink !== '#' && (
             <a

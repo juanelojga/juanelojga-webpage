@@ -26,7 +26,7 @@
       "techStack": "Stack Técnico",
       "target": "Objetivo"
     },
-    "hero": { "livePreview": "Vista Previa", "viewSource": "Ver Código" },
+    "hero": { "viewSource": "Ver Código" },
     "cta": {
       "headline": "¿Tienes un proyecto similar en mente?",
       "getInTouch": "Contáctame",
