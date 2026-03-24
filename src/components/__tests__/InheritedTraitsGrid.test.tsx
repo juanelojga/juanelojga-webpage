@@ -121,4 +121,62 @@ describe('InheritedTraitsGrid', () => {
     expect(buttons[0].getAttribute('aria-expanded')).toBe('false');
     expect(buttons[1].getAttribute('aria-expanded')).toBe('true');
   });
+
+  it('should dispatch trait hover event on mouseEnter', () => {
+    const handler = vi.fn();
+    window.addEventListener('inheritance:trait-hover', handler);
+
+    render(<InheritedTraitsGrid traits={mockTraits} label="Inherited Traits" />);
+    const buttons = screen.getAllByRole('button');
+
+    fireEvent.mouseEnter(buttons[0]);
+    expect(handler).toHaveBeenCalledTimes(1);
+    expect((handler.mock.calls[0][0] as CustomEvent).detail.traitLabel).toBe(
+      'Stateful Graph Execution'
+    );
+
+    window.removeEventListener('inheritance:trait-hover', handler);
+  });
+
+  it('should dispatch trait unhover event on mouseLeave', () => {
+    const handler = vi.fn();
+    window.addEventListener('inheritance:trait-unhover', handler);
+
+    render(<InheritedTraitsGrid traits={mockTraits} label="Inherited Traits" />);
+    const buttons = screen.getAllByRole('button');
+
+    fireEvent.mouseLeave(buttons[0]);
+    expect(handler).toHaveBeenCalledTimes(1);
+
+    window.removeEventListener('inheritance:trait-unhover', handler);
+  });
+
+  it('should dispatch trait hover event on focus', () => {
+    const handler = vi.fn();
+    window.addEventListener('inheritance:trait-hover', handler);
+
+    render(<InheritedTraitsGrid traits={mockTraits} label="Inherited Traits" />);
+    const buttons = screen.getAllByRole('button');
+
+    fireEvent.focus(buttons[1]);
+    expect(handler).toHaveBeenCalledTimes(1);
+    expect((handler.mock.calls[0][0] as CustomEvent).detail.traitLabel).toBe(
+      'Self-Healing Inventory'
+    );
+
+    window.removeEventListener('inheritance:trait-hover', handler);
+  });
+
+  it('should dispatch trait unhover event on blur', () => {
+    const handler = vi.fn();
+    window.addEventListener('inheritance:trait-unhover', handler);
+
+    render(<InheritedTraitsGrid traits={mockTraits} label="Inherited Traits" />);
+    const buttons = screen.getAllByRole('button');
+
+    fireEvent.blur(buttons[0]);
+    expect(handler).toHaveBeenCalledTimes(1);
+
+    window.removeEventListener('inheritance:trait-unhover', handler);
+  });
 });

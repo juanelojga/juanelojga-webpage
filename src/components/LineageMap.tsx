@@ -2,6 +2,7 @@ import { useRef, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useReducedMotion } from '../utils/useReducedMotion';
 import { DURATION, EASE_OUT } from '../utils/animation';
+import { INHERITANCE_EVENTS } from '../utils/inheritanceAnimation';
 
 interface Props {
   parentName: string;
@@ -24,6 +25,8 @@ export default function LineageMap({
   compact = false,
 }: Props) {
   const [isVisible, setIsVisible] = useState(false);
+  const [highlightedLabel, setHighlightedLabel] = useState<string | null>(null);
+  const [activeSection, setActiveSection] = useState<string | null>(null);
   const mapRef = useRef<HTMLElement>(null);
   const reducedMotion = useReducedMotion();
 
@@ -49,6 +52,37 @@ export default function LineageMap({
     return () => observer.disconnect();
   }, []);
 
+  // Listen for trait hover events
+  useEffect(() => {
+    const handleTraitHover = (e: Event) => {
+      const detail = (e as CustomEvent<{ traitLabel: string }>).detail;
+      setHighlightedLabel(detail.traitLabel);
+    };
+    const handleTraitUnhover = () => {
+      setHighlightedLabel(null);
+    };
+
+    window.addEventListener(INHERITANCE_EVENTS.traitHover, handleTraitHover);
+    window.addEventListener(INHERITANCE_EVENTS.traitUnhover, handleTraitUnhover);
+    return () => {
+      window.removeEventListener(INHERITANCE_EVENTS.traitHover, handleTraitHover);
+      window.removeEventListener(INHERITANCE_EVENTS.traitUnhover, handleTraitUnhover);
+    };
+  }, []);
+
+  // Listen for scroll-driven active node changes
+  useEffect(() => {
+    const handleActiveNode = (e: Event) => {
+      const detail = (e as CustomEvent<{ section: string }>).detail;
+      setActiveSection(detail.section);
+    };
+
+    window.addEventListener(INHERITANCE_EVENTS.activeNode, handleActiveNode);
+    return () => {
+      window.removeEventListener(INHERITANCE_EVENTS.activeNode, handleActiveNode);
+    };
+  }, []);
+
   const nodes: NodeDef[] = [
     { label: parentName, type: 'parent' },
     ...traits.map(t => ({ label: t, type: 'trait' as const })),
@@ -70,6 +104,18 @@ export default function LineageMap({
     child: 'bg-signal-primary',
   };
 
+  const isNodeHighlighted = (node: NodeDef): boolean => {
+    if (highlightedLabel) return node.label === highlightedLabel;
+    if (activeSection === 'traits') return node.type === 'trait';
+    if (activeSection === 'overrides') return node.type === 'override';
+    return false;
+  };
+
+  const isNodeDimmed = (node: NodeDef): boolean => {
+    const anyHighlight = highlightedLabel !== null || activeSection !== null;
+    return anyHighlight && !isNodeHighlighted(node);
+  };
+
   if (compact) {
     return (
       <nav
@@ -78,27 +124,33 @@ export default function LineageMap({
         className="bg-surface-secondary/50 rounded-xl border border-border p-4"
       >
         <ol className="flex flex-wrap items-center gap-2">
-          {nodes.map((node, idx) => (
-            <li key={node.label} className="flex items-center gap-2">
-              <motion.span
-                className={`inline-block rounded-full border px-3 py-1 font-mono text-xs ${nodeStyles[node.type]}`}
-                initial={reducedMotion ? { opacity: 1 } : { opacity: 0, scale: 0.9 }}
-                animate={isVisible ? { opacity: 1, scale: 1 } : undefined}
-                transition={{
-                  duration: reducedMotion ? DURATION.micro : DURATION.fast,
-                  ease: EASE_OUT,
-                  delay: reducedMotion ? 0 : idx * 0.05,
-                }}
-              >
-                {node.label}
-              </motion.span>
-              {idx < nodes.length - 1 && (
-                <span className="text-text-secondary/40" aria-hidden="true">
-                  →
-                </span>
-              )}
-            </li>
-          ))}
+          {nodes.map((node, idx) => {
+            const highlighted = isNodeHighlighted(node);
+            const dimmed = isNodeDimmed(node);
+            return (
+              <li key={node.label} className="flex items-center gap-2">
+                <motion.span
+                  className={`inline-block rounded-full border px-3 py-1 font-mono text-xs transition-all ${nodeStyles[node.type]} ${
+                    highlighted ? 'inheritance-trait-linked' : ''
+                  }`}
+                  initial={reducedMotion ? { opacity: 1 } : { opacity: 0, scale: 0.9 }}
+                  animate={isVisible ? { opacity: dimmed ? 0.4 : 1, scale: 1 } : undefined}
+                  transition={{
+                    duration: reducedMotion ? DURATION.micro : DURATION.fast,
+                    ease: EASE_OUT,
+                    delay: reducedMotion ? 0 : idx * 0.05,
+                  }}
+                >
+                  {node.label}
+                </motion.span>
+                {idx < nodes.length - 1 && (
+                  <span className="text-text-secondary/40" aria-hidden="true">
+                    →
+                  </span>
+                )}
+              </li>
+            );
+          })}
         </ol>
       </nav>
     );
@@ -107,53 +159,65 @@ export default function LineageMap({
   return (
     <nav ref={mapRef} aria-label="Class lineage">
       <ol className="relative space-y-0">
-        {nodes.map((node, idx) => (
-          <li key={node.label} className="relative flex items-start gap-3 pb-4 last:pb-0">
-            {/* Vertical connector line */}
-            {idx < nodes.length - 1 && (
-              <div
-                className="bg-border/40 absolute left-[7px] top-5 h-full w-px"
-                aria-hidden="true"
+        {nodes.map((node, idx) => {
+          const highlighted = isNodeHighlighted(node);
+          const dimmed = isNodeDimmed(node);
+          return (
+            <li key={node.label} className="relative flex items-start gap-3 pb-4 last:pb-0">
+              {/* Vertical connector line */}
+              {idx < nodes.length - 1 && (
+                <div
+                  className="bg-border/40 absolute left-[7px] top-5 h-full w-px"
+                  aria-hidden="true"
+                />
+              )}
+
+              {/* Node dot */}
+              <motion.div
+                className={`relative z-10 mt-1.5 size-[15px] shrink-0 rounded-full border-2 border-surface-primary ${dotStyles[node.type]} ${
+                  highlighted ? 'ring-signal-secondary/50 ring-2' : ''
+                }`}
+                initial={reducedMotion ? { opacity: 1 } : { opacity: 0, scale: 0 }}
+                animate={
+                  isVisible
+                    ? { opacity: dimmed ? 0.4 : 1, scale: highlighted ? 1.2 : 1 }
+                    : undefined
+                }
+                transition={{
+                  duration: reducedMotion ? DURATION.micro : DURATION.fast,
+                  ease: EASE_OUT,
+                  delay: reducedMotion ? 0 : idx * 0.08,
+                }}
               />
-            )}
 
-            {/* Node dot */}
-            <motion.div
-              className={`relative z-10 mt-1.5 size-[15px] shrink-0 rounded-full border-2 border-surface-primary ${dotStyles[node.type]}`}
-              initial={reducedMotion ? { opacity: 1 } : { opacity: 0, scale: 0 }}
-              animate={isVisible ? { opacity: 1, scale: 1 } : undefined}
-              transition={{
-                duration: reducedMotion ? DURATION.micro : DURATION.fast,
-                ease: EASE_OUT,
-                delay: reducedMotion ? 0 : idx * 0.08,
-              }}
-            />
-
-            {/* Node label */}
-            <motion.div
-              className={`rounded-lg border px-3 py-2 ${nodeStyles[node.type]}`}
-              initial={reducedMotion ? { opacity: 1 } : { opacity: 0, x: -8 }}
-              animate={isVisible ? { opacity: 1, x: 0 } : undefined}
-              transition={{
-                duration: reducedMotion ? DURATION.micro : DURATION.fast,
-                ease: EASE_OUT,
-                delay: reducedMotion ? 0 : idx * 0.08 + 0.05,
-              }}
-            >
-              <span className="font-mono text-xs leading-tight">{node.label}</span>
-              {node.type === 'parent' && (
-                <span className="ml-2 font-mono text-[10px] uppercase text-text-secondary">
-                  base
-                </span>
-              )}
-              {node.type === 'override' && (
-                <span className="ml-2 font-mono text-[10px] uppercase text-signal-primary">
-                  override
-                </span>
-              )}
-            </motion.div>
-          </li>
-        ))}
+              {/* Node label */}
+              <motion.div
+                className={`rounded-lg border px-3 py-2 transition-all ${nodeStyles[node.type]} ${
+                  highlighted ? 'inheritance-trait-linked' : ''
+                }`}
+                initial={reducedMotion ? { opacity: 1 } : { opacity: 0, x: -8 }}
+                animate={isVisible ? { opacity: dimmed ? 0.4 : 1, x: 0 } : undefined}
+                transition={{
+                  duration: reducedMotion ? DURATION.micro : DURATION.fast,
+                  ease: EASE_OUT,
+                  delay: reducedMotion ? 0 : idx * 0.08 + 0.05,
+                }}
+              >
+                <span className="font-mono text-xs leading-tight">{node.label}</span>
+                {node.type === 'parent' && (
+                  <span className="ml-2 font-mono text-[10px] uppercase text-text-secondary">
+                    base
+                  </span>
+                )}
+                {node.type === 'override' && (
+                  <span className="ml-2 font-mono text-[10px] uppercase text-signal-primary">
+                    override
+                  </span>
+                )}
+              </motion.div>
+            </li>
+          );
+        })}
       </ol>
     </nav>
   );

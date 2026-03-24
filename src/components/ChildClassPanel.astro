@@ -9,9 +9,10 @@ const { projectTitle, resultingIdentity, label } = Astro.props;
 ---
 
 <div
-  class="border-signal-primary/30 rounded-xl border-2 bg-surface-secondary p-6"
+  class="inheritance-hidden border-signal-primary/30 rounded-xl border-2 bg-surface-secondary p-6"
   role="group"
   aria-label={label}
+  data-inheritance-panel="child"
 >
   <div class="mb-3">
     <span class="font-mono text-meta uppercase tracking-wider text-signal-primary">

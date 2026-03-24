@@ -1,7 +1,12 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { useReducedMotion } from '../utils/useReducedMotion';
-import { DURATION, EASE_OUT, STAGGER } from '../utils/animation';
+import { DURATION, EASE_OUT } from '../utils/animation';
+import {
+  INHERITANCE_TIMING,
+  createTraitHoverEvent,
+  createTraitUnhoverEvent,
+} from '../utils/inheritanceAnimation';
 
 interface Trait {
   label: string;
@@ -16,6 +21,7 @@ interface Props {
 
 export default function InheritedTraitsGrid({ traits, label }: Props) {
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
+  const [hoveredTrait, setHoveredTrait] = useState<string | null>(null);
   const [isVisible, setIsVisible] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
   const reducedMotion = useReducedMotion();
@@ -46,6 +52,16 @@ export default function InheritedTraitsGrid({ traits, label }: Props) {
     setExpandedIndex(prev => (prev === index ? null : index));
   };
 
+  const handleTraitHover = useCallback((traitLabel: string) => {
+    setHoveredTrait(traitLabel);
+    window.dispatchEvent(createTraitHoverEvent(traitLabel));
+  }, []);
+
+  const handleTraitUnhover = useCallback(() => {
+    setHoveredTrait(null);
+    window.dispatchEvent(createTraitUnhoverEvent());
+  }, []);
+
   return (
     <div ref={sectionRef} role="group" aria-label={label}>
       <h4 className="mb-4 font-mono text-meta uppercase tracking-wider text-text-secondary">
@@ -54,21 +70,26 @@ export default function InheritedTraitsGrid({ traits, label }: Props) {
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
         {traits.map((trait, idx) => {
           const isExpanded = expandedIndex === idx;
+          const isDimmed = hoveredTrait !== null && hoveredTrait !== trait.label;
           return (
             <motion.button
               key={trait.label}
               type="button"
               onClick={() => toggle(idx)}
+              onMouseEnter={() => handleTraitHover(trait.label)}
+              onMouseLeave={handleTraitUnhover}
+              onFocus={() => handleTraitHover(trait.label)}
+              onBlur={handleTraitUnhover}
               aria-expanded={isExpanded}
               className={`group w-full rounded-lg border p-4 text-left transition-colors ${
                 isExpanded
                   ? 'border-signal-secondary/40 bg-surface-secondary shadow-sm'
                   : 'border-border/60 hover:border-signal-secondary/30 hover:bg-surface-secondary/50 bg-surface-primary'
-              }`}
+              } ${isDimmed ? 'inheritance-dimmed' : ''}`}
               initial={reducedMotion ? { opacity: 1 } : { opacity: 0, y: 12 }}
               animate={
                 isVisible
-                  ? { opacity: 1, y: 0 }
+                  ? { opacity: isDimmed ? 0.5 : 1, y: 0 }
                   : reducedMotion
                     ? { opacity: 1 }
                     : { opacity: 0, y: 12 }
@@ -76,7 +97,7 @@ export default function InheritedTraitsGrid({ traits, label }: Props) {
               transition={{
                 duration: reducedMotion ? DURATION.micro : DURATION.fast,
                 ease: EASE_OUT,
-                delay: reducedMotion ? 0 : idx * STAGGER.chip + 0.1,
+                delay: reducedMotion ? 0 : idx * INHERITANCE_TIMING.traitStagger + 0.1,
               }}
             >
               <div className="flex items-start justify-between gap-2">

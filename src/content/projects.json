@@ -97,12 +97,14 @@
         {
           "label": "Autonomous PC Assembly Logic",
           "description": "Specialized bundle creation that validates hardware compatibility — CPU sockets, RAM types, power requirements — before producing sellable computer builds.",
-          "proofMetric": "Zero incompatible component bundles shipped"
+          "proofMetric": "Zero incompatible component bundles shipped",
+          "relatedTraits": ["Stateful Graph Execution", "Self-Healing Inventory"]
         },
         {
           "label": "Marketplace-Specific Enrichment",
           "description": "Tailored content pipeline that transforms raw supplier data into MercadoLibre-optimized listings with upscaled images, structured attributes, and localized descriptions.",
-          "proofMetric": "100% automation of listing creation"
+          "proofMetric": "100% automation of listing creation",
+          "relatedTraits": ["LLM Content Generation"]
         }
       ],
       "resultingIdentity": "A specialized e-commerce agent pipeline that autonomously assembles, validates, enriches, and publishes hardware products at scale."
@@ -206,12 +208,14 @@
         {
           "label": "Consolidation State Transitions",
           "description": "Specialized logic for merging multiple individual shipments from different vendors into a single international dispatch with strict weight and dimension validation.",
-          "proofMetric": "2.5x faster package processing speed"
+          "proofMetric": "2.5x faster package processing speed",
+          "relatedTraits": ["State Machine Lifecycle", "GraphQL Typed Contracts"]
         },
         {
           "label": "Customs Document Automation",
           "description": "Automated generation of customs documentation triggered by consolidation state changes, eliminating manual paperwork for international shipments.",
-          "proofMetric": "100% type-safety across the stack"
+          "proofMetric": "100% type-safety across the stack",
+          "relatedTraits": ["State Machine Lifecycle", "i18n-First Architecture"]
         }
       ],
       "resultingIdentity": "A specialized forwarding platform that orchestrates multi-vendor package consolidation and international logistics through typed contracts and automated workflows."
@@ -322,12 +326,14 @@
         {
           "label": "Silence Detection Turn-Taking",
           "description": "Real-time audio analysis that detects user speech endpoints to trigger AI response generation, enabling natural conversational flow with minimal latency.",
-          "proofMetric": "< 50ms average orchestration latency"
+          "proofMetric": "< 50ms average orchestration latency",
+          "relatedTraits": ["Bidirectional Streaming", "Stateful Channel Management"]
         },
         {
           "label": "Low-Latency AI Brain Bridging",
           "description": "Custom media processing pipeline with jitter buffering that routes raw audio to generative AI brains via high-concurrency WebSockets while maintaining sub-millisecond timing.",
-          "proofMetric": "99.9% call state accuracy"
+          "proofMetric": "99.9% call state accuracy",
+          "relatedTraits": ["Bidirectional Streaming", "Circuit-Breaker Resilience"]
         }
       ],
       "resultingIdentity": "A specialized voice AI orchestrator that bridges legacy telephony with generative AI through real-time audio processing and intelligent turn-taking."

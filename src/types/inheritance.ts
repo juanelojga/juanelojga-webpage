@@ -14,6 +14,7 @@ export interface InheritanceStory {
     description: string;
     proofMetric?: string;
     codeSnippet?: string;
+    relatedTraits?: string[];
   }[];
   resultingIdentity: string;
 }

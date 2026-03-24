@@ -36,10 +36,19 @@ const { story, labels, lang, projectTitle } = Astro.props;
         <!-- Parent Class -->
         <ParentClassPanel parentClass={story.parentClass} label={labels.parentClassLabel} />
 
-        <!-- Connector -->
+        <!-- Connector (animated draw) -->
         <div class="flex items-center gap-3 pl-6" aria-hidden="true">
-          <div class="bg-signal-secondary/40 h-8 w-px"></div>
-          <span class="font-mono text-meta text-signal-secondary">extends</span>
+          <div
+            class="inheritance-connector-hidden bg-signal-secondary/40 h-8 w-px"
+            data-inheritance-connector
+          >
+          </div>
+          <span
+            class="font-mono text-meta text-signal-secondary opacity-0"
+            data-inheritance-extends-label
+          >
+            extends
+          </span>
         </div>
 
         <!-- Child Class -->
@@ -50,7 +59,7 @@ const { story, labels, lang, projectTitle } = Astro.props;
         />
 
         <!-- Inherited Traits -->
-        <div class="mt-4">
+        <div class="mt-4" data-lineage-section="traits">
           <InheritedTraitsGrid
             client:visible
             traits={story.inheritedTraits}
@@ -59,7 +68,7 @@ const { story, labels, lang, projectTitle } = Astro.props;
         </div>
 
         <!-- Overrides -->
-        <div class="mt-2">
+        <div class="mt-2" data-lineage-section="overrides">
           <OverrideCards client:visible overrides={story.overrides} label={labels.overridesLabel} />
         </div>
       </div>
@@ -96,3 +105,114 @@ const { story, labels, lang, projectTitle } = Astro.props;
     </div>
   </div>
 </section>
+
+<script is:inline>
+  (function () {
+    var section = document.getElementById('class-lineage');
+    if (!section) return;
+
+    var reducedMotion =
+      window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // ── Entry choreography ──────────────────────────────────────────
+    var parentPanel = section.querySelector('[data-inheritance-panel="parent"]');
+    var connector = section.querySelector('[data-inheritance-connector]');
+    var extendsLabel = section.querySelector('[data-inheritance-extends-label]');
+    var childPanel = section.querySelector('[data-inheritance-panel="child"]');
+
+    function revealSection() {
+      if (reducedMotion) {
+        // Instant reveals
+        if (parentPanel) {
+          parentPanel.classList.remove('inheritance-hidden');
+          parentPanel.style.opacity = '1';
+          parentPanel.style.transform = 'none';
+        }
+        if (connector) {
+          connector.classList.remove('inheritance-connector-hidden');
+          connector.style.transform = 'scaleY(1)';
+        }
+        if (extendsLabel) extendsLabel.style.opacity = '1';
+        if (childPanel) {
+          childPanel.classList.remove('inheritance-hidden');
+          childPanel.style.opacity = '1';
+          childPanel.style.transform = 'none';
+        }
+        return;
+      }
+
+      // Staged choreography: parent (0s) → connector (0.3s) → child (0.5s)
+      if (parentPanel) {
+        parentPanel.classList.remove('inheritance-hidden');
+        parentPanel.classList.add('inheritance-revealed');
+        parentPanel.style.animationDelay = '0s';
+      }
+
+      if (connector) {
+        setTimeout(function () {
+          connector.classList.remove('inheritance-connector-hidden');
+          connector.classList.add('inheritance-connector-revealed');
+        }, 300);
+      }
+
+      if (extendsLabel) {
+        setTimeout(function () {
+          extendsLabel.style.transition = 'opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1)';
+          extendsLabel.style.opacity = '1';
+        }, 400);
+      }
+
+      if (childPanel) {
+        setTimeout(function () {
+          childPanel.classList.remove('inheritance-hidden');
+          childPanel.classList.add('inheritance-revealed');
+        }, 500);
+      }
+    }
+
+    // Observe section entry
+    if (typeof IntersectionObserver !== 'undefined') {
+      var entryObserver = new IntersectionObserver(
+        function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              revealSection();
+              entryObserver.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.15 }
+      );
+      entryObserver.observe(section);
+    } else {
+      revealSection();
+    }
+
+    // ── Scroll-driven lineage activation ────────────────────────────
+    var traitSection = section.querySelector('[data-lineage-section="traits"]');
+    var overrideSection = section.querySelector('[data-lineage-section="overrides"]');
+
+    if (typeof IntersectionObserver !== 'undefined' && (traitSection || overrideSection)) {
+      var scrollObserver = new IntersectionObserver(
+        function (entries) {
+          entries.forEach(function (entry) {
+            if (!entry.isIntersecting) return;
+            var sectionType = entry.target.getAttribute('data-lineage-section');
+            if (sectionType) {
+              window.dispatchEvent(
+                new CustomEvent('inheritance:active-node', {
+                  detail: { section: sectionType, labels: [] },
+                  bubbles: true,
+                })
+              );
+            }
+          });
+        },
+        { threshold: 0.3, rootMargin: '0px 0px -20% 0px' }
+      );
+
+      if (traitSection) scrollObserver.observe(traitSection);
+      if (overrideSection) scrollObserver.observe(overrideSection);
+    }
+  })();
+</script>

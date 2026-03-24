@@ -2,12 +2,14 @@ import { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useReducedMotion } from '../utils/useReducedMotion';
 import { DURATION, EASE_OUT, STAGGER } from '../utils/animation';
+import { INHERITANCE_EVENTS } from '../utils/inheritanceAnimation';
 
 interface Override {
   label: string;
   description: string;
   proofMetric?: string;
   codeSnippet?: string;
+  relatedTraits?: string[];
 }
 
 interface Props {
@@ -17,7 +19,9 @@ interface Props {
 
 export default function OverrideCards({ overrides, label }: Props) {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const [linkedTrait, setLinkedTrait] = useState<string | null>(null);
   const [isVisible, setIsVisible] = useState(false);
+  const [pulsingIndex, setPulsingIndex] = useState<number | null>(null);
   const sectionRef = useRef<HTMLDivElement>(null);
   const reducedMotion = useReducedMotion();
 
@@ -43,8 +47,38 @@ export default function OverrideCards({ overrides, label }: Props) {
     return () => observer.disconnect();
   }, []);
 
+  // Listen for trait hover events from InheritedTraitsGrid
+  useEffect(() => {
+    const handleTraitHover = (e: Event) => {
+      const detail = (e as CustomEvent<{ traitLabel: string }>).detail;
+      setLinkedTrait(detail.traitLabel);
+    };
+    const handleTraitUnhover = () => {
+      setLinkedTrait(null);
+    };
+
+    window.addEventListener(INHERITANCE_EVENTS.traitHover, handleTraitHover);
+    window.addEventListener(INHERITANCE_EVENTS.traitUnhover, handleTraitUnhover);
+    return () => {
+      window.removeEventListener(INHERITANCE_EVENTS.traitHover, handleTraitHover);
+      window.removeEventListener(INHERITANCE_EVENTS.traitUnhover, handleTraitUnhover);
+    };
+  }, []);
+
   const toggle = (index: number) => {
+    const wasActive = activeIndex === index;
     setActiveIndex(prev => (prev === index ? null : index));
+
+    // Trigger border pulse on activation (not deactivation)
+    if (!wasActive && !reducedMotion) {
+      setPulsingIndex(index);
+      setTimeout(() => setPulsingIndex(null), 800);
+    }
+  };
+
+  const isLinkedToTrait = (override: Override): boolean => {
+    if (!linkedTrait || !override.relatedTraits) return false;
+    return override.relatedTraits.includes(linkedTrait);
   };
 
   return (
@@ -55,6 +89,10 @@ export default function OverrideCards({ overrides, label }: Props) {
       <div className="grid gap-4">
         {overrides.map((override, idx) => {
           const isActive = activeIndex === idx;
+          const isPulsing = pulsingIndex === idx;
+          const isLinked = isLinkedToTrait(override);
+          const isDimmed =
+            (activeIndex !== null && !isActive) || (linkedTrait !== null && !isLinked);
           return (
             <motion.button
               key={override.label}
@@ -65,11 +103,13 @@ export default function OverrideCards({ overrides, label }: Props) {
                 isActive
                   ? 'border-signal-primary/50 bg-surface-secondary shadow-md'
                   : 'hover:border-signal-primary/25 hover:bg-surface-secondary/50 border-border bg-surface-primary'
+              } ${isPulsing ? 'inheritance-border-pulse' : ''} ${
+                isLinked ? 'inheritance-trait-linked' : ''
               }`}
               initial={reducedMotion ? { opacity: 1 } : { opacity: 0, y: 16 }}
               animate={
                 isVisible
-                  ? { opacity: 1, y: 0 }
+                  ? { opacity: isDimmed ? 0.5 : 1, y: 0 }
                   : reducedMotion
                     ? { opacity: 1 }
                     : { opacity: 0, y: 16 }

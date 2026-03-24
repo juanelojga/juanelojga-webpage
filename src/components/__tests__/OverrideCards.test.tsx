@@ -1,5 +1,5 @@
 import { describe, it, expect, afterEach, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent, cleanup } from '@testing-library/react';
+import { render, screen, fireEvent, cleanup, act } from '@testing-library/react';
 import OverrideCards from '../OverrideCards';
 
 const mockOverrides = [
@@ -8,12 +8,14 @@ const mockOverrides = [
     description:
       'Specialized bundle creation that validates hardware compatibility — CPU sockets, RAM types, power requirements.',
     proofMetric: 'Zero incompatible component bundles shipped',
+    relatedTraits: ['Stateful Graph Execution', 'Self-Healing Inventory'],
   },
   {
     label: 'Marketplace-Specific Enrichment',
     description:
       'Tailored content pipeline for MercadoLibre-optimized listings with upscaled images.',
     proofMetric: '100% automation of listing creation',
+    relatedTraits: ['LLM Content Generation'],
   },
 ];
 
@@ -122,5 +124,54 @@ describe('OverrideCards', () => {
 
     fireEvent.click(buttons[0]);
     expect(screen.getByText('A specialized override without metrics.')).toBeTruthy();
+  });
+
+  it('should apply border pulse class on activation', () => {
+    render(<OverrideCards overrides={mockOverrides} label="Overrides" />);
+    const buttons = screen.getAllByRole('button');
+
+    fireEvent.click(buttons[0]);
+    expect(buttons[0].className).toContain('inheritance-border-pulse');
+  });
+
+  it('should highlight related override on trait hover event', () => {
+    render(<OverrideCards overrides={mockOverrides} label="Overrides" />);
+    const buttons = screen.getAllByRole('button');
+
+    act(() => {
+      window.dispatchEvent(
+        new CustomEvent('inheritance:trait-hover', {
+          detail: { traitLabel: 'Stateful Graph Execution' },
+          bubbles: true,
+        })
+      );
+    });
+
+    // First override is related to 'Stateful Graph Execution'
+    expect(buttons[0].className).toContain('inheritance-trait-linked');
+    // Second override is NOT related
+    expect(buttons[1].className).not.toContain('inheritance-trait-linked');
+  });
+
+  it('should clear trait linking on unhover event', () => {
+    render(<OverrideCards overrides={mockOverrides} label="Overrides" />);
+    const buttons = screen.getAllByRole('button');
+
+    act(() => {
+      window.dispatchEvent(
+        new CustomEvent('inheritance:trait-hover', {
+          detail: { traitLabel: 'LLM Content Generation' },
+          bubbles: true,
+        })
+      );
+    });
+
+    expect(buttons[1].className).toContain('inheritance-trait-linked');
+
+    act(() => {
+      window.dispatchEvent(new CustomEvent('inheritance:trait-unhover', { bubbles: true }));
+    });
+
+    expect(buttons[1].className).not.toContain('inheritance-trait-linked');
   });
 });
