@@ -1,0 +1,21 @@
+---
+interface Props {
+  label: string;
+  lang: string;
+}
+
+const { label, lang } = Astro.props;
+---
+
+<a
+  href={`/${lang}/#projects`}
+  class="group inline-flex items-center gap-2 font-mono text-label text-signal-primary transition-colors hover:text-signal-secondary"
+>
+  <span
+    class="material-symbols-outlined text-lg transition-transform group-hover:-translate-x-1"
+    aria-hidden="true"
+  >
+    arrow_back
+  </span>
+  {label}
+</a>

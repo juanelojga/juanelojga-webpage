@@ -1,0 +1,218 @@
+---
+import type { InheritanceStory, InheritanceSectionLabels } from '../types/inheritance';
+import ParentClassPanel from './ParentClassPanel.astro';
+import ChildClassPanel from './ChildClassPanel.astro';
+import InheritedTraitsGrid from './InheritedTraitsGrid';
+import OverrideCards from './OverrideCards';
+import LineageMap from './LineageMap';
+import ReturnNavigation from './ReturnNavigation.astro';
+
+interface Props {
+  story: InheritanceStory;
+  labels: InheritanceSectionLabels;
+  lang: string;
+  projectTitle: string;
+}
+
+const { story, labels, lang, projectTitle } = Astro.props;
+---
+
+<section id="class-lineage" class="px-6 py-16 lg:py-20" aria-labelledby="inheritance-heading">
+  <div class="mx-auto max-w-6xl">
+    <!-- Section Header -->
+    <div class="mb-12">
+      <h2 id="inheritance-heading" class="font-mono text-section font-semibold text-text-primary">
+        {labels.sectionTitle}
+      </h2>
+      <p class="mt-3 max-w-2xl text-body text-text-secondary">
+        {labels.subtitle}
+      </p>
+    </div>
+
+    <!-- Desktop: two-column composition -->
+    <div class="flex flex-col gap-10 lg:flex-row lg:gap-12">
+      <!-- Left Column: narrative flow -->
+      <div class="flex flex-1 flex-col gap-8">
+        <!-- Parent Class -->
+        <ParentClassPanel parentClass={story.parentClass} label={labels.parentClassLabel} />
+
+        <!-- Connector (animated draw) -->
+        <div class="flex items-center gap-3 pl-6" aria-hidden="true">
+          <div
+            class="inheritance-connector-hidden bg-signal-secondary/40 h-8 w-px"
+            data-inheritance-connector
+          >
+          </div>
+          <span
+            class="font-mono text-meta text-signal-secondary opacity-0"
+            data-inheritance-extends-label
+          >
+            extends
+          </span>
+        </div>
+
+        <!-- Child Class -->
+        <ChildClassPanel
+          projectTitle={projectTitle}
+          resultingIdentity={story.resultingIdentity}
+          label={labels.resultingIdentityLabel}
+        />
+
+        <!-- Inherited Traits -->
+        <div class="mt-4" data-lineage-section="traits">
+          <InheritedTraitsGrid
+            client:visible
+            traits={story.inheritedTraits}
+            label={labels.inheritedTraitsLabel}
+          />
+        </div>
+
+        <!-- Overrides -->
+        <div class="mt-2" data-lineage-section="overrides">
+          <OverrideCards client:visible overrides={story.overrides} label={labels.overridesLabel} />
+        </div>
+      </div>
+
+      <!-- Right Column: lineage map (desktop) -->
+      <div class="hidden lg:block lg:w-72 xl:w-80">
+        <div class="sticky top-24">
+          <LineageMap
+            client:visible
+            parentName={story.parentClass.name}
+            childName={projectTitle}
+            traits={story.inheritedTraits.map(t => t.label)}
+            overrides={story.overrides.map(o => o.label)}
+          />
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile lineage map -->
+    <div class="mt-10 lg:hidden">
+      <LineageMap
+        client:visible
+        parentName={story.parentClass.name}
+        childName={projectTitle}
+        traits={story.inheritedTraits.map(t => t.label)}
+        overrides={story.overrides.map(o => o.label)}
+        compact
+      />
+    </div>
+
+    <!-- Return Navigation -->
+    <div class="mt-16">
+      <ReturnNavigation label={labels.returnCta} lang={lang} />
+    </div>
+  </div>
+</section>
+
+<script is:inline>
+  document.addEventListener('astro:page-load', function () {
+    var section = document.getElementById('class-lineage');
+    if (!section) return;
+
+    var reducedMotion =
+      window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // ── Entry choreography ──────────────────────────────────────────
+    var parentPanel = section.querySelector('[data-inheritance-panel="parent"]');
+    var connector = section.querySelector('[data-inheritance-connector]');
+    var extendsLabel = section.querySelector('[data-inheritance-extends-label]');
+    var childPanel = section.querySelector('[data-inheritance-panel="child"]');
+
+    function revealSection() {
+      if (reducedMotion) {
+        // Instant reveals
+        if (parentPanel) {
+          parentPanel.classList.remove('inheritance-hidden');
+          parentPanel.style.opacity = '1';
+          parentPanel.style.transform = 'none';
+        }
+        if (connector) {
+          connector.classList.remove('inheritance-connector-hidden');
+          connector.style.transform = 'scaleY(1)';
+        }
+        if (extendsLabel) extendsLabel.style.opacity = '1';
+        if (childPanel) {
+          childPanel.classList.remove('inheritance-hidden');
+          childPanel.style.opacity = '1';
+          childPanel.style.transform = 'none';
+        }
+        return;
+      }
+
+      // Staged choreography: parent (0s) → connector (0.3s) → child (0.5s)
+      if (parentPanel) {
+        parentPanel.classList.remove('inheritance-hidden');
+        parentPanel.classList.add('inheritance-revealed');
+        parentPanel.style.animationDelay = '0s';
+      }
+
+      if (connector) {
+        setTimeout(function () {
+          connector.classList.remove('inheritance-connector-hidden');
+          connector.classList.add('inheritance-connector-revealed');
+        }, 300);
+      }
+
+      if (extendsLabel) {
+        setTimeout(function () {
+          extendsLabel.style.transition = 'opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1)';
+          extendsLabel.style.opacity = '1';
+        }, 400);
+      }
+
+      if (childPanel) {
+        setTimeout(function () {
+          childPanel.classList.remove('inheritance-hidden');
+          childPanel.classList.add('inheritance-revealed');
+        }, 500);
+      }
+    }
+
+    // Observe section entry
+    if (typeof IntersectionObserver !== 'undefined') {
+      var entryObserver = new IntersectionObserver(
+        function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              revealSection();
+              entryObserver.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.15 }
+      );
+      entryObserver.observe(section);
+    } else {
+      revealSection();
+    }
+
+    // ── Scroll-driven lineage activation ────────────────────────────
+    var traitSection = section.querySelector('[data-lineage-section="traits"]');
+    var overrideSection = section.querySelector('[data-lineage-section="overrides"]');
+
+    if (typeof IntersectionObserver !== 'undefined' && (traitSection || overrideSection)) {
+      var scrollObserver = new IntersectionObserver(
+        function (entries) {
+          entries.forEach(function (entry) {
+            if (!entry.isIntersecting) return;
+            var sectionType = entry.target.getAttribute('data-lineage-section');
+            if (sectionType) {
+              window.dispatchEvent(
+                new CustomEvent('inheritance:active-node', {
+                  detail: { section: sectionType, labels: [] },
+                  bubbles: true,
+                })
+              );
+            }
+          });
+        },
+        { threshold: 0.3, rootMargin: '0px 0px -20% 0px' }
+      );
+
+      if (traitSection) scrollObserver.observe(traitSection);
+      if (overrideSection) scrollObserver.observe(overrideSection);
+    }
+  });
+</script>

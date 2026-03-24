@@ -69,6 +69,45 @@
         { "value": "Zero", "label": "Incompatible component bundles" }
       ],
       "narrative": "The transformation from manual entry to an agentic pipeline allowed for the rapid expansion of the product catalog. The system now autonomously maintains thousands of listings, ensuring that every PC 'Tower' offered is technically compatible, profitably priced, and marketed with AI-generated precision."
+    },
+    "inheritanceStory": {
+      "parentClass": {
+        "name": "Autonomous Agent Orchestration Engine",
+        "description": "A stateful, graph-driven execution runtime that coordinates specialized AI agents through defined workflows, handles failures gracefully, and maintains a single source of truth for downstream consumers.",
+        "icon": "account_tree"
+      },
+      "inheritedTraits": [
+        {
+          "label": "Stateful Graph Execution",
+          "evidence": "LangGraph manages assembly tasks as a directed graph where each node is a specialized agent with defined state transitions.",
+          "origin": "Core orchestration pattern"
+        },
+        {
+          "label": "Self-Healing Inventory",
+          "evidence": "When a component goes out of stock mid-assembly, the graph automatically selects an alternative without human intervention.",
+          "origin": "Resilience layer"
+        },
+        {
+          "label": "LLM Content Generation",
+          "evidence": "A Creative Director agent generates SEO-optimized titles and descriptions from raw technical specs using OpenAI and Gemini APIs.",
+          "origin": "AI enrichment pipeline"
+        }
+      ],
+      "overrides": [
+        {
+          "label": "Autonomous PC Assembly Logic",
+          "description": "Specialized bundle creation that validates hardware compatibility — CPU sockets, RAM types, power requirements — before producing sellable computer builds.",
+          "proofMetric": "Zero incompatible component bundles shipped",
+          "relatedTraits": ["Stateful Graph Execution", "Self-Healing Inventory"]
+        },
+        {
+          "label": "Marketplace-Specific Enrichment",
+          "description": "Tailored content pipeline that transforms raw supplier data into MercadoLibre-optimized listings with upscaled images, structured attributes, and localized descriptions.",
+          "proofMetric": "100% automation of listing creation",
+          "relatedTraits": ["LLM Content Generation"]
+        }
+      ],
+      "resultingIdentity": "A specialized e-commerce agent pipeline that autonomously assembles, validates, enriches, and publishes hardware products at scale."
     }
   },
   {
@@ -141,6 +180,45 @@
         { "value": "100%", "label": "Type-safety across the stack" }
       ],
       "narrative": "The migration to a GraphQL-based architecture and a modern React frontend transformed the platform's scalability. Administrative staff reported a significant reduction in manual entry errors, while the multi-language support allowed Narbox to successfully expand its operations into new international markets."
+    },
+    "inheritanceStory": {
+      "parentClass": {
+        "name": "Distributed Logistics Runtime",
+        "description": "A decoupled backend-frontend architecture with strongly-typed data contracts, lifecycle state management, and built-in internationalization for multi-region operations.",
+        "icon": "hub"
+      },
+      "inheritedTraits": [
+        {
+          "label": "State Machine Lifecycle",
+          "evidence": "Packages move through strictly validated states — received, warehoused, consolidated, dispatched — with automated notifications at each transition.",
+          "origin": "Core state management"
+        },
+        {
+          "label": "GraphQL Typed Contracts",
+          "evidence": "Graphene-Django exposes a strongly-typed API that lets the frontend request exactly the data needed, reducing payload sizes by 60%.",
+          "origin": "Data layer architecture"
+        },
+        {
+          "label": "i18n-First Architecture",
+          "evidence": "Enterprise internationalization using next-intl supports dynamic content translation and region-specific formatting across client and admin portals.",
+          "origin": "Multi-region foundation"
+        }
+      ],
+      "overrides": [
+        {
+          "label": "Consolidation State Transitions",
+          "description": "Specialized logic for merging multiple individual shipments from different vendors into a single international dispatch with strict weight and dimension validation.",
+          "proofMetric": "2.5x faster package processing speed",
+          "relatedTraits": ["State Machine Lifecycle", "GraphQL Typed Contracts"]
+        },
+        {
+          "label": "Customs Document Automation",
+          "description": "Automated generation of customs documentation triggered by consolidation state changes, eliminating manual paperwork for international shipments.",
+          "proofMetric": "100% type-safety across the stack",
+          "relatedTraits": ["State Machine Lifecycle", "i18n-First Architecture"]
+        }
+      ],
+      "resultingIdentity": "A specialized forwarding platform that orchestrates multi-vendor package consolidation and international logistics through typed contracts and automated workflows."
     }
   },
   {
@@ -220,6 +298,45 @@
         { "value": "Real-time", "label": "Bidirectional streaming" }
       ],
       "narrative": "The implementation of the Node Orchestrator successfully transformed legacy telephony into a modern AI-ready platform. By optimizing the media path and implementing a rigorous state machine, the system now supports thousands of concurrent voice sessions with natural, low-latency AI interaction."
+    },
+    "inheritanceStory": {
+      "parentClass": {
+        "name": "Real-time Media Gateway",
+        "description": "A high-concurrency runtime that bridges protocol boundaries, manages bidirectional media streams, and maintains stateful channel lifecycles with built-in resilience patterns.",
+        "icon": "cell_tower"
+      },
+      "inheritedTraits": [
+        {
+          "label": "Bidirectional Streaming",
+          "evidence": "Full-duplex audio routing between PSTN channels and WebSocket-based AI clients with real-time protocol transformation.",
+          "origin": "Media transport layer"
+        },
+        {
+          "label": "Stateful Channel Management",
+          "evidence": "A state machine tracks Asterisk channel events — ringing, answered, bridged, hung up — keeping AI context synchronized with telephony state.",
+          "origin": "Core lifecycle engine"
+        },
+        {
+          "label": "Circuit-Breaker Resilience",
+          "evidence": "Integration layer with circuit breakers and error recovery handlers maintains call stability during AI service interruptions.",
+          "origin": "Fault tolerance pattern"
+        }
+      ],
+      "overrides": [
+        {
+          "label": "Silence Detection Turn-Taking",
+          "description": "Real-time audio analysis that detects user speech endpoints to trigger AI response generation, enabling natural conversational flow with minimal latency.",
+          "proofMetric": "< 50ms average orchestration latency",
+          "relatedTraits": ["Bidirectional Streaming", "Stateful Channel Management"]
+        },
+        {
+          "label": "Low-Latency AI Brain Bridging",
+          "description": "Custom media processing pipeline with jitter buffering that routes raw audio to generative AI brains via high-concurrency WebSockets while maintaining sub-millisecond timing.",
+          "proofMetric": "99.9% call state accuracy",
+          "relatedTraits": ["Bidirectional Streaming", "Circuit-Breaker Resilience"]
+        }
+      ],
+      "resultingIdentity": "A specialized voice AI orchestrator that bridges legacy telephony with generative AI through real-time audio processing and intelligent turn-taking."
     }
   }
 ]

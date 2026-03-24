@@ -1,0 +1,28 @@
+---
+interface Props {
+  projectTitle: string;
+  resultingIdentity: string;
+  label: string;
+}
+
+const { projectTitle, resultingIdentity, label } = Astro.props;
+---
+
+<div
+  class="inheritance-hidden border-signal-primary/30 rounded-xl border-2 bg-surface-secondary p-6"
+  role="group"
+  aria-label={label}
+  data-inheritance-panel="child"
+>
+  <div class="mb-3">
+    <span class="font-mono text-meta uppercase tracking-wider text-signal-primary">
+      {label}
+    </span>
+  </div>
+  <h3 class="font-mono text-lg font-bold leading-tight text-text-primary sm:text-xl md:text-2xl">
+    {projectTitle}
+  </h3>
+  <p class="mt-3 text-body leading-relaxed text-text-secondary">
+    {resultingIdentity}
+  </p>
+</div>

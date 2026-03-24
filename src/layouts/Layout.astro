@@ -17,7 +17,7 @@ interface Props {
 
 const t = useTranslations(Astro);
 const { lang } = Astro.params || { lang: 'en' };
-const canonicalBase = 'https://juanelojga.com';
+const canonicalBase = 'https://www.juanelojga.com';
 const localePath = lang === 'en' ? '' : `/${lang}`;
 const defaultCanonicalUrl = `${canonicalBase}${localePath}/`;
 
@@ -67,12 +67,16 @@ const isHomepage = variant === 'homepage';
     <!-- Inline theme detection — runs before first paint to prevent FOUC -->
     <script is:inline>
       (function () {
-        var t = localStorage.getItem('theme');
-        if (t === 'build' || t === 'after-hours') {
-          document.documentElement.setAttribute('data-theme', t);
-        } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-          document.documentElement.setAttribute('data-theme', 'after-hours');
+        function syncTheme() {
+          var t = localStorage.getItem('theme');
+          if (t === 'build' || t === 'after-hours') {
+            document.documentElement.setAttribute('data-theme', t);
+          } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.setAttribute('data-theme', 'after-hours');
+          }
         }
+        syncTheme();
+        document.addEventListener('astro:after-swap', syncTheme);
       })();
     </script>
     <GoogleAnalytics />

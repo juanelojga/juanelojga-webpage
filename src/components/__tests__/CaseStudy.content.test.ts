@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import projects from '../../content/projects.json';
+import type { InheritanceStory } from '../../types/inheritance';
 
 interface CaseStudyProject {
   title: string;
@@ -97,6 +98,51 @@ describe('Case study content structure', () => {
         expect(metric.label).toBeTruthy();
       }
       expect(project.results.narrative).toBeTruthy();
+    });
+  });
+});
+
+const projectsWithInheritance = projects.filter(
+  (p): p is CaseStudyProject & { inheritanceStory: InheritanceStory } =>
+    'inheritanceStory' in p && p.inheritanceStory !== undefined
+);
+
+describe('Inheritance story content structure', () => {
+  it('should have at least one project with inheritance story', () => {
+    expect(projectsWithInheritance.length).toBeGreaterThan(0);
+  });
+
+  describe.each(projectsWithInheritance)('$slug', project => {
+    it('should have valid parentClass', () => {
+      const { parentClass } = project.inheritanceStory;
+      expect(parentClass.name).toBeTruthy();
+      expect(parentClass.description).toBeTruthy();
+      expect(parentClass.icon).toBeTruthy();
+    });
+
+    it('should have non-empty inheritedTraits array', () => {
+      const { inheritedTraits } = project.inheritanceStory;
+      expect(Array.isArray(inheritedTraits)).toBe(true);
+      expect(inheritedTraits.length).toBeGreaterThan(0);
+      for (const trait of inheritedTraits) {
+        expect(trait.label).toBeTruthy();
+        expect(trait.evidence).toBeTruthy();
+        expect(trait.origin).toBeTruthy();
+      }
+    });
+
+    it('should have non-empty overrides array', () => {
+      const { overrides } = project.inheritanceStory;
+      expect(Array.isArray(overrides)).toBe(true);
+      expect(overrides.length).toBeGreaterThan(0);
+      for (const override of overrides) {
+        expect(override.label).toBeTruthy();
+        expect(override.description).toBeTruthy();
+      }
+    });
+
+    it('should have resultingIdentity', () => {
+      expect(project.inheritanceStory.resultingIdentity).toBeTruthy();
     });
   });
 });

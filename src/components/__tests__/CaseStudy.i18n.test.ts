@@ -11,7 +11,7 @@ describe('CaseStudy i18n keys', () => {
     expect(esJson).toHaveProperty('caseStudy');
   });
 
-  const subKeys = ['breadcrumb', 'sections', 'metadata', 'hero', 'cta'] as const;
+  const subKeys = ['breadcrumb', 'sections', 'metadata', 'hero', 'cta', 'inheritance'] as const;
 
   it('should have all required sub-keys in en.json', () => {
     for (const key of subKeys) {
@@ -74,6 +74,14 @@ describe('CaseStudy i18n keys', () => {
       const k = key as keyof typeof enJson.caseStudy.cta;
       expect(enJson.caseStudy.cta[k]).toBeTruthy();
       expect(esJson.caseStudy.cta[k]).toBeTruthy();
+    }
+  });
+
+  it('should have non-empty string values for inheritance keys', () => {
+    for (const key of Object.keys(enJson.caseStudy.inheritance)) {
+      const k = key as keyof typeof enJson.caseStudy.inheritance;
+      expect(enJson.caseStudy.inheritance[k]).toBeTruthy();
+      expect(esJson.caseStudy.inheritance[k]).toBeTruthy();
     }
   });
 });

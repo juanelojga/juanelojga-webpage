@@ -1,0 +1,38 @@
+---
+interface Props {
+  parentClass: {
+    name: string;
+    description: string;
+    icon: string;
+  };
+  label: string;
+}
+
+const { parentClass, label } = Astro.props;
+---
+
+<div
+  class="inheritance-hidden rounded-xl border border-border bg-surface-secondary p-6"
+  role="group"
+  aria-label={label}
+  data-inheritance-panel="parent"
+>
+  <div class="mb-3 flex items-center gap-3">
+    <div class="bg-surface-tertiary/80 flex size-10 items-center justify-center rounded-lg">
+      <span class="material-symbols-outlined text-xl text-signal-secondary" aria-hidden="true">
+        {parentClass.icon}
+      </span>
+    </div>
+    <span class="font-mono text-meta uppercase tracking-wider text-text-secondary">
+      {label}
+    </span>
+  </div>
+  <h3
+    class="font-mono text-lg font-semibold leading-tight text-text-primary sm:text-xl md:text-2xl"
+  >
+    {parentClass.name}
+  </h3>
+  <p class="mt-3 text-body leading-relaxed text-text-secondary">
+    {parentClass.description}
+  </p>
+</div>

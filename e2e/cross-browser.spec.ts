@@ -30,3 +30,41 @@ for (const { path, name, resumeLabel } of PAGES) {
     });
   });
 }
+
+// ─── 5.5 Cross-browser: Case study pages ───────────────────────────────────
+
+const CASE_STUDY_PAGES = [
+  { path: '/en/projects/aiecommerce-agent-pipeline/', name: 'cs-aiecommerce-en' },
+  { path: '/es/projects/aiecommerce-agent-pipeline/', name: 'cs-aiecommerce-es' },
+];
+
+for (const { path, name } of CASE_STUDY_PAGES) {
+  test(`${name} — case study renders without errors`, async ({ page }) => {
+    const errors: string[] = [];
+    page.on('pageerror', err => errors.push(err.message));
+
+    await page.goto(path, { waitUntil: 'load' });
+
+    expect(errors).toEqual([]);
+
+    const body = page.locator('body');
+    await expect(body).toBeVisible();
+
+    // Heading renders
+    const h1 = page.locator('h1');
+    await expect(h1).toBeVisible();
+
+    // Inheritance section renders
+    const inheritanceSection = page.locator('#class-lineage');
+    await expect(inheritanceSection).toBeAttached({ timeout: 10_000 });
+
+    // Connector animation CSS compatibility
+    const connector = inheritanceSection.locator('[data-inheritance-connector]');
+    await expect(connector).toBeVisible();
+
+    await page.screenshot({
+      path: `.screenshots/cross-browser/${name}-${test.info().project.name}.png`,
+      fullPage: true,
+    });
+  });
+}
