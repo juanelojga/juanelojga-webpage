@@ -31,6 +31,15 @@
       "headline": "Have a similar project in mind?",
       "getInTouch": "Get in Touch",
       "backToPortfolio": "Back to Portfolio"
+    },
+    "inheritance": {
+      "sectionTitle": "// class lineage",
+      "subtitle": "Read this project as a specialized implementation built on a reusable engineering base.",
+      "parentClassLabel": "Base Class",
+      "inheritedTraitsLabel": "Inherited Traits",
+      "overridesLabel": "Overrides",
+      "resultingIdentityLabel": "Resulting Identity",
+      "returnCta": "Back to work log"
     }
   },
   "todoRail": {

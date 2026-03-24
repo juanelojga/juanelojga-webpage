@@ -31,6 +31,15 @@
       "headline": "¿Tienes un proyecto similar en mente?",
       "getInTouch": "Contáctame",
       "backToPortfolio": "Volver al Portafolio"
+    },
+    "inheritance": {
+      "sectionTitle": "// linaje de clase",
+      "subtitle": "Lee este proyecto como una implementación especializada construida sobre una base de ingeniería reutilizable.",
+      "parentClassLabel": "Clase Base",
+      "inheritedTraitsLabel": "Rasgos Heredados",
+      "overridesLabel": "Sobrecargas",
+      "resultingIdentityLabel": "Identidad Resultante",
+      "returnCta": "Volver al historial"
     }
   },
   "todoRail": {
