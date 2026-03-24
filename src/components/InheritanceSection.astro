@@ -107,7 +107,7 @@ const { story, labels, lang, projectTitle } = Astro.props;
 </section>
 
 <script is:inline>
-  (function () {
+  document.addEventListener('astro:page-load', function () {
     var section = document.getElementById('class-lineage');
     if (!section) return;
 
@@ -214,5 +214,5 @@ const { story, labels, lang, projectTitle } = Astro.props;
       if (traitSection) scrollObserver.observe(traitSection);
       if (overrideSection) scrollObserver.observe(overrideSection);
     }
-  })();
+  });
 </script>

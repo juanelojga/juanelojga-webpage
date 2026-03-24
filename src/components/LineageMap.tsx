@@ -93,7 +93,7 @@ export default function LineageMap({
   const nodeStyles: Record<NodeDef['type'], string> = {
     parent: 'border-signal-secondary/40 bg-surface-tertiary/30 text-text-primary',
     trait: 'border-border/60 bg-surface-primary text-text-secondary',
-    override: 'border-signal-primary/30 bg-signal-primary/5 text-signal-primary',
+    override: 'border-signal-primary/30 bg-signal-primary/10 text-signal-primary',
     child: 'border-signal-primary/50 bg-surface-secondary text-text-primary',
   };
 

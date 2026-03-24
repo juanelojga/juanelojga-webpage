@@ -165,7 +165,7 @@ export default function OverrideCards({ overrides, label }: Props) {
                   {override.description}
                 </p>
                 {override.proofMetric && (
-                  <div className="border-signal-primary/20 bg-signal-primary/5 mt-3 inline-flex items-center gap-2 rounded-full border px-3 py-1">
+                  <div className="border-signal-primary/30 bg-signal-primary/10 mt-3 inline-flex items-center gap-2 rounded-full border px-3 py-1">
                     <span
                       className="material-symbols-outlined text-sm text-signal-primary"
                       aria-hidden="true"

@@ -234,26 +234,26 @@ html {
   }
 }
 
-/* Override border pulse: acid green trace, 2 pulses then settle */
+/* Override border pulse: signal-primary trace, 2 pulses then settle */
 @keyframes inheritance-border-pulse {
   0% {
     border-color: var(--color-signal-primary);
-    box-shadow: 0 0 0 0 rgba(0, 255, 128, 0.2);
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-signal-primary) 20%, transparent);
   }
   25% {
     border-color: var(--color-signal-primary);
-    box-shadow: 0 0 12px 0 rgba(0, 255, 128, 0.15);
+    box-shadow: 0 0 12px 0 color-mix(in srgb, var(--color-signal-primary) 15%, transparent);
   }
   50% {
-    box-shadow: 0 0 0 0 rgba(0, 255, 128, 0);
+    box-shadow: 0 0 0 0 transparent;
   }
   75% {
     border-color: var(--color-signal-primary);
-    box-shadow: 0 0 8px 0 rgba(0, 255, 128, 0.1);
+    box-shadow: 0 0 8px 0 color-mix(in srgb, var(--color-signal-primary) 10%, transparent);
   }
   100% {
     border-color: var(--color-signal-primary);
-    box-shadow: 0 0 0 0 rgba(0, 255, 128, 0);
+    box-shadow: 0 0 0 0 transparent;
   }
 }
 
