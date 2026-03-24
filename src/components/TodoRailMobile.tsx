@@ -1,52 +1,14 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, useReducedMotion as useFramerReducedMotion } from 'framer-motion';
-import type { TodoItem } from '../utils/todoRail';
-import type { TodoRailLabels } from './TodoRail';
+import type { TodoItem, TodoRailLabels } from '../utils/todoRail';
+import { getLabel } from '../utils/todoRail';
 import { RAIL_TIMING, EASE_OUT, DURATION } from '../utils/animation';
+import AnimatedCheckIcon from './AnimatedCheckIcon';
 
 interface Props {
   items: TodoItem[];
   labels: TodoRailLabels;
   onItemClick: (sectionId: string) => void;
-}
-
-const labelKeyMap: Record<string, keyof TodoRailLabels> = {
-  'todoRail.bootIdentity': 'bootIdentity',
-  'todoRail.loadProfile': 'loadProfile',
-  'todoRail.compileStrengths': 'compileStrengths',
-  'todoRail.unlockWorkLog': 'unlockWorkLog',
-  'todoRail.openChannel': 'openChannel',
-};
-
-function getLabel(item: TodoItem, labels: TodoRailLabels): string {
-  const key = labelKeyMap[item.labelKey];
-  return key ? labels[key] : item.labelKey;
-}
-
-/* ── Animated check icon for mobile ──────────────────────────────── */
-
-function AnimatedCheckIconMobile({ animate }: { animate: boolean }) {
-  const reducedMotion = useFramerReducedMotion();
-  return (
-    <svg
-      className="size-4 text-signal-primary"
-      viewBox="0 0 16 16"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-    >
-      <motion.path
-        d="M3 8.5L6.5 12L13 4"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        initial={{ pathLength: 0 }}
-        animate={animate ? { pathLength: 1 } : { pathLength: 0 }}
-        transition={
-          reducedMotion ? { duration: 0 } : { duration: RAIL_TIMING.checkDraw, ease: EASE_OUT }
-        }
-      />
-    </svg>
-  );
 }
 
 export default function TodoRailMobile({ items, labels, onItemClick }: Props) {
@@ -169,7 +131,7 @@ export default function TodoRailMobile({ items, labels, onItemClick }: Props) {
                         aria-hidden="true"
                       >
                         {item.state === 'completed' ? (
-                          <AnimatedCheckIconMobile animate={justCompleted} />
+                          <AnimatedCheckIcon animate={justCompleted} />
                         ) : item.state === 'active' ? (
                           <span className="rail-pulse size-2.5 rounded-full bg-signal-primary" />
                         ) : (

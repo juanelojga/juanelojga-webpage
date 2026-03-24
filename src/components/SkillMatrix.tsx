@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { SKILL_CLUSTERS } from '../utils/skillMatrix';
 import { useReducedMotion } from '../utils/useReducedMotion';
 import { DURATION, EASE_OUT, STAGGER } from '../utils/animation';
+import ClusterIcon from './ClusterIcon';
 
 export interface SkillMatrixLabels {
   sectionTitle: string;
@@ -16,14 +17,6 @@ export interface SkillMatrixLabels {
 interface Props {
   labels: SkillMatrixLabels;
   lang: string;
-}
-
-function ClusterIcon({ name }: { name: string }) {
-  return (
-    <span className="material-symbols-outlined text-[20px]" aria-hidden="true">
-      {name}
-    </span>
-  );
 }
 
 export default function SkillMatrix({ labels }: Props) {

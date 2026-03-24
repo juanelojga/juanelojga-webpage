@@ -2,6 +2,18 @@ import { useReducer, useCallback } from 'react';
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 
+export interface TodoRailLabels {
+  label: string;
+  bootIdentity: string;
+  loadProfile: string;
+  compileStrengths: string;
+  unlockWorkLog: string;
+  openChannel: string;
+  statePending: string;
+  stateActive: string;
+  stateCompleted: string;
+}
+
 export type TodoItemState = 'pending' | 'active' | 'completed';
 
 export interface TodoItem {
@@ -77,4 +89,19 @@ export function useTodoRail(initialItems: TodoItem[] = DEFAULT_RAIL_ITEMS) {
   const reset = useCallback(() => dispatch({ type: 'RESET' }), []);
 
   return { items, activate, complete, reset };
+}
+
+// ── Label mapping ──────────────────────────────────────────────────────────────
+
+export const labelKeyMap: Record<string, keyof TodoRailLabels> = {
+  'todoRail.bootIdentity': 'bootIdentity',
+  'todoRail.loadProfile': 'loadProfile',
+  'todoRail.compileStrengths': 'compileStrengths',
+  'todoRail.unlockWorkLog': 'unlockWorkLog',
+  'todoRail.openChannel': 'openChannel',
+};
+
+export function getLabel(item: TodoItem, labels: TodoRailLabels): string {
+  const key = labelKeyMap[item.labelKey];
+  return key ? labels[key] : item.labelKey;
 }
