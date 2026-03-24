@@ -3,9 +3,11 @@ import Layout from '../../../layouts/Layout.astro';
 import Breadcrumbs from '../../../components/Breadcrumbs.astro';
 import CaseStudyHero from '../../../components/CaseStudyHero.astro';
 import CaseStudySection from '../../../components/CaseStudySection.astro';
+import InheritanceSection from '../../../components/InheritanceSection.astro';
 import TechPills from '../../../components/TechPills.astro';
 import CodeBlock from '../../../components/CodeBlock.astro';
 import MetricsGrid from '../../../components/MetricsGrid.astro';
+import { hasInheritanceStory, getInheritanceStory } from '../../../utils/inheritance';
 import projects from '../../../content/projects.json';
 
 export async function getStaticPaths() {
@@ -130,6 +132,18 @@ const breadcrumbSchema = {
         </div>
       </div>
     </div>
+
+    <!-- Inheritance Section (conditional) -->
+    {
+      hasInheritanceStory(project) && (
+        <InheritanceSection
+          story={getInheritanceStory(project)!}
+          labels={cs.inheritance}
+          lang={lang!}
+          projectTitle={project.title}
+        />
+      )
+    }
 
     <!-- Challenge -->
     <CaseStudySection icon="flag" title={cs.sections.challenge}>
