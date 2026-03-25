@@ -16,9 +16,11 @@ export interface HeroNarrativeLabels {
 interface Props {
   labels: HeroNarrativeLabels;
   lang: string;
+  buildPortraitSrc: string;
+  afterHoursPortraitSrc: string;
 }
 
-export default function HeroNarrative({ labels }: Props) {
+export default function HeroNarrative({ labels, buildPortraitSrc, afterHoursPortraitSrc }: Props) {
   const headlineRef = useRef<HTMLHeadingElement>(null);
   const portraitRef = useRef<HTMLDivElement>(null);
   const [animationDone, setAnimationDone] = useState(false);
@@ -231,7 +233,7 @@ export default function HeroNarrative({ labels }: Props) {
         >
           {/* Build Mode portrait */}
           <img
-            src="/images/hero-build-final.jpg"
+            src={buildPortraitSrc}
             alt={`${labels.name} — Build Mode`}
             width={760}
             height={950}
@@ -240,11 +242,11 @@ export default function HeroNarrative({ labels }: Props) {
           />
           {/* After Hours portrait */}
           <img
-            src="/images/hero-after-hours-final.jpg"
+            src={afterHoursPortraitSrc}
             alt={`${labels.name} — After Hours`}
             width={760}
             height={950}
-            loading="eager"
+            loading="lazy"
             className="absolute inset-0 hidden size-full object-cover [[data-theme='after-hours']_&]:block"
           />
         </div>
