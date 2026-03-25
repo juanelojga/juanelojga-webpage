@@ -1,4 +1,7 @@
 ---
+import { Image } from 'astro:assets';
+import handsKeyboard from '../assets/images/detail-hands-keyboard.jpg';
+
 interface Props {
   bio: {
     sectionTitle: string;
@@ -35,11 +38,12 @@ const paragraphs = bio.narrative.split('\n').filter(p => p.trim());
     <div
       class="relative flex aspect-square w-full items-center justify-center overflow-hidden rounded-xl lg:order-2 lg:w-[280px] lg:shrink-0 xl:w-[320px]"
     >
-      <img
-        src="/images/detail-hands-keyboard.jpg"
+      <Image
+        src={handsKeyboard}
+        widths={[400, 640, 960]}
+        sizes="(max-width: 1024px) 100vw, 640px"
+        format="webp"
         alt="Detail — hands on keyboard"
-        width={640}
-        height={640}
         loading="lazy"
         class="absolute inset-0 size-full object-cover"
       />

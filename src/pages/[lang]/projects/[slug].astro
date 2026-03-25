@@ -1,4 +1,6 @@
 ---
+import { getImage } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
 import Layout from '../../../layouts/Layout.astro';
 import Breadcrumbs from '../../../components/Breadcrumbs.astro';
 import CaseStudyHero from '../../../components/CaseStudyHero.astro';
@@ -9,6 +11,20 @@ import CodeBlock from '../../../components/CodeBlock.astro';
 import MetricsGrid from '../../../components/MetricsGrid.astro';
 import { hasInheritanceStory, getInheritanceStory } from '../../../utils/inheritance';
 import projects from '../../../content/projects.json';
+
+const images = import.meta.glob<{ default: ImageMetadata }>(
+  '/src/assets/images/*.{jpg,jpeg,png,webp}',
+  { eager: true }
+);
+
+function resolveImage(filename: string): ImageMetadata {
+  const key = `/src/assets/images/${filename}`;
+  const mod = images[key];
+  if (!mod) {
+    throw new Error(`Image not found: ${key}. Available: ${Object.keys(images).join(', ')}`);
+  }
+  return mod.default;
+}
 
 export async function getStaticPaths() {
   const langs = ['en', 'es'];
@@ -27,6 +43,9 @@ const { project } = Astro.props;
 const t = await import(`../../../i18n/${lang}.json`).then(m => m.default);
 const cs = t.caseStudy;
 
+const heroImageMeta = resolveImage(project.heroImage);
+const ogImage = await getImage({ src: heroImageMeta, width: 1200, format: 'jpg' });
+
 const canonicalBase = 'https://www.juanelojga.com';
 const canonicalUrl = `${canonicalBase}/${lang}/projects/${slug}/`;
 
@@ -35,7 +54,7 @@ const techArticleSchema = {
   '@type': 'TechArticle',
   headline: project.title,
   description: project.description,
-  image: `${canonicalBase}${project.heroImage}`,
+  image: `${canonicalBase}${ogImage.src}`,
   author: {
     '@type': 'Person',
     name: 'Juan Almeida',
@@ -74,7 +93,7 @@ const breadcrumbSchema = {
   title={`${project.title} | Juan Almeida`}
   description={project.description}
   canonicalUrl={canonicalUrl}
-  ogImage={project.heroImage}
+  ogImage={ogImage.src}
   structuredData={[techArticleSchema, breadcrumbSchema]}
 >
   <div class="bg-surface-primary">
@@ -94,10 +113,8 @@ const breadcrumbSchema = {
       category={project.category}
       title={project.title}
       description={project.description}
-      heroImage={project.heroImage}
-      liveLink={project.links.live}
+      heroImage={heroImageMeta}
       githubLink={project.links.github}
-      liveLabel={cs.hero.livePreview}
       sourceLabel={cs.hero.viewSource}
     />
 

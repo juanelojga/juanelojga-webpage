@@ -1,4 +1,7 @@
 ---
+import { getImage } from 'astro:assets';
+import heroBuildImg from '../../assets/images/hero-build-final.jpg';
+import heroAfterHoursImg from '../../assets/images/hero-after-hours-final.jpg';
 import Layout from '../../layouts/Layout.astro';
 import HomepageShell from '../../components/HomepageShell';
 import HeroNarrative from '../../components/HeroNarrative';
@@ -13,6 +16,9 @@ export async function getStaticPaths() {
 
 const { lang } = Astro.params;
 const t = await import(`../../i18n/${lang}.json`).then(m => m.default);
+
+const buildPortrait = await getImage({ src: heroBuildImg, width: 1140, format: 'webp' });
+const afterHoursPortrait = await getImage({ src: heroAfterHoursImg, width: 1140, format: 'webp' });
 
 const shellLabels = {
   todoRail: t.todoRail,
@@ -29,7 +35,13 @@ const contactLabels = t.contact;
 
 <Layout title="Juan Almeida | Full Stack & AI Engineer" variant="homepage">
   <!-- Home / Hero -->
-  <HeroNarrative client:load labels={heroLabels} lang={lang} />
+  <HeroNarrative
+    client:load
+    labels={heroLabels}
+    lang={lang}
+    buildPortraitSrc={buildPortrait.src}
+    afterHoursPortraitSrc={afterHoursPortrait.src}
+  />
 
   <!-- About / Bio Chapter -->
   <BioChapter bio={t.bio} />
