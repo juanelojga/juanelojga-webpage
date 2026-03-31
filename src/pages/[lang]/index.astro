@@ -16,6 +16,9 @@ export async function getStaticPaths() {
 
 const { lang } = Astro.params;
 const t = await import(`../../i18n/${lang}.json`).then(m => m.default);
+const projects = await import('../../content/projects.json').then(m => m.default);
+
+const canonicalBase = 'https://www.juanelojga.com';
 
 const buildPortrait = await getImage({ src: heroBuildImg, width: 1140, format: 'webp' });
 const afterHoursPortrait = await getImage({ src: heroAfterHoursImg, width: 1140, format: 'webp' });
@@ -31,9 +34,57 @@ const heroLabels = t.heroNarrative;
 const skillMatrixLabels = t.skillMatrix;
 const workLogLabels = t.workLog;
 const contactLabels = t.contact;
+
+// Structured data: ItemList of featured projects
+const itemListSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: 'Featured Projects by Juan Almeida',
+  numberOfItems: projects.filter((p: any) => p.featured).length,
+  itemListElement: projects
+    .filter((p: any) => p.featured)
+    .map((project: any, index: number) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: project.title,
+      description: project.description,
+      url: `${canonicalBase}/${lang}/case-study/${project.slug}`,
+    })),
+};
+
+// Structured data: BreadcrumbList for homepage
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: lang === 'es' ? 'Inicio' : 'Home',
+      item: `${canonicalBase}/${lang}/`,
+    },
+  ],
+};
+
+// Structured data: Speakable for voice assistants
+const speakableSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  '@id': `${canonicalBase}/${lang}/#webpage`,
+  name: t.seo.title,
+  speakable: {
+    '@type': 'SpeakableSpecification',
+    cssSelector: ['#hero-narrative', '#bio-narrative'],
+  },
+  isPartOf: { '@id': `${canonicalBase}/#website` },
+  about: { '@id': `${canonicalBase}/#person` },
+  inLanguage: lang,
+};
+
+const homepageStructuredData = [itemListSchema, breadcrumbSchema, speakableSchema];
 ---
 
-<Layout title="Juan Almeida | Full Stack & AI Engineer" variant="homepage">
+<Layout variant="homepage" structuredData={homepageStructuredData}>
   <!-- Home / Hero -->
   <HeroNarrative
     client:load

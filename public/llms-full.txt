@@ -1,0 +1,86 @@
+# Juan Almeida — Full Stack & AI Engineer (Extended)
+
+> Comprehensive profile for AI systems and language models.
+
+## About
+
+Juan Almeida is a full-stack and AI engineer who builds end-to-end — from data pipelines and AI integrations to the interfaces people use. He has shipped search platforms handling millions of records, courier logistics systems, and machine-learning workflows running in production.
+
+His work sits at the intersection of product thinking and engineering depth. TypeScript, Python, React, Django, cloud infrastructure — he picks the right tool for the problem. He cares about software that works reliably, scales gracefully, and solves real problems.
+
+## Contact
+
+- Website: https://www.juanelojga.com
+- LinkedIn: https://www.linkedin.com/in/juan-almeida-03806367
+- GitHub: https://github.com/juanelojga
+- Twitter: https://twitter.com/juanelojga
+
+## Skills by Domain
+
+### Frontend (Build)
+React, Next.js, Vue.js, Astro, TypeScript, JavaScript, HTML, CSS.
+Shipped reactive interfaces and SSR apps serving millions of page views with React, Next.js, and Astro.
+
+### Backend (Scale)
+Django, Express, PostgreSQL, MongoDB, REST APIs, GraphQL, System Design.
+Designed backend systems and APIs handling 10M+ records — search platforms, logistics engines, data pipelines.
+
+### AI & Machine Learning
+Python, LangChain, OpenAI API, RAG Pipelines, ML Workflows, AI/ML.
+Built production ML workflows, RAG pipelines, and AI integrations that run reliably at scale.
+
+### Infrastructure (Ship)
+AWS, Docker, CI/CD, GitHub Actions, Netlify, Vercel.
+Containerized deployments, automated CI/CD, and infrastructure-as-code across AWS, Docker, and edge platforms.
+
+## Professional Experience
+
+### Upwork — Senior Frontend Engineer (2+ Years)
+Senior frontend engineering role on Upwork's platform. Associated project: Upwork Search Jobs.
+
+### Narbox — Full-Stack Lead & Co-Founder (1.5 Years)
+Led full-stack development and co-founded the company. Built a package consolidation and global logistics platform.
+
+### JuaneloJGAC Tech — Freelance Engineer & Consultant (Ongoing)
+Independent freelance engineering and consulting work across multiple domains.
+
+## Featured Projects
+
+### AIEcommerce — Autonomous PC Assembly & Marketplace Pipeline
+- Category: AI & Backend
+- Tech Stack: Python, Django, LangGraph, MedusaJS, OpenAI/Gemini API, Redis
+- Role: Lead Software Architect | Duration: 6+ Months
+- Description: Architected a distributed system using LangGraph agents to automate the end-to-end process of scraping hardware components, assembling optimized PC builds, and publishing enriched listings to MercadoLibre.
+- Key capabilities: Autonomous PC Builder Agent (LangGraph-powered logic that selects compatible parts), AI Content Enrichment (automated SEO-optimized titles and descriptions), Cross-Platform Sync Engine (inventory state between Django, MedusaJS, and MercadoLibre), Intelligent Image Upscaling.
+- Results: 100% automation of listing creation, real-time price & stock synchronization, zero incompatible component bundles.
+- Case study: https://www.juanelojga.com/en/case-study/aiecommerce-agent-pipeline
+
+### Narbox — Package Consolidation & Global Logistics
+- Category: Fullstack
+- Tech Stack: Django, Graphene, Next.js 15, Apollo Client, PostgreSQL, Next-Intl
+- Role: Full Stack Architect | Duration: 8+ Months
+- Description: Engineered a full-stack logistics platform for managing international package forwarding, featuring a robust Django GraphQL API and a high-performance Next.js 15 administrative dashboard.
+- Key capabilities: Complex Consolidation Logic (lifecycle management from warehouse arrival to final consolidation), Real-time Admin Dashboard (advanced filtering and batch processing), Enterprise i18n Strategy (next-intl for multi-language), Automated Notification Engine.
+- Results: 60% reduction in API payload size, 2.5x faster package processing speed, 100% type-safety across the stack.
+- Case study: https://www.juanelojga.com/en/case-study/narbox-logistics-system
+
+### PBXAI — Real-time Voice AI Orchestration Engine
+- Category: AI & Infrastructure
+- Tech Stack: Node.js, TypeScript, Fastify, Asterisk REST Interface (ARI), Redis, WebSockets
+- Role: Lead Systems Architect | Duration: 12+ Months
+- Description: Architected a low-latency Node.js system to bridge traditional VoIP telephony (Asterisk) with generative AI brains, enabling real-time, bidirectional voice interactions.
+- Key capabilities: Bidirectional Audio Routing (full-duplex streaming between PSTN and WebSocket AI clients), Intelligent Silence Detection (real-time speech endpoint detection), Stateful Call Management (state machine tracking Asterisk channel events), Resilient AI Clients (circuit breakers and error recovery).
+- Results: < 50ms average orchestration latency, 99.9% call state accuracy, real-time bidirectional streaming.
+- Case study: https://www.juanelojga.com/en/case-study/pbxai-voice-orchestrator
+
+## Languages
+
+- English (fluent)
+- Spanish (native)
+
+## Site Information
+
+- Built with: Astro 5, Tailwind CSS 3, TypeScript
+- Deployed on: Netlify
+- Available in: English (/en/) and Spanish (/es/)
+- Features: Dual-theme system (Build Mode / After Hours), scroll-snap navigation, editorial photography, case study deep-dives with technical architecture details

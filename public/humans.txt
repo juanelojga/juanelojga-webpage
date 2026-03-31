@@ -1,0 +1,23 @@
+/* TEAM */
+
+Developer: Juan Almeida
+Role: Full Stack & AI Engineer
+LinkedIn: https://www.linkedin.com/in/juan-almeida-03806367
+GitHub: https://github.com/juanelojga
+Twitter: @juanelojga
+Location: Remote
+
+/* SITE */
+
+Built with: Astro 5, Tailwind CSS 3, TypeScript
+Deployed on: Netlify
+Languages: English, Spanish
+Last updated: 2026-03-31
+
+/* THANKS */
+
+Astro — https://astro.build
+Tailwind CSS — https://tailwindcss.com
+Netlify — https://netlify.com
+Font Awesome — https://fontawesome.com
+Google Fonts — https://fonts.google.com
