@@ -38,11 +38,19 @@ const structuredData = Astro.props.structuredData ?? [];
 const personSchema = {
   '@context': 'https://schema.org',
   '@type': 'Person',
+  '@id': `${canonicalBase}/#person`,
   name: 'Juan Almeida',
+  givenName: 'Juan',
+  familyName: 'Almeida',
   jobTitle: t('seo.jobTitle'),
   description: t('seo.description'),
   url: defaultCanonicalUrl,
-  sameAs: ['https://www.linkedin.com/in/juan-almeida-03806367', 'https://github.com/juanelojga'],
+  image: `${canonicalBase}/og-image.jpg`,
+  sameAs: [
+    'https://www.linkedin.com/in/juan-almeida-03806367',
+    'https://github.com/juanelojga',
+    'https://twitter.com/juanelojga',
+  ],
   knowsAbout: [
     'Artificial Intelligence',
     'Machine Learning',
@@ -53,6 +61,44 @@ const personSchema = {
     'GraphQL',
     'React',
     'Vue.js',
+    'Django',
+    'LangChain',
+    'RAG Pipelines',
+    'Node.js',
+    'Next.js',
+    'Astro',
+  ],
+  knowsLanguage: [
+    { '@type': 'Language', name: 'English', alternateName: 'en' },
+    { '@type': 'Language', name: 'Spanish', alternateName: 'es' },
+  ],
+  hasOccupation: [
+    {
+      '@type': 'Occupation',
+      name: 'Senior Frontend Engineer',
+      occupationLocation: { '@type': 'Country', name: 'United States' },
+      description:
+        'Senior frontend engineering at Upwork, building search platforms handling millions of records.',
+    },
+    {
+      '@type': 'Occupation',
+      name: 'Full-Stack Lead & Co-Founder',
+      description:
+        'Led full-stack development at Narbox, engineering logistics platforms with Django GraphQL and Next.js.',
+    },
+    {
+      '@type': 'Occupation',
+      name: 'Freelance Engineer & Consultant',
+      description:
+        'Independent engineering and consulting across AI systems, voice orchestration, and full-stack applications.',
+    },
+  ],
+  worksFor: [
+    {
+      '@type': 'Organization',
+      name: 'JuaneloJGAC Tech',
+      description: 'Freelance engineering and consulting',
+    },
   ],
 };
 
@@ -65,25 +111,21 @@ const ogLocaleAlternate = lang === 'es' ? 'en_US' : 'es_ES';
 const websiteSchema = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
+  '@id': `${canonicalBase}/#website`,
   name: 'Juan Almeida',
   url: canonicalBase,
   inLanguage: lang,
+  author: { '@id': `${canonicalBase}/#person` },
 };
 
 const profilePageSchema = isHomepage
   ? {
       '@context': 'https://schema.org',
       '@type': 'ProfilePage',
-      mainEntity: {
-        '@type': 'Person',
-        name: 'Juan Almeida',
-        jobTitle: t('seo.jobTitle'),
-        url: defaultCanonicalUrl,
-        sameAs: [
-          'https://www.linkedin.com/in/juan-almeida-03806367',
-          'https://github.com/juanelojga',
-        ],
-      },
+      '@id': `${canonicalBase}/${lang}/#profilepage`,
+      mainEntity: { '@id': `${canonicalBase}/#person` },
+      dateCreated: '2024-01-01',
+      dateModified: '2026-03-31',
     }
   : null;
 ---
@@ -110,6 +152,9 @@ const profilePageSchema = isHomepage
     <GoogleAnalytics />
     <meta name="description" content={pageDescription} />
     <meta name="author" content="Juan Almeida" />
+    <meta name="date" content="2026-03-31" />
+    <meta name="last-modified" content="2026-03-31" />
+    <link rel="author" href="/humans.txt" />
     <meta
       name="robots"
       content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"

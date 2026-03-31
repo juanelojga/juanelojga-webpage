@@ -185,6 +185,7 @@ export default function HeroNarrative({ labels, buildPortraitSrc, afterHoursPort
 
           {/* Translator line */}
           <motion.p
+            id="hero-narrative"
             className="mt-6 max-w-lg text-body text-text-secondary"
             initial={reducedMotion ? false : { opacity: 0, y: 8 }}
             animate={animationDone || reducedMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 8 }}
