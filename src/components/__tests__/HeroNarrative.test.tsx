@@ -9,6 +9,8 @@ const mockLabels: HeroNarrativeLabels = {
   translatorLine: 'I build AI systems, automations, and applications that ship.',
   primaryCta: 'Explore my work',
   secondaryCta: 'Get in touch',
+  toptalLabel: 'Verified Top 3% Talent',
+  toptalSr: '(opens in new tab)',
 };
 
 const defaultProps = {

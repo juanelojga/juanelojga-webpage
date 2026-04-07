@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* =============================================
    Design Tokens — Dual Theme System
    Build Mode (light) / After Hours (dark)
