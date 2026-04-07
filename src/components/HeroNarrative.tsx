@@ -11,6 +11,8 @@ export interface HeroNarrativeLabels {
   translatorLine: string;
   primaryCta: string;
   secondaryCta: string;
+  toptalLabel: string;
+  toptalSr: string;
 }
 
 interface Props {
@@ -218,6 +220,42 @@ export default function HeroNarrative({ labels, buildPortraitSrc, afterHoursPort
                   {labels.secondaryCta}
                 </button>
               </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Toptal credential */}
+          <AnimatePresence>
+            {(ctasReady || reducedMotion) && (
+              <motion.a
+                href="https://www.toptal.com/developers/resume/juan-almeida-duplicate#BxjOz6"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-5 inline-flex w-fit items-center gap-2 rounded-full border border-border px-4 py-2 font-mono text-meta text-text-secondary transition-colors hover:border-signal-primary hover:text-signal-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal-primary"
+                initial={reducedMotion ? false : { opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  duration: reducedMotion ? 0 : DURATION.normal,
+                  delay: reducedMotion ? 0 : 0.15,
+                  ease: EASE_OUT,
+                }}
+              >
+                <svg
+                  width="14"
+                  height="20"
+                  viewBox="0 0 21 30"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  aria-hidden="true"
+                  className="shrink-0"
+                >
+                  <path
+                    d="M8.11 0L14.82 6.7C14.87 6.75 14.91 6.8 14.97 6.85L20.82 12.7L11.31 22.16L15.66 26.52L12.75 29.41L6.09 22.75C6.01 22.68 5.93 22.6 5.85 22.52L0 16.68L9.48 7.25L5.16 2.94L8.11 0ZM12.36 10.5C12.27 10.48 12.18 10.48 12.1 10.5C12.01 10.53 11.94 10.57 11.78 10.72L6.37 16.11C6.21 16.27 6.17 16.34 6.15 16.42C6.12 16.51 6.12 16.6 6.15 16.68C6.17 16.77 6.22 16.85 6.37 17L8.09 18.72C8.24 18.87 8.31 18.91 8.4 18.94C8.49 18.96 8.57 18.96 8.66 18.94C8.75 18.91 8.82 18.87 8.97 18.72L14.38 13.33C14.54 13.18 14.58 13.1 14.61 13.02C14.63 12.93 14.63 12.85 14.61 12.76C14.59 12.67 14.54 12.6 14.39 12.45L12.67 10.73C12.52 10.57 12.44 10.53 12.36 10.5Z"
+                    fill="currentColor"
+                  />
+                </svg>
+                <span>{labels.toptalLabel}</span>
+                <span className="sr-only">{labels.toptalSr}</span>
+              </motion.a>
             )}
           </AnimatePresence>
         </div>
