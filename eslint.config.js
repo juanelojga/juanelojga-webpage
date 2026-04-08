@@ -20,6 +20,7 @@ export default [
       '.vercel',
       '.netlify',
       '.screenshots',
+      '.claude',
       '*.css',
       '*.md',
     ],
