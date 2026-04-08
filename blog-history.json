@@ -1,3 +1,10 @@
 {
-  "generated": []
+  "generated": [
+    {
+      "topic": "Why React’s Re-Renders Are Ruining Your Performance (And How To Fix Them)",
+      "slug": "why-reacts-re-renders-are-ruining-your-performance-and-how-to-fix-them",
+      "date": "2026-04-08",
+      "category": "frontend"
+    }
+  ]
 }
