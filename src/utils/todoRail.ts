@@ -8,6 +8,7 @@ export interface TodoRailLabels {
   loadProfile: string;
   compileStrengths: string;
   unlockWorkLog: string;
+  parseTheLog: string;
   openChannel: string;
   statePending: string;
   stateActive: string;
@@ -30,6 +31,7 @@ export const DEFAULT_RAIL_ITEMS: TodoItem[] = [
   { id: 'profile', labelKey: 'todoRail.loadProfile', sectionId: 'about', state: 'pending' },
   { id: 'compile', labelKey: 'todoRail.compileStrengths', sectionId: 'skills', state: 'pending' },
   { id: 'unlock', labelKey: 'todoRail.unlockWorkLog', sectionId: 'projects', state: 'pending' },
+  { id: 'parse', labelKey: 'todoRail.parseTheLog', sectionId: 'blog', state: 'pending' },
   { id: 'open', labelKey: 'todoRail.openChannel', sectionId: 'contact', state: 'pending' },
 ];
 
@@ -98,6 +100,7 @@ export const labelKeyMap: Record<string, keyof TodoRailLabels> = {
   'todoRail.loadProfile': 'loadProfile',
   'todoRail.compileStrengths': 'compileStrengths',
   'todoRail.unlockWorkLog': 'unlockWorkLog',
+  'todoRail.parseTheLog': 'parseTheLog',
   'todoRail.openChannel': 'openChannel',
 };
 

@@ -1,6 +1,7 @@
 {
   "navbar": {
-    "resume": "Currículum"
+    "resume": "Currículum",
+    "blog": "Blog"
   },
   "construction": {
     "tagline": "Ingeniero Full Stack e IA",
@@ -48,6 +49,7 @@
     "loadProfile": "Cargar perfil",
     "compileStrengths": "Compilar fortalezas",
     "unlockWorkLog": "Desbloquear historial",
+    "parseTheLog": "Leer el log",
     "openChannel": "Abrir canal",
     "statePending": "Pendiente",
     "stateActive": "En progreso",
@@ -112,6 +114,37 @@
     "resumeLink": "Ver currículum",
     "socialLabel": "Encuéntrame en",
     "ariaEmailCopied": "Dirección de correo copiada al portapapeles"
+  },
+  "blog": {
+    "sectionTitle": "// leer el log",
+    "subtitle": "Ideas sobre construcción de software, sistemas de IA y cultura de ingeniería.",
+    "readMore": "Leer más",
+    "readingTime": "{minutes} min de lectura",
+    "publishedOn": "Publicado el {date}",
+    "filterAll": "Todos",
+    "filterByTag": "Filtrar por etiqueta",
+    "noPostsFound": "No se encontraron publicaciones.",
+    "previousPage": "Anterior",
+    "nextPage": "Siguiente",
+    "pageOf": "Página {current} de {total}",
+    "tableOfContents": "Tabla de Contenidos",
+    "backToBlog": "Volver al blog",
+    "alsoAvailableIn": "También disponible en {language}",
+    "languageEnglish": "Inglés",
+    "languageSpanish": "Español",
+    "rssFeed": "Canal RSS",
+    "previousPost": "Publicación anterior",
+    "nextPost": "Publicación siguiente",
+    "breadcrumbHome": "Inicio",
+    "breadcrumbBlog": "Blog"
+  },
+  "featuredPosts": {
+    "sectionTitle": "// leer el log",
+    "subtitle": "Últimas ideas sobre construcción de software, sistemas de IA y cultura de ingeniería.",
+    "viewAll": "Ver todas las publicaciones",
+    "readMore": "Leer más",
+    "readingTime": "{minutes} min de lectura",
+    "noPosts": "Aún no hay publicaciones. Pronto habrá más."
   },
   "seo": {
     "title": "Juan Almeida | Ingeniero Full Stack y de IA",

@@ -9,6 +9,8 @@ import BioChapter from '../../components/BioChapter.astro';
 import SkillMatrix from '../../components/SkillMatrix';
 import WorkLog from '../../components/WorkLog';
 import ContactChapter from '../../components/ContactChapter';
+import FeaturedPosts from '../../components/blog/FeaturedPosts';
+import { getBlogPostsByLang } from '../../utils/blog';
 
 export async function getStaticPaths() {
   return [{ params: { lang: 'en' } }, { params: { lang: 'es' } }];
@@ -17,6 +19,17 @@ export async function getStaticPaths() {
 const { lang } = Astro.params;
 const t = await import(`../../i18n/${lang}.json`).then(m => m.default);
 const projects = await import('../../content/projects.json').then(m => m.default);
+
+const blogPosts = await getBlogPostsByLang(lang as 'en' | 'es');
+const featuredPosts = blogPosts.slice(0, 3).map(post => ({
+  title: post.data.title,
+  date: post.data.date.toISOString(),
+  tags: post.data.tags,
+  summary: post.data.summary,
+  slug: post.data.slug,
+  category: post.data.category,
+  readingTime: post.data.readingTime,
+}));
 
 const canonicalBase = 'https://www.juanelojga.com';
 
@@ -33,6 +46,7 @@ const shellLabels = {
 const heroLabels = t.heroNarrative;
 const skillMatrixLabels = t.skillMatrix;
 const workLogLabels = t.workLog;
+const featuredPostsLabels = t.featuredPosts;
 const contactLabels = t.contact;
 
 // Structured data: ItemList of featured projects
@@ -102,6 +116,9 @@ const homepageStructuredData = [itemListSchema, breadcrumbSchema, speakableSchem
 
   <!-- Projects / Work Log -->
   <WorkLog client:visible labels={workLogLabels} lang={lang} />
+
+  <!-- Blog / Featured Posts -->
+  <FeaturedPosts client:visible labels={featuredPostsLabels} lang={lang} posts={featuredPosts} />
 
   <!-- Contact / Open Channel -->
   <ContactChapter client:visible labels={contactLabels} />

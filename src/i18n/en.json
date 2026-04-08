@@ -1,6 +1,7 @@
 {
   "navbar": {
-    "resume": "Resume"
+    "resume": "Resume",
+    "blog": "Blog"
   },
   "construction": {
     "tagline": "Full Stack & AI Engineer",
@@ -48,6 +49,7 @@
     "loadProfile": "Load profile",
     "compileStrengths": "Compile strengths",
     "unlockWorkLog": "Unlock work log",
+    "parseTheLog": "Parse the log",
     "openChannel": "Open channel",
     "statePending": "Pending",
     "stateActive": "In progress",
@@ -112,6 +114,37 @@
     "resumeLink": "View resume",
     "socialLabel": "Find me elsewhere",
     "ariaEmailCopied": "Email address copied to clipboard"
+  },
+  "blog": {
+    "sectionTitle": "// parse the log",
+    "subtitle": "Thoughts on building software, AI systems, and engineering culture.",
+    "readMore": "Read more",
+    "readingTime": "{minutes} min read",
+    "publishedOn": "Published on {date}",
+    "filterAll": "All",
+    "filterByTag": "Filter by tag",
+    "noPostsFound": "No posts found.",
+    "previousPage": "Previous",
+    "nextPage": "Next",
+    "pageOf": "Page {current} of {total}",
+    "tableOfContents": "Table of Contents",
+    "backToBlog": "Back to blog",
+    "alsoAvailableIn": "Also available in {language}",
+    "languageEnglish": "English",
+    "languageSpanish": "Spanish",
+    "rssFeed": "RSS Feed",
+    "previousPost": "Previous post",
+    "nextPost": "Next post",
+    "breadcrumbHome": "Home",
+    "breadcrumbBlog": "Blog"
+  },
+  "featuredPosts": {
+    "sectionTitle": "// parse the log",
+    "subtitle": "Latest thoughts on building software, AI systems, and engineering culture.",
+    "viewAll": "View all posts",
+    "readMore": "Read more",
+    "readingTime": "{minutes} min read",
+    "noPosts": "No posts yet. Stay tuned."
   },
   "seo": {
     "title": "Juan Almeida | Full Stack & AI Engineer",

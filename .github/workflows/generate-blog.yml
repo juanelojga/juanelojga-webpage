@@ -1,0 +1,51 @@
+name: Generate Blog Post
+
+on:
+  schedule:
+    - cron: '0 9 * * 1,4' # Monday & Thursday 9am UTC
+  workflow_dispatch:
+    inputs:
+      topic:
+        description: 'Optional specific topic'
+        required: false
+        type: string
+
+permissions:
+  contents: write
+  pull-requests: write
+  models: read
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      - run: npm ci
+
+      - name: Generate blog post
+        run: npm run generate:blog
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MANUAL_TOPIC: ${{ inputs.topic || '' }}
+
+      - name: Create branch and PR
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          SLUG=$(cat /tmp/blog-generated-slug.txt)
+          BRANCH="blog/$(date +%Y-%m-%d)-${SLUG}"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$BRANCH"
+          git add src/content/blog/ blog-history.json
+          git commit -m "blog: add post '${SLUG}'"
+          git push origin "$BRANCH"
+          gh pr create \
+            --title "blog: ${SLUG}" \
+            --body "Auto-generated bilingual blog post. Review and merge to publish."

@@ -333,3 +333,75 @@ html {
     border-color: var(--color-signal-primary);
   }
 }
+
+/* =============================================
+   Blog Prose — Theme-Aware Typography
+   ============================================= */
+
+.prose-blog {
+  --tw-prose-body: var(--color-text-primary);
+  --tw-prose-headings: var(--color-text-primary);
+  --tw-prose-lead: var(--color-text-secondary);
+  --tw-prose-links: var(--color-signal-primary);
+  --tw-prose-bold: var(--color-text-primary);
+  --tw-prose-counters: var(--color-text-secondary);
+  --tw-prose-bullets: var(--color-signal-primary);
+  --tw-prose-hr: var(--color-border);
+  --tw-prose-quotes: var(--color-text-secondary);
+  --tw-prose-quote-borders: var(--color-signal-primary);
+  --tw-prose-captions: var(--color-text-secondary);
+  --tw-prose-code: var(--color-signal-primary);
+  --tw-prose-pre-code: var(--color-text-primary);
+  --tw-prose-pre-bg: var(--color-surface-secondary);
+  --tw-prose-th-borders: var(--color-border);
+  --tw-prose-td-borders: var(--color-border);
+}
+
+.prose-blog a {
+  text-decoration-color: color-mix(in srgb, var(--color-signal-primary) 40%, transparent);
+  text-underline-offset: 3px;
+  transition:
+    color 0.2s ease,
+    text-decoration-color 0.2s ease;
+}
+
+.prose-blog a:hover {
+  text-decoration-color: var(--color-signal-primary);
+}
+
+.prose-blog code:not(pre code) {
+  padding: 0.15em 0.4em;
+  border-radius: 0.25rem;
+  background: var(--color-surface-secondary);
+  font-size: 0.875em;
+}
+
+.prose-blog blockquote {
+  font-style: normal;
+  border-left-width: 3px;
+}
+
+/* =============================================
+   Shiki Dual-Theme Toggle
+   ============================================= */
+
+[data-theme='build'] .shiki .dark {
+  display: none;
+}
+
+[data-theme='after-hours'] .shiki .light {
+  display: none;
+}
+
+/* System preference fallback for Shiki */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme]) .shiki .dark {
+    display: none;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) .shiki .light {
+    display: none;
+  }
+}

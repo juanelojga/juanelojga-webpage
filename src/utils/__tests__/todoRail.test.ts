@@ -13,7 +13,7 @@ function makeItems(states: Array<'pending' | 'active' | 'completed'>): TodoItem[
 describe('todoRailReducer', () => {
   describe('ACTIVATE', () => {
     it('should set the targeted item to active and prior items to completed', () => {
-      const initial = makeItems(['pending', 'pending', 'pending', 'pending', 'pending']);
+      const initial = makeItems(['pending', 'pending', 'pending', 'pending', 'pending', 'pending']);
       const result = todoRailReducer(initial, { type: 'ACTIVATE', sectionId: 'about' });
 
       expect(result.map(i => i.state)).toEqual([
@@ -22,11 +22,12 @@ describe('todoRailReducer', () => {
         'pending',
         'pending',
         'pending',
+        'pending',
       ]);
     });
 
     it('should activate the first item', () => {
-      const initial = makeItems(['pending', 'pending', 'pending', 'pending', 'pending']);
+      const initial = makeItems(['pending', 'pending', 'pending', 'pending', 'pending', 'pending']);
       const result = todoRailReducer(initial, { type: 'ACTIVATE', sectionId: 'home' });
 
       expect(result.map(i => i.state)).toEqual([
@@ -35,14 +36,16 @@ describe('todoRailReducer', () => {
         'pending',
         'pending',
         'pending',
+        'pending',
       ]);
     });
 
     it('should activate the last item and complete all prior', () => {
-      const initial = makeItems(['pending', 'pending', 'pending', 'pending', 'pending']);
+      const initial = makeItems(['pending', 'pending', 'pending', 'pending', 'pending', 'pending']);
       const result = todoRailReducer(initial, { type: 'ACTIVATE', sectionId: 'contact' });
 
       expect(result.map(i => i.state)).toEqual([
+        'completed',
         'completed',
         'completed',
         'completed',
@@ -52,12 +55,20 @@ describe('todoRailReducer', () => {
     });
 
     it('should allow re-activation when scrolling back up', () => {
-      const initial = makeItems(['completed', 'completed', 'completed', 'active', 'pending']);
+      const initial = makeItems([
+        'completed',
+        'completed',
+        'completed',
+        'active',
+        'pending',
+        'pending',
+      ]);
       const result = todoRailReducer(initial, { type: 'ACTIVATE', sectionId: 'about' });
 
       expect(result.map(i => i.state)).toEqual([
         'completed',
         'active',
+        'pending',
         'pending',
         'pending',
         'pending',
@@ -65,19 +76,27 @@ describe('todoRailReducer', () => {
     });
 
     it('should be a no-op for an unknown sectionId', () => {
-      const initial = makeItems(['pending', 'pending', 'pending', 'pending', 'pending']);
+      const initial = makeItems(['pending', 'pending', 'pending', 'pending', 'pending', 'pending']);
       const result = todoRailReducer(initial, { type: 'ACTIVATE', sectionId: 'unknown' });
 
       expect(result).toBe(initial);
     });
 
     it('should handle activating an already-active item', () => {
-      const initial = makeItems(['completed', 'active', 'pending', 'pending', 'pending']);
+      const initial = makeItems([
+        'completed',
+        'active',
+        'pending',
+        'pending',
+        'pending',
+        'pending',
+      ]);
       const result = todoRailReducer(initial, { type: 'ACTIVATE', sectionId: 'about' });
 
       expect(result.map(i => i.state)).toEqual([
         'completed',
         'active',
+        'pending',
         'pending',
         'pending',
         'pending',
@@ -87,7 +106,14 @@ describe('todoRailReducer', () => {
 
   describe('COMPLETE', () => {
     it('should set the targeted item and all prior to completed', () => {
-      const initial = makeItems(['completed', 'active', 'pending', 'pending', 'pending']);
+      const initial = makeItems([
+        'completed',
+        'active',
+        'pending',
+        'pending',
+        'pending',
+        'pending',
+      ]);
       const result = todoRailReducer(initial, { type: 'COMPLETE', sectionId: 'about' });
 
       expect(result.map(i => i.state)).toEqual([
@@ -96,11 +122,12 @@ describe('todoRailReducer', () => {
         'pending',
         'pending',
         'pending',
+        'pending',
       ]);
     });
 
     it('should complete the first item only', () => {
-      const initial = makeItems(['active', 'pending', 'pending', 'pending', 'pending']);
+      const initial = makeItems(['active', 'pending', 'pending', 'pending', 'pending', 'pending']);
       const result = todoRailReducer(initial, { type: 'COMPLETE', sectionId: 'home' });
 
       expect(result.map(i => i.state)).toEqual([
@@ -109,14 +136,23 @@ describe('todoRailReducer', () => {
         'pending',
         'pending',
         'pending',
+        'pending',
       ]);
     });
 
     it('should complete all items', () => {
-      const initial = makeItems(['completed', 'completed', 'completed', 'completed', 'active']);
+      const initial = makeItems([
+        'completed',
+        'completed',
+        'completed',
+        'completed',
+        'completed',
+        'active',
+      ]);
       const result = todoRailReducer(initial, { type: 'COMPLETE', sectionId: 'contact' });
 
       expect(result.map(i => i.state)).toEqual([
+        'completed',
         'completed',
         'completed',
         'completed',
@@ -126,19 +162,27 @@ describe('todoRailReducer', () => {
     });
 
     it('should be a no-op for an unknown sectionId', () => {
-      const initial = makeItems(['pending', 'pending', 'pending', 'pending', 'pending']);
+      const initial = makeItems(['pending', 'pending', 'pending', 'pending', 'pending', 'pending']);
       const result = todoRailReducer(initial, { type: 'COMPLETE', sectionId: 'unknown' });
 
       expect(result).toBe(initial);
     });
 
     it('should handle completing an already-completed item', () => {
-      const initial = makeItems(['completed', 'active', 'pending', 'pending', 'pending']);
+      const initial = makeItems([
+        'completed',
+        'active',
+        'pending',
+        'pending',
+        'pending',
+        'pending',
+      ]);
       const result = todoRailReducer(initial, { type: 'COMPLETE', sectionId: 'home' });
 
       expect(result.map(i => i.state)).toEqual([
         'completed',
         'active',
+        'pending',
         'pending',
         'pending',
         'pending',
@@ -148,10 +192,18 @@ describe('todoRailReducer', () => {
 
   describe('RESET', () => {
     it('should reset all items to pending', () => {
-      const initial = makeItems(['completed', 'completed', 'completed', 'active', 'pending']);
+      const initial = makeItems([
+        'completed',
+        'completed',
+        'completed',
+        'active',
+        'pending',
+        'pending',
+      ]);
       const result = todoRailReducer(initial, { type: 'RESET' });
 
       expect(result.map(i => i.state)).toEqual([
+        'pending',
         'pending',
         'pending',
         'pending',
@@ -161,10 +213,11 @@ describe('todoRailReducer', () => {
     });
 
     it('should reset already-pending items without change', () => {
-      const initial = makeItems(['pending', 'pending', 'pending', 'pending', 'pending']);
+      const initial = makeItems(['pending', 'pending', 'pending', 'pending', 'pending', 'pending']);
       const result = todoRailReducer(initial, { type: 'RESET' });
 
       expect(result.map(i => i.state)).toEqual([
+        'pending',
         'pending',
         'pending',
         'pending',
@@ -176,7 +229,7 @@ describe('todoRailReducer', () => {
 
   describe('unknown action', () => {
     it('should return items unchanged', () => {
-      const initial = makeItems(['pending', 'active', 'pending', 'pending', 'pending']);
+      const initial = makeItems(['pending', 'active', 'pending', 'pending', 'pending', 'pending']);
       const result = todoRailReducer(initial, { type: 'UNKNOWN' } as unknown as TodoRailAction);
 
       expect(result).toBe(initial);
@@ -185,8 +238,8 @@ describe('todoRailReducer', () => {
 });
 
 describe('DEFAULT_RAIL_ITEMS', () => {
-  it('should have exactly 5 items', () => {
-    expect(DEFAULT_RAIL_ITEMS).toHaveLength(5);
+  it('should have exactly 6 items', () => {
+    expect(DEFAULT_RAIL_ITEMS).toHaveLength(6);
   });
 
   it('should map to the expected section IDs', () => {
@@ -195,6 +248,7 @@ describe('DEFAULT_RAIL_ITEMS', () => {
       'about',
       'skills',
       'projects',
+      'blog',
       'contact',
     ]);
   });

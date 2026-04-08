@@ -1,0 +1,95 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import Breadcrumbs from '../../../components/Breadcrumbs.astro';
+import BlogIndex from '../../../components/blog/BlogIndex';
+import { getBlogPostsByLang, getUniqueTags, POSTS_PER_PAGE } from '../../../utils/blog';
+
+export async function getStaticPaths() {
+  return [{ params: { lang: 'en' } }, { params: { lang: 'es' } }];
+}
+
+const { lang } = Astro.params;
+const t = await import(`../../../i18n/${lang}.json`).then(m => m.default);
+const blog = t.blog;
+
+const posts = await getBlogPostsByLang(lang as 'en' | 'es');
+const tags = getUniqueTags(posts);
+
+const canonicalBase = 'https://www.juanelojga.com';
+const canonicalUrl = `${canonicalBase}/${lang}/blog/`;
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: blog.breadcrumbHome,
+      item: `${canonicalBase}/${lang}/`,
+    },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: blog.breadcrumbBlog,
+    },
+  ],
+};
+
+// Serialize posts for the React island
+const serializedPosts = posts.map(p => ({
+  title: p.data.title,
+  date: p.data.date.toISOString(),
+  tags: p.data.tags,
+  summary: p.data.summary,
+  slug: p.data.slug,
+  category: p.data.category,
+  readingTime: p.data.readingTime,
+}));
+
+const blogLabels = {
+  filterAll: blog.filterAll,
+  filterByTag: blog.filterByTag,
+  noPostsFound: blog.noPostsFound,
+  readMore: blog.readMore,
+  readingTime: blog.readingTime,
+  previousPage: blog.previousPage,
+  nextPage: blog.nextPage,
+  pageOf: blog.pageOf,
+};
+---
+
+<Layout
+  title={`Blog | Juan Almeida`}
+  description={blog.subtitle}
+  canonicalUrl={canonicalUrl}
+  structuredData={[breadcrumbSchema]}
+>
+  <div class="bg-surface-primary">
+    <div class="mx-auto max-w-5xl px-6 pt-8">
+      <Breadcrumbs
+        items={[{ label: blog.breadcrumbHome, href: `/${lang}/` }, { label: blog.breadcrumbBlog }]}
+      />
+    </div>
+
+    <header class="mx-auto max-w-5xl px-6 pb-8 pt-12">
+      <h1 class="mb-3 font-mono text-section font-bold text-text-primary">
+        {blog.sectionTitle}
+      </h1>
+      <p class="max-w-2xl text-body leading-relaxed text-text-secondary">
+        {blog.subtitle}
+      </p>
+    </header>
+
+    <section class="mx-auto max-w-5xl px-6 pb-20">
+      <BlogIndex
+        client:visible
+        posts={serializedPosts}
+        tags={tags}
+        lang={lang!}
+        labels={blogLabels}
+        postsPerPage={POSTS_PER_PAGE}
+      />
+    </section>
+  </div>
+</Layout>
