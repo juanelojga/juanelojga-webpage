@@ -49,6 +49,7 @@
     "loadProfile": "Load profile",
     "compileStrengths": "Compile strengths",
     "unlockWorkLog": "Unlock work log",
+    "parseTheLog": "Parse the log",
     "openChannel": "Open channel",
     "statePending": "Pending",
     "stateActive": "In progress",
@@ -136,6 +137,14 @@
     "nextPost": "Next post",
     "breadcrumbHome": "Home",
     "breadcrumbBlog": "Blog"
+  },
+  "featuredPosts": {
+    "sectionTitle": "// parse the log",
+    "subtitle": "Latest thoughts on building software, AI systems, and engineering culture.",
+    "viewAll": "View all posts",
+    "readMore": "Read more",
+    "readingTime": "{minutes} min read",
+    "noPosts": "No posts yet. Stay tuned."
   },
   "seo": {
     "title": "Juan Almeida | Full Stack & AI Engineer",

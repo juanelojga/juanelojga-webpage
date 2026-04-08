@@ -49,6 +49,7 @@
     "loadProfile": "Cargar perfil",
     "compileStrengths": "Compilar fortalezas",
     "unlockWorkLog": "Desbloquear historial",
+    "parseTheLog": "Leer el log",
     "openChannel": "Abrir canal",
     "statePending": "Pendiente",
     "stateActive": "En progreso",
@@ -136,6 +137,14 @@
     "nextPost": "Publicación siguiente",
     "breadcrumbHome": "Inicio",
     "breadcrumbBlog": "Blog"
+  },
+  "featuredPosts": {
+    "sectionTitle": "// leer el log",
+    "subtitle": "Últimas ideas sobre construcción de software, sistemas de IA y cultura de ingeniería.",
+    "viewAll": "Ver todas las publicaciones",
+    "readMore": "Leer más",
+    "readingTime": "{minutes} min de lectura",
+    "noPosts": "Aún no hay publicaciones. Pronto habrá más."
   },
   "seo": {
     "title": "Juan Almeida | Ingeniero Full Stack y de IA",
