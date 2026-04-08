@@ -1,3 +1,10 @@
 {
-  "generated": []
+  "generated": [
+    {
+      "topic": "Why React’s Concurrent Rendering Isn’t a Silver Bullet for Performance (And What Astro Gets Right)",
+      "slug": "why-reacts-concurrent-rendering-isnt-a-silver-bullet-for-performance-and-what-as",
+      "date": "2026-04-08",
+      "category": "frontend"
+    }
+  ]
 }
