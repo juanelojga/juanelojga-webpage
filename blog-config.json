@@ -1,0 +1,36 @@
+{
+  "categories": [
+    {
+      "id": "ai",
+      "themes": ["RAG pipelines", "prompt engineering", "AI agents", "ML in production"]
+    },
+    {
+      "id": "frontend",
+      "themes": ["React performance", "Astro patterns", "CSS architecture"]
+    },
+    {
+      "id": "backend",
+      "themes": ["API design", "database optimization", "Python/Django"]
+    },
+    {
+      "id": "architecture",
+      "themes": ["system design", "microservices", "event-driven"]
+    },
+    {
+      "id": "devops",
+      "themes": ["CI/CD", "Docker", "infrastructure as code"]
+    },
+    {
+      "id": "career",
+      "themes": ["engineering leadership", "code review", "remote work"]
+    }
+  ],
+  "topicQueue": [],
+  "generationRules": {
+    "wordsMin": 1200,
+    "wordsMax": 2000,
+    "tone": "practical, opinionated, conversational — like a senior engineer explaining to a peer",
+    "persona": "Juan Almeida, a full-stack & AI engineer",
+    "avoid": ["generic advice", "listicle format", "corporate jargon", "overly academic tone"]
+  }
+}

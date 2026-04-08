@@ -1,0 +1,228 @@
+---
+import { getCollection, render } from 'astro:content';
+import Layout from '../../../layouts/Layout.astro';
+import Breadcrumbs from '../../../components/Breadcrumbs.astro';
+import TableOfContents from '../../../components/blog/TableOfContents.astro';
+import { generateTableOfContents, getBilingualSlug } from '../../../utils/blog';
+
+export async function getStaticPaths() {
+  const allPosts = await getCollection('blog');
+  const publishedPosts = allPosts.filter(post => !post.data.draft);
+
+  return publishedPosts.map(post => ({
+    params: { lang: post.data.language, slug: post.data.slug },
+    props: { post },
+  }));
+}
+
+const { lang, slug } = Astro.params;
+const { post } = Astro.props;
+const t = await import(`../../../i18n/${lang}.json`).then(m => m.default);
+const blog = t.blog;
+
+const { Content, headings } = await render(post);
+const toc = generateTableOfContents(headings);
+
+// Find bilingual counterpart
+const allPosts = await getCollection('blog');
+const publishedPosts = allPosts.filter(p => !p.data.draft);
+const counterpartLang = lang === 'en' ? 'es' : 'en';
+const counterpart = publishedPosts.find(
+  p => p.data.slug === slug && p.data.language === counterpartLang
+);
+
+// Find prev/next posts in same language
+const sameLangPosts = publishedPosts
+  .filter(p => p.data.language === lang)
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+
+const currentIndex = sameLangPosts.findIndex(p => p.data.slug === slug);
+const prevPost = currentIndex < sameLangPosts.length - 1 ? sameLangPosts[currentIndex + 1] : null;
+const nextPost = currentIndex > 0 ? sameLangPosts[currentIndex - 1] : null;
+
+const canonicalBase = 'https://www.juanelojga.com';
+const canonicalUrl = `${canonicalBase}/${lang}/blog/${slug}/`;
+
+const formattedDate = post.data.date.toLocaleDateString(lang === 'es' ? 'es-ES' : 'en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+
+const readingTime = blog.readingTime.replace('{minutes}', String(post.data.readingTime ?? 1));
+const publishedOn = blog.publishedOn.replace('{date}', formattedDate);
+
+const blogPostingSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: post.data.title,
+  description: post.data.summary,
+  datePublished: post.data.date.toISOString(),
+  author: {
+    '@type': 'Person',
+    name: 'Juan Almeida',
+    url: canonicalBase,
+  },
+  inLanguage: lang,
+  keywords: post.data.tags.join(', '),
+  url: canonicalUrl,
+};
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: blog.breadcrumbHome,
+      item: `${canonicalBase}/${lang}/`,
+    },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: blog.breadcrumbBlog,
+      item: `${canonicalBase}/${lang}/blog/`,
+    },
+    {
+      '@type': 'ListItem',
+      position: 3,
+      name: post.data.title,
+    },
+  ],
+};
+---
+
+<Layout
+  title={`${post.data.title} | Juan Almeida`}
+  description={post.data.summary}
+  canonicalUrl={canonicalUrl}
+  structuredData={[blogPostingSchema, breadcrumbSchema]}
+>
+  <div class="bg-surface-primary">
+    <!-- Breadcrumbs -->
+    <div class="mx-auto max-w-5xl px-6 pt-8">
+      <Breadcrumbs
+        items={[
+          { label: blog.breadcrumbHome, href: `/${lang}/` },
+          { label: blog.breadcrumbBlog, href: `/${lang}/blog/` },
+          { label: post.data.title },
+        ]}
+      />
+    </div>
+
+    <!-- Post header -->
+    <header class="mx-auto max-w-5xl px-6 pb-8 pt-12">
+      <span
+        class="bg-signal-primary/15 mb-4 inline-block rounded-full px-3 py-0.5 font-mono text-meta font-medium text-signal-primary"
+      >
+        {post.data.category}
+      </span>
+      <h1 class="mb-4 font-mono text-section font-bold text-text-primary">
+        {post.data.title}
+      </h1>
+      <div class="flex flex-wrap items-center gap-3 font-mono text-meta text-text-secondary">
+        <time datetime={post.data.date.toISOString()}>{publishedOn}</time>
+        <span aria-hidden="true" class="text-border">|</span>
+        <span>{readingTime}</span>
+      </div>
+      <div class="mt-4 flex flex-wrap gap-2">
+        {
+          post.data.tags.map(tag => (
+            <span class="border-border/60 rounded-full border bg-surface-secondary px-3 py-0.5 font-mono text-meta text-text-secondary">
+              {tag}
+            </span>
+          ))
+        }
+      </div>
+
+      {/* Bilingual link */}
+      {
+        counterpart && (
+          <p class="mt-6 font-mono text-meta text-text-secondary">
+            {blog.alsoAvailableIn.replace('{language}', '')}
+            <a
+              href={getBilingualSlug(slug!, counterpartLang)}
+              class="text-signal-primary transition-colors hover:underline"
+            >
+              {counterpartLang === 'en' ? blog.languageEnglish : blog.languageSpanish}
+            </a>
+          </p>
+        )
+      }
+    </header>
+
+    <!-- Content with TOC -->
+    <div class="mx-auto flex max-w-5xl gap-12 px-6 pb-20">
+      <!-- Main content -->
+      <article class="prose-blog prose max-w-none flex-1">
+        <Content />
+      </article>
+
+      <!-- Sticky TOC sidebar (desktop) -->
+      {
+        toc.length > 0 && (
+          <aside class="hidden w-64 shrink-0 lg:block">
+            <div class="sticky top-24">
+              <TableOfContents headings={toc} label={blog.tableOfContents} />
+            </div>
+          </aside>
+        )
+      }
+    </div>
+
+    <!-- Prev/Next navigation -->
+    <nav class="mx-auto max-w-5xl border-t border-border px-6 py-10">
+      <div class="flex justify-between gap-8">
+        <div class="flex-1">
+          {
+            prevPost && (
+              <a href={`/${lang}/blog/${prevPost.data.slug}/`} class="group block no-underline">
+                <span class="mb-1 block font-mono text-meta text-text-secondary">
+                  {blog.previousPost}
+                </span>
+                <span class="font-mono text-label font-medium text-text-primary transition-colors group-hover:text-signal-primary">
+                  {prevPost.data.title}
+                </span>
+              </a>
+            )
+          }
+        </div>
+        <div class="flex-1 text-right">
+          {
+            nextPost && (
+              <a href={`/${lang}/blog/${nextPost.data.slug}/`} class="group block no-underline">
+                <span class="mb-1 block font-mono text-meta text-text-secondary">
+                  {blog.nextPost}
+                </span>
+                <span class="font-mono text-label font-medium text-text-primary transition-colors group-hover:text-signal-primary">
+                  {nextPost.data.title}
+                </span>
+              </a>
+            )
+          }
+        </div>
+      </div>
+    </nav>
+
+    <!-- Back to blog -->
+    <div class="mx-auto max-w-5xl px-6 pb-16">
+      <a
+        href={`/${lang}/blog/`}
+        class="inline-flex items-center gap-2 font-mono text-meta font-medium text-signal-primary transition-colors hover:underline"
+      >
+        <svg
+          class="size-4"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path>
+        </svg>
+        {blog.backToBlog}
+      </a>
+    </div>
+  </div>
+</Layout>
