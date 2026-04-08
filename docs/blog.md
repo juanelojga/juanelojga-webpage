@@ -164,6 +164,13 @@ The workflow will:
 - Generate a bilingual blog post
 - Open a pull request for your review
 
+**Email notifications**: The workflow creates a pull request on each run, so GitHub will email you automatically when a new post is ready for review. To ensure you receive these notifications:
+
+1. Go to your repository on GitHub and click **Watch** → **All Activity** (or at minimum **Participating and @mentions**)
+2. In GitHub **Settings → Notifications**, confirm email delivery is enabled under "Default notifications email"
+
+For workflow failure alerts, go to **Actions → Generate Blog Post → ⋯ menu** and enable "Send workflow notifications."
+
 To verify it works, trigger it manually:
 
 1. Go to the repository on GitHub
