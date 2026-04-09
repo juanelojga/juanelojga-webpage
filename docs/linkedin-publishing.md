@@ -209,7 +209,7 @@ netlify/
 - **API version header:** `LinkedIn-Version: 202601` (override with `LINKEDIN_API_VERSION` env var — LinkedIn retires versions after ~12 months; update this when you get a `426 NONEXISTENT_VERSION` error)
 - **Protocol header:** `X-Restli-Protocol-Version: 2.0.0`
 - **Post endpoint:** `POST /posts`
-- **Comment endpoint:** `POST /socialActions/{postUrn}/comments`
+- **Comment endpoint:** `POST /comments`
 - **Profile endpoint:** `GET https://api.linkedin.com/v2/me`
 
 ### Token storage

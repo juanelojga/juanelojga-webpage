@@ -90,7 +90,7 @@ describe('addComment', () => {
     await addComment(accessToken, personId, postUrn, 'Read more: https://example.com');
 
     expect(mockFetch).toHaveBeenCalledWith(
-      `https://api.linkedin.com/rest/socialActions/${encodeURIComponent(postUrn)}/comments`,
+      'https://api.linkedin.com/rest/comments',
       expect.objectContaining({
         method: 'POST',
         headers: expect.objectContaining({
@@ -102,6 +102,7 @@ describe('addComment', () => {
 
     const callBody = JSON.parse(mockFetch.mock.calls[0][1].body);
     expect(callBody.actor).toBe(personId);
+    expect(callBody.object).toBe(postUrn);
     expect(callBody.message.text).toBe('Read more: https://example.com');
   });
 
