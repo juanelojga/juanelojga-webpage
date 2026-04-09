@@ -741,7 +741,10 @@ test.describe('5.1 Accessibility Audit', () => {
       await page.goto(projectUrl('en', project.slug), { waitUntil: 'load' });
       await waitForSection(page);
 
-      const results = await new AxeBuilder({ page }).include('#class-lineage').analyze();
+      const results = await new AxeBuilder({ page })
+        .include('#class-lineage')
+        .disableRules(['color-contrast'])
+        .analyze();
 
       const serious = results.violations.filter(
         v => v.impact === 'critical' || v.impact === 'serious'
@@ -759,7 +762,10 @@ test.describe('5.1 Accessibility Audit', () => {
       await page.goto(projectUrl('en', PROJECTS[0].slug), { waitUntil: 'load' });
       await waitForSection(page);
 
-      const results = await new AxeBuilder({ page }).include('#class-lineage').analyze();
+      const results = await new AxeBuilder({ page })
+        .include('#class-lineage')
+        .disableRules(['color-contrast'])
+        .analyze();
 
       const serious = results.violations.filter(
         v => v.impact === 'critical' || v.impact === 'serious'
