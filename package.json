@@ -38,6 +38,7 @@
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.11.1",
+    "@eslint/js": "^10.0.1",
     "@netlify/blobs": "^10.7.4",
     "@netlify/functions": "^5.1.5",
     "@playwright/mcp": "^0.0.70",
