@@ -5,6 +5,12 @@
       "slug": "why-reacts-re-renders-are-ruining-your-performance-and-how-to-fix-them",
       "date": "2026-04-08",
       "category": "frontend"
+    },
+    {
+      "topic": "Why Event-Driven Microservices Are Overhyped (And When They Actually Shine)",
+      "slug": "why-event-driven-microservices-are-overhyped-and-when-they-actually-shine",
+      "date": "2026-04-09",
+      "category": "architecture"
     }
   ]
 }
