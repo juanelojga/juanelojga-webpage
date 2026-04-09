@@ -29,6 +29,24 @@ jobs:
           echo "slug=$SLUG" >> "$GITHUB_OUTPUT"
           echo "Extracted slug: $SLUG"
 
+      - name: Wait for Netlify deploy
+        env:
+          BLOG_SLUG: ${{ steps.slug.outputs.slug }}
+        run: |
+          URL="https://juanelojga.com/en/blog/${BLOG_SLUG}/"
+          echo "Waiting for $URL to become available..."
+          for i in $(seq 1 30); do
+            STATUS=$(curl -sL -o /dev/null -w "%{http_code}" "$URL")
+            echo "Attempt $i/30: HTTP $STATUS"
+            if [ "$STATUS" = "200" ]; then
+              echo "Blog post is live!"
+              exit 0
+            fi
+            sleep 30
+          done
+          echo "::error::Timed out waiting for blog post to deploy"
+          exit 1
+
       - name: Publish to LinkedIn
         env:
           LINKEDIN_PUBLISH_SECRET: ${{ secrets.LINKEDIN_PUBLISH_SECRET }}
