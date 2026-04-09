@@ -10,7 +10,10 @@ const lang = Astro.currentLocale === 'es' ? 'es' : 'en';
   id="navbar"
   class="bg-surface-primary/90 sticky top-0 z-50 w-full backdrop-blur-xl transition-all duration-300"
 >
-  <div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-3">
+  <div
+    class="mx-auto flex max-w-6xl items-center justify-between px-6 py-3"
+    style="padding-left: max(1.5rem, env(safe-area-inset-left)); padding-right: max(1.5rem, env(safe-area-inset-right));"
+  >
     <!-- Left: Logo -->
     <a
       href={`/${lang}/`}

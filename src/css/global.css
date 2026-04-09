@@ -376,6 +376,10 @@ html {
   font-size: 0.875em;
 }
 
+.prose-blog pre {
+  overflow-x: auto;
+}
+
 .prose-blog blockquote {
   font-style: normal;
   border-left-width: 3px;

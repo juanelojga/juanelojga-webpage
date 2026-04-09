@@ -25,3 +25,5 @@ pnpm-debug.log*
 .screenshots/
 
 .playwright-mcp/
+
+test-results/
