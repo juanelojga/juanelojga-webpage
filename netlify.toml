@@ -1,12 +1,11 @@
 # netlify.toml (root of repo)
 [build]
-  command = "npm run build"
+  command = "pnpm run build"
   publish = "dist"
 
 [build.environment]
   NODE_VERSION = "24"
-  # Optional: uncomment if you use pnpm or yarn in the Netlify UI
-  # NPM_FLAGS = "--no-fund --no-audit"
+  NPM_FLAGS = "--version"
 
 # Cache control for static assets (optional but nice)
 [[headers]]

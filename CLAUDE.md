@@ -9,13 +9,13 @@ Multilingual personal portfolio website for Juan Almeida (full-stack & AI engine
 ## Commands
 
 ```bash
-npm install          # Install dependencies (Node 24 required, see .nvmrc)
-npm run dev          # Dev server at localhost:4321
-npm run build        # Production build to ./dist/
-npm run preview      # Preview production build
-npm run lint         # ESLint check
-npm run lint:fix     # ESLint auto-fix
-npm run format       # Prettier format
+pnpm install         # Install dependencies (Node 24 required, see .nvmrc)
+pnpm dev             # Dev server at localhost:4321
+pnpm build           # Production build to ./dist/
+pnpm preview         # Preview production build
+pnpm lint            # ESLint check
+pnpm lint:fix        # ESLint auto-fix
+pnpm format          # Prettier format
 ```
 
 No test runner is configured yet. When adding tests, use Vitest (Astro's recommended test framework) with `@testing-library/react` for React component tests.
@@ -90,7 +90,7 @@ Plain JSON arrays in `src/content/` (projects, experience, core-technologies, to
 
 ## Deployment
 
-Netlify config in `netlify.toml`: builds with `npm run build`, publishes `dist/`. Cache headers set 1-year immutable for `/_astro/*` and `/assets/*`. Redirect `/` → `/en/` (301, force).
+Netlify config in `netlify.toml`: builds with `pnpm run build`, publishes `dist/`. Cache headers set 1-year immutable for `/_astro/*` and `/assets/*`. Redirect `/` → `/en/` (301, force).
 
 ## Images & Icons
 
@@ -104,7 +104,7 @@ When asked to verify UI, always use Playwright MCP (never bash).
 
 ### App
 
-- Dev server: `npm run dev` (port 4321)
+- Dev server: `pnpm dev` (port 4321)
 - Key pages to check: `/en/`, `/es/`
 - Root `/` redirects to `/en/`
 

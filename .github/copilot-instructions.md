@@ -28,13 +28,13 @@
 ## Build and Test
 
 ```bash
-npm install          # Install dependencies (Node 24 required)
-npm run dev          # Dev server at localhost:4321
-npm run build        # Production build to ./dist/
-npm run preview      # Preview production build
-npm run lint         # ESLint check
-npm run lint:fix     # ESLint auto-fix
-npm run format       # Prettier format
+pnpm install         # Install dependencies (Node 24 required)
+pnpm dev             # Dev server at localhost:4321
+pnpm build           # Production build to ./dist/
+pnpm preview         # Preview production build
+pnpm lint            # ESLint check
+pnpm lint:fix        # ESLint auto-fix
+pnpm format          # Prettier format
 ```
 
 ## Project Conventions
@@ -49,7 +49,7 @@ npm run format       # Prettier format
 
 ## Deployment
 
-- **Netlify**: config in [netlify.toml](netlify.toml) — builds with `npm run build`, publishes `dist/`
+- **Netlify**: config in [netlify.toml](netlify.toml) — builds with `pnpm run build`, publishes `dist/`
 - Cache: `/_astro/*` and `/assets/*` get immutable 1-year headers
 - Redirect: `/` → `/en/` (301, redundant with Astro redirect as fallback)
 - Google Analytics via Partytown integration (isolates GA to web worker)

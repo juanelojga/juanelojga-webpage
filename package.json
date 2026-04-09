@@ -2,11 +2,12 @@
   "name": "juanelojga-webpage",
   "type": "module",
   "version": "0.0.1",
+  "packageManager": "pnpm@10.33.0",
   "engines": {
     "node": "24.x"
   },
   "scripts": {
-    "prepare": "husky install",
+    "prepare": "husky",
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
@@ -73,5 +74,11 @@
       "prettier --write"
     ],
     "*.md": "prettier --write"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "sharp"
+    ]
   }
 }

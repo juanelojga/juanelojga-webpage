@@ -8,7 +8,7 @@ Follow these steps exactly:
    - **plan_approval**: An implementation plan must have been presented. The user must have approved it.
    - **tdd**: Failing test files must exist. Tests must fail (not pass — they have no implementation yet).
    - **code_generation**: Implementation code must exist. Do NOT check if tests pass yet — that's the next stage.
-   - **verification**: All tests must pass. Run `npm run test` (or the project's test command) to confirm.
+   - **verification**: All tests must pass. Run `pnpm test` (or the project's test command) to confirm.
    - **code_review**: A self-review must have been presented covering edge cases, naming, complexity, and security.
    - **ship**: This is the final stage — summarize all changes and confirm ready to merge.
 3. If validation fails, explain what's missing and do NOT advance.

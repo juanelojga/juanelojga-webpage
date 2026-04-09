@@ -11,8 +11,8 @@ Add an automated blog system to the portfolio site. Blog posts are AI-generated 
 ### 1.1 Install dependencies
 
 ```bash
-npm install @tailwindcss/typography @astrojs/rss
-npm install -D openai tsx
+pnpm add @tailwindcss/typography @astrojs/rss
+pnpm add -D openai tsx
 ```
 
 ### 1.2 Content Collections schema
@@ -268,9 +268,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with: { node-version-file: '.nvmrc', cache: 'npm' }
-      - run: npm ci
-      - run: npm run generate:blog
+        with: { node-version-file: '.nvmrc', cache: 'pnpm' }
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm generate:blog
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           MANUAL_TOPIC: ${{ inputs.topic || '' }}
