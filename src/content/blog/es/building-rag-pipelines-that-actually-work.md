@@ -1,6 +1,6 @@
 ---
 title: 'Construyendo Pipelines RAG que Realmente Funcionan'
-date: 2026-04-01
+date: 2026-03-10
 tags: ['rag', 'ia', 'python', 'bases-de-datos-vectoriales']
 summary: 'La mayoría de tutoriales de RAG se saltan las partes difíciles. Esto es lo que realmente se necesita para construir un pipeline de generación aumentada por recuperación que maneje documentos reales, escale más allá de datasets de demo y dé respuestas confiables.'
 language: es

@@ -1,5 +1,5 @@
-const LINKEDIN_API = 'https://api.linkedin.com/rest';
-const API_VERSION = '202401';
+const LINKEDIN_API = process.env.LINKEDIN_API_BASE_URL || 'https://api.linkedin.com/rest';
+const API_VERSION = process.env.LINKEDIN_API_VERSION || '202601';
 
 export async function publishPost(
   accessToken: string,

@@ -1,6 +1,6 @@
 ---
 title: 'Por qué tu API REST debería usar Querysets de Django en lugar de SQL puro'
-date: 2026-04-09
+date: 2026-04-02
 tags: ['django', 'api rest', 'querysets', 'sql puro', 'backend']
 summary: 'Los Querysets de Django son una opción más segura, expresiva y escalable para interactuar con bases de datos en APIs REST. Aprende por qué el SQL puro debería ser una excepción rarísima y cómo los Querysets pueden simplificar el desarrollo backend.'
 language: es

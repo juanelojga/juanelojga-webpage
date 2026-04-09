@@ -1,6 +1,6 @@
 ---
 title: 'Por qué los Re-Renders en React están arruinando tu rendimiento (y cómo solucionarlo)'
-date: 2026-04-08
+date: 2026-03-18
 tags: ['react', 'rendimiento', 'frontend', 'optimización']
 summary: 'Descubre por qué los re-renders en React pueden afectar el rendimiento de tu aplicación, cómo identificarlos usando herramientas prácticas y, lo más importante, cómo solucionarlos aplicando memoización, gestión eficiente del estado y diseño optimizado de componentes.'
 language: es

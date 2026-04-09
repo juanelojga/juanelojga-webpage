@@ -1,6 +1,6 @@
 ---
 title: 'Why Event-Driven Microservices Are Overhyped (And When They Actually Shine)'
-date: 2026-04-09
+date: 2026-03-25
 tags: ['architecture', 'event-driven', 'microservices']
 summary: 'Event-driven microservices are often overhyped and misunderstood. While powerful in specific scenarios like high-throughput systems and event sourcing, they introduce hidden complexity and coupling that can outweigh the benefits for simpler use cases.'
 language: en

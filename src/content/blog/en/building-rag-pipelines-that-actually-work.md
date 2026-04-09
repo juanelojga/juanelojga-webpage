@@ -1,6 +1,6 @@
 ---
 title: 'Building RAG Pipelines That Actually Work'
-date: 2026-04-01
+date: 2026-03-10
 tags: ['rag', 'ai', 'python', 'vector-databases']
 summary: "Most RAG tutorials skip the hard parts. Here's what it actually takes to build a retrieval-augmented generation pipeline that handles real-world documents, scales beyond demo datasets, and gives answers people can trust."
 language: en

@@ -1,6 +1,6 @@
 ---
 title: 'Why Your REST API Should Embrace Django Querysets Instead of Raw SQL'
-date: 2026-04-09
+date: 2026-04-02
 tags: ['django', 'rest api', 'querysets', 'raw sql', 'backend']
 summary: 'Django Querysets are a safer, more expressive, and scalable way to interact with databases in REST APIs. Learn why raw SQL should be a rare exception and how Querysets can simplify your backend development.'
 language: en
