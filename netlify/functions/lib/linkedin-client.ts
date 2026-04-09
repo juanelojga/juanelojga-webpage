@@ -57,16 +57,19 @@ export async function addComment(
     message: { text },
   };
 
-  const response = await fetch(`${LINKEDIN_API}/comments`, {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-      'Content-Type': 'application/json',
-      'LinkedIn-Version': API_VERSION,
-      'X-Restli-Protocol-Version': '2.0.0',
-    },
-    body: JSON.stringify(body),
-  });
+  const response = await fetch(
+    `${LINKEDIN_API}/socialActions/${encodeURIComponent(postUrn)}/comments`,
+    {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+        'LinkedIn-Version': API_VERSION,
+        'X-Restli-Protocol-Version': '2.0.0',
+      },
+      body: JSON.stringify(body),
+    }
+  );
 
   if (!response.ok) {
     const errorText = await response.text();
