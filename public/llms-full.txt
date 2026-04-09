@@ -73,6 +73,58 @@ Independent freelance engineering and consulting work across multiple domains.
 - Results: < 50ms average orchestration latency, 99.9% call state accuracy, real-time bidirectional streaming.
 - Case study: https://www.juanelojga.com/en/case-study/pbxai-voice-orchestrator
 
+## Blog Posts
+
+Technical articles published in English and Spanish. Each post is available in both languages.
+
+### Building RAG Pipelines That Actually Work (2026-03-10)
+- Category: AI
+- URL: https://www.juanelojga.com/en/blog/building-rag-pipelines-that-actually-work/
+- Spanish: https://www.juanelojga.com/es/blog/building-rag-pipelines-that-actually-work/
+- Summary: What it actually takes to build a RAG pipeline that handles real-world documents, scales beyond demos, and gives trustworthy answers.
+
+### Why React's Re-Renders Are Ruining Your Performance (2026-03-18)
+- Category: Frontend
+- URL: https://www.juanelojga.com/en/blog/why-reacts-re-renders-are-ruining-your-performance-and-how-to-fix-them/
+- Spanish: https://www.juanelojga.com/es/blog/why-reacts-re-renders-are-ruining-your-performance-and-how-to-fix-them/
+- Summary: Why React re-renders tank performance, how to diagnose them, and how to fix them with memoization and optimized component design.
+
+### Why Event-Driven Microservices Are Overhyped (2026-03-25)
+- Category: Architecture
+- URL: https://www.juanelojga.com/en/blog/why-event-driven-microservices-are-overhyped-and-when-they-actually-shine/
+- Spanish: https://www.juanelojga.com/es/blog/why-event-driven-microservices-are-overhyped-and-when-they-actually-shine/
+- Summary: Event-driven microservices introduce hidden complexity. When they shine vs. when simpler approaches work better.
+
+### Why Your REST API Should Embrace Django Querysets (2026-04-02)
+- Category: Backend
+- URL: https://www.juanelojga.com/en/blog/why-your-rest-api-should-embrace-django-querysets-instead-of-raw-sql/
+- Spanish: https://www.juanelojga.com/es/blog/why-your-rest-api-should-embrace-django-querysets-instead-of-raw-sql/
+- Summary: Django Querysets are safer, more expressive, and scalable for REST APIs compared to raw SQL.
+
+### Stop Overcomplicating RAG Pipelines (2026-04-09)
+- Category: AI
+- URL: https://www.juanelojga.com/en/blog/stop-overcomplicating-rag-pipelines-the-simple-architecture-that-scales/
+- Spanish: https://www.juanelojga.com/es/blog/stop-overcomplicating-rag-pipelines-the-simple-architecture-that-scales/
+- Summary: A lean, practical approach to building RAG pipelines without unnecessary complexity.
+
+### Making Code Reviews Actually Useful in Remote Teams (2026-04-09)
+- Category: Career
+- URL: https://www.juanelojga.com/en/blog/making-code-reviews-actually-useful-in-remote-teams/
+- Spanish: https://www.juanelojga.com/es/blog/making-code-reviews-actually-useful-in-remote-teams/
+- Summary: Strategies for building a culture of meaningful code reviews that improve both codebase and engineers.
+
+### Stop Using Jenkins: Why GitHub Actions Is the CI/CD Tool You Need (2026-04-09)
+- Category: DevOps
+- URL: https://www.juanelojga.com/en/blog/stop-using-jenkins-why-github-actions-is-the-cicd-tool-you-actually-need/
+- Spanish: https://www.juanelojga.com/es/blog/stop-using-jenkins-why-github-actions-is-the-cicd-tool-you-actually-need/
+- Summary: GitHub Actions eliminates Jenkins infrastructure headaches with seamless GitHub integration and powerful pre-built actions.
+
+### Why You're Doing Dockerfile Optimization Wrong (2026-04-09)
+- Category: DevOps
+- URL: https://www.juanelojga.com/en/blog/why-youre-doing-dockerfile-optimization-wrong-and-the-right-way-to-build-lean-im/
+- Spanish: https://www.juanelojga.com/es/blog/why-youre-doing-dockerfile-optimization-wrong-and-the-right-way-to-build-lean-im/
+- Summary: Common Dockerfile mistakes and advanced techniques to build smaller, faster, and more secure images.
+
 ## Languages
 
 - English (fluent)

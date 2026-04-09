@@ -1,7 +1,7 @@
 import type { Handler } from '@netlify/functions';
 import { timingSafeEqual } from 'node:crypto';
 import { getTokens, refreshAccessToken, isExpiringSoon } from './lib/linkedin-tokens';
-import { publishPost, addComment } from './lib/linkedin-client';
+import { publishPost } from './lib/linkedin-client';
 import { generateLinkedInPost } from './lib/linkedin-post-generator';
 import { fetchBlogContent } from './lib/blog-fetcher';
 
@@ -43,7 +43,6 @@ export const handler: Handler = async event => {
 
   // Parse slug from body or query
   let slug: string | undefined;
-  let noComment = false;
   let dryRun = false;
 
   if (event.httpMethod === 'GET') {
@@ -53,7 +52,6 @@ export const handler: Handler = async event => {
     try {
       const body = JSON.parse(event.body ?? '{}');
       slug = body.slug;
-      noComment = body.noComment === true;
       dryRun = body.dryRun === true;
     } catch {
       return { statusCode: 400, body: JSON.stringify({ error: 'Invalid request body' }) };
@@ -72,7 +70,8 @@ export const handler: Handler = async event => {
     }
 
     // Generate LinkedIn post via AI
-    const postContent = await generateLinkedInPost(blog);
+    const blogUrl = `${SITE_URL}/en/blog/${slug}`;
+    const postContent = await generateLinkedInPost(blog, blogUrl);
 
     // Dry run: return preview without publishing
     if (dryRun) {
@@ -84,17 +83,6 @@ export const handler: Handler = async event => {
 
     // Publish to LinkedIn
     const postUrn = await publishPost(credentials.access_token, credentials.person_id, postContent);
-
-    // Add first comment with blog URL
-    if (!noComment) {
-      const blogUrl = `${SITE_URL}/en/blog/${slug}`;
-      await addComment(
-        credentials.access_token,
-        credentials.person_id,
-        postUrn,
-        `Read the full post here: ${blogUrl}`
-      );
-    }
 
     return {
       statusCode: 200,

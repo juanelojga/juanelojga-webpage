@@ -106,7 +106,7 @@ The callback page displays a success message confirming tokens were saved to Net
 ### Unit tests
 
 ```bash
-npm run test
+pnpm test
 ```
 
 The LinkedIn feature has 46 tests across 6 test files:
@@ -123,13 +123,13 @@ The LinkedIn feature has 46 tests across 6 test files:
 ### Run specific test file
 
 ```bash
-npx vitest run netlify/functions/lib/__tests__/linkedin-tokens.test.ts
+pnpm exec vitest run netlify/functions/lib/__tests__/linkedin-tokens.test.ts
 ```
 
 ### Watch mode
 
 ```bash
-npx vitest netlify/
+pnpm exec vitest netlify/
 ```
 
 ## Testing in Production

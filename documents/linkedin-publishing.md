@@ -101,7 +101,7 @@ You only need to do this once (or once a year when the refresh token expires).
 
 After setup, publishing is fully automatic:
 
-1. `npm run generate:blog` creates a blog post PR (runs on schedule via GitHub Actions)
+1. `pnpm generate:blog` creates a blog post PR (runs on schedule via GitHub Actions)
 2. Review and merge the PR
 3. GitHub Action `publish-linkedin.yml` triggers automatically
 4. LinkedIn post appears on your profile within seconds
@@ -243,7 +243,7 @@ Tokens are stored in **Netlify Blobs** (built-in key-value store, free tier):
 ## Typical Workflow
 
 ```
-1. npm run generate:blog                    # Generate blog post (existing, runs on schedule)
+1. pnpm generate:blog                    # Generate blog post (existing, runs on schedule)
 2. Create PR, review, merge                 # Git workflow
 3. → GitHub Action auto-publishes to LinkedIn
 ```

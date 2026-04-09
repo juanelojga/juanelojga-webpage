@@ -52,21 +52,51 @@ const formattedDate = post.data.date.toLocaleDateString(lang === 'es' ? 'es-ES' 
 const readingTime = blog.readingTime.replace('{minutes}', String(post.data.readingTime ?? 1));
 const publishedOn = blog.publishedOn.replace('{date}', formattedDate);
 
-const blogPostingSchema = {
+const dateModified = (post.data.dateModified ?? post.data.date).toISOString();
+const wordCount = post.body ? post.body.trim().split(/\s+/).length : undefined;
+
+const blogPostingSchema: Record<string, unknown> = {
   '@context': 'https://schema.org',
   '@type': 'BlogPosting',
   headline: post.data.title,
   description: post.data.summary,
   datePublished: post.data.date.toISOString(),
+  dateModified,
   author: {
     '@type': 'Person',
     name: 'Juan Almeida',
     url: canonicalBase,
+    '@id': `${canonicalBase}/#person`,
   },
+  publisher: { '@id': `${canonicalBase}/#person` },
+  mainEntityOfPage: { '@type': 'WebPage', '@id': canonicalUrl },
+  image: `${canonicalBase}/og-image.jpg`,
   inLanguage: lang,
   keywords: post.data.tags.join(', '),
   url: canonicalUrl,
+  articleSection: post.data.category,
+  ...(wordCount ? { wordCount } : {}),
+  speakable: {
+    '@type': 'SpeakableSpecification',
+    cssSelector: ['article h1', 'article > p:first-of-type'],
+  },
 };
+
+const faqSchema: Record<string, unknown> | null =
+  post.data.faq && post.data.faq.length > 0
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        mainEntity: post.data.faq.map(item => ({
+          '@type': 'Question',
+          name: item.question,
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: item.answer,
+          },
+        })),
+      }
+    : null;
 
 const breadcrumbSchema = {
   '@context': 'https://schema.org',
@@ -97,7 +127,16 @@ const breadcrumbSchema = {
   title={`${post.data.title} | Juan Almeida`}
   description={post.data.summary}
   canonicalUrl={canonicalUrl}
-  structuredData={[blogPostingSchema, breadcrumbSchema]}
+  structuredData={[blogPostingSchema, breadcrumbSchema, ...(faqSchema ? [faqSchema] : [])]}
+  ogType="article"
+  articleMeta={{
+    publishedTime: post.data.date.toISOString(),
+    modifiedTime: dateModified,
+    author: 'Juan Almeida',
+    section: post.data.category,
+    tags: post.data.tags,
+  }}
+  keywords={post.data.tags.join(', ')}
 >
   <div class="bg-surface-primary">
     <!-- Breadcrumbs -->
@@ -155,7 +194,7 @@ const breadcrumbSchema = {
     <!-- Content with TOC -->
     <div class="mx-auto flex max-w-5xl gap-12 px-6 pb-20">
       <!-- Main content -->
-      <article class="prose-blog prose max-w-none flex-1">
+      <article class="prose-blog prose max-w-none flex-1 overflow-hidden">
         <Content />
       </article>
 

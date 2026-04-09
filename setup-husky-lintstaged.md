@@ -17,23 +17,23 @@ Set up **Husky** and **lint-staged** to automatically:
 
 ### 1. Install dependencies
 
-npm install -D husky lint-staged
+pnpm add -D husky lint-staged
 
 ### 2. Enable Husky
 
-npx husky install
+pnpm exec husky init
 
 Then add to `package.json`:
 
 ```json
 "scripts": {
-  "prepare": "husky install"
+  "prepare": "husky"
 }
 ```
 
 ### 3. Create a pre-commit hook
 
-npx husky add .husky/pre-commit "npx lint-staged"
+echo "pnpm exec lint-staged" > .husky/pre-commit
 
 ### 4. Configure lint-staged in package.json
 
@@ -52,7 +52,7 @@ Add the following section:
 
 Run:
 
-npm run lint:fix
-npm run format
+pnpm lint:fix
+pnpm format
 git add .
 git commit -m "test: verify husky and lint-staged setup"

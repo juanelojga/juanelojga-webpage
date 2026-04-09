@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { publishPost, addComment } from '../linkedin-client';
+import { publishPost } from '../linkedin-client';
 
 beforeEach(() => {
   vi.clearAllMocks();
@@ -74,48 +74,5 @@ describe('publishPost', () => {
 
   it('should throw on empty post text', async () => {
     await expect(publishPost(accessToken, personId, '')).rejects.toThrow();
-  });
-});
-
-describe('addComment', () => {
-  it('should POST comment to the correct post URN endpoint', async () => {
-    const postUrn = 'urn:li:share:12345';
-    const mockFetch = vi.fn().mockResolvedValue({
-      ok: true,
-      status: 201,
-      json: () => Promise.resolve({}),
-    });
-    vi.stubGlobal('fetch', mockFetch);
-
-    await addComment(accessToken, personId, postUrn, 'Read more: https://example.com');
-
-    expect(mockFetch).toHaveBeenCalledWith(
-      `https://api.linkedin.com/rest/socialActions/${encodeURIComponent('urn:li:share:12345')}/comments`,
-      expect.objectContaining({
-        method: 'POST',
-        headers: expect.objectContaining({
-          Authorization: `Bearer ${accessToken}`,
-          'LinkedIn-Version': '202601',
-        }),
-      })
-    );
-
-    const callBody = JSON.parse(mockFetch.mock.calls[0][1].body);
-    expect(callBody.actor).toBe(personId);
-    expect(callBody.object).toBe(postUrn);
-    expect(callBody.message.text).toBe('Read more: https://example.com');
-  });
-
-  it('should throw on non-2xx response', async () => {
-    vi.stubGlobal(
-      'fetch',
-      vi.fn().mockResolvedValue({
-        ok: false,
-        status: 500,
-        text: () => Promise.resolve('Server error'),
-      })
-    );
-
-    await expect(addComment(accessToken, personId, 'urn:li:share:12345', 'Test')).rejects.toThrow();
   });
 });

@@ -83,7 +83,7 @@ export default function InheritedTraitsGrid({ traits, label }: Props) {
               aria-expanded={isExpanded}
               className={`group w-full rounded-lg border p-4 text-left transition-colors ${
                 isExpanded
-                  ? 'border-signal-secondary/40 bg-surface-secondary shadow-sm'
+                  ? 'border-signal-secondary/40 bg-surface-secondary shadow-xs'
                   : 'border-border/60 hover:border-signal-secondary/30 hover:bg-surface-secondary/50 bg-surface-primary'
               } ${isDimmed ? 'inheritance-dimmed' : ''}`}
               initial={reducedMotion ? { opacity: 1 } : { opacity: 0, y: 12 }}

@@ -31,6 +31,15 @@
 - /en/case-study/[slug] — Project case studies (English)
 - /es/case-study/[slug] — Project case studies (Spanish)
 
+## Blog
+
+Technical articles on AI systems, full-stack development, and engineering culture.
+
+- English: https://www.juanelojga.com/en/blog/
+- Spanish: https://www.juanelojga.com/es/blog/
+- RSS (English): https://www.juanelojga.com/en/blog/rss.xml
+- RSS (Spanish): https://www.juanelojga.com/es/blog/rss.xml
+
 ## Optional
 
 - llms-full.txt: https://www.juanelojga.com/llms-full.txt

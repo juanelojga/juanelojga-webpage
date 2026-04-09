@@ -75,7 +75,7 @@ You:     /project:next-stage
 
 Claude:  ## Stage 5: Verification — Starting now
          Running tests...
-         [runs npm run test, all pass]
+         [runs pnpm test, all pass]
 
 You:     /project:next-stage
 

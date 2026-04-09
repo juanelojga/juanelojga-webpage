@@ -50,25 +50,25 @@ text juanelojga-webpage/ ├── public/ # Static assets │ ├── favicon
 
 All commands are run from the root of the project:
 
-| Command              | Action                                              |
-| :------------------- | :-------------------------------------------------- |
-| `npm install`        | Install dependencies                                |
-| `npm run dev`        | Start local dev server at `localhost:4321`          |
-| `npm run build`      | Build production site to `./dist/`                  |
-| `npm run preview`    | Preview your build locally before deploying         |
-| `npm run e2e`        | Run Playwright end-to-end tests                     |
-| `npm run e2e:headed` | Run Playwright tests in headed mode                 |
-| `npm run e2e:debug`  | Run Playwright tests in Playwright debug mode       |
-| `npm run lint`       | Run ESLint to check for code issues                 |
-| `npm run lint:fix`   | Fix ESLint issues automatically                     |
-| `npm run format`     | Format code with Prettier                           |
-| `npm run astro ...`  | Run Astro CLI commands (`astro add`, `astro check`) |
+| Command           | Action                                              |
+| :---------------- | :-------------------------------------------------- |
+| `pnpm install`    | Install dependencies                                |
+| `pnpm dev`        | Start local dev server at `localhost:4321`          |
+| `pnpm build`      | Build production site to `./dist/`                  |
+| `pnpm preview`    | Preview your build locally before deploying         |
+| `pnpm e2e`        | Run Playwright end-to-end tests                     |
+| `pnpm e2e:headed` | Run Playwright tests in headed mode                 |
+| `pnpm e2e:debug`  | Run Playwright tests in Playwright debug mode       |
+| `pnpm lint`       | Run ESLint to check for code issues                 |
+| `pnpm lint:fix`   | Fix ESLint issues automatically                     |
+| `pnpm format`     | Format code with Prettier                           |
+| `pnpm astro ...`  | Run Astro CLI commands (`astro add`, `astro check`) |
 
 Playwright notes:
 
 - The E2E preview server builds with `PUBLIC_E2E=true`, which disables analytics during test runs.
 - On Linux, WebKit is excluded by default because the Playwright WebKit runtime can be unstable on some hosts even after installing Playwright dependencies.
-- To opt back into WebKit on a Linux machine where it is known to work, run `PLAYWRIGHT_ENABLE_WEBKIT=true npm run e2e`.
+- To opt back into WebKit on a Linux machine where it is known to work, run `PLAYWRIGHT_ENABLE_WEBKIT=true pnpm e2e`.
 
 ## 🌍 Internationalization (i18n)
 
@@ -109,7 +109,7 @@ Deploy configuration is in `netlify.toml`.
 ### Prerequisites
 
 - **Node.js 24** (specified in `.nvmrc`)
-- npm package manager
+- pnpm package manager
 
 ### Local Development
 
@@ -123,13 +123,13 @@ Deploy configuration is in `netlify.toml`.
 2. **Install dependencies**
 
    ```bash
-   npm install
+   pnpm install
    ```
 
 3. **Start development server**
 
    ```bash
-   npm run dev
+   pnpm dev
    ```
 
 4. **Open browser**
@@ -141,6 +141,58 @@ Git hooks are automatically set up via Husky to run:
 
 - ESLint and Prettier checks before commits
 - Auto-formatting for staged files
+
+## 🎭 Playwright MCP (AI-Assisted Visual Verification)
+
+This project integrates [`@playwright/mcp`](https://github.com/anthropics/playwright-mcp) to give AI coding assistants (like Claude Code) direct browser control. This enables automated visual verification, responsive testing, and debugging during development.
+
+### How it works
+
+The Playwright MCP server runs as a headless Chromium instance that Claude Code can control through its tool system. When Claude makes UI changes, it can:
+
+- Navigate to pages and take screenshots to verify the result
+- Resize the viewport to test responsive breakpoints (desktop 1280px, mobile 375px)
+- Read console messages to catch runtime errors
+- Click elements, fill forms, and interact with the page to test functionality
+- Inspect network requests and evaluate JavaScript in the page context
+
+### Configuration
+
+The MCP server is configured in `.claude/settings.json`:
+
+```json
+{
+  "mcpServers": {
+    "playwright": {
+      "command": "npx",
+      "args": ["@playwright/mcp@latest", "--headless"]
+    }
+  }
+}
+```
+
+This is automatically picked up by Claude Code when working in this project. No manual setup is needed beyond having the dev dependencies installed (`pnpm install`).
+
+### Usage with Claude Code
+
+When working with Claude Code on UI changes, ask it to verify visually:
+
+- "Make this change and verify it looks correct"
+- "Check both English and Spanish pages"
+- "Test the mobile layout"
+- "Take screenshots before and after the change"
+
+Claude Code will use the Playwright MCP tools (`browser_navigate`, `browser_take_screenshot`, `browser_resize`, etc.) to open the dev server in a headless browser and verify changes in real time.
+
+### Standalone Playwright E2E tests
+
+For traditional E2E testing (without AI), use the existing Playwright test setup:
+
+| Command           | Action                                        |
+| :---------------- | :-------------------------------------------- |
+| `pnpm e2e`        | Run Playwright end-to-end tests               |
+| `pnpm e2e:headed` | Run Playwright tests in headed mode           |
+| `pnpm e2e:debug`  | Run Playwright tests in Playwright debug mode |
 
 ## 📋 Implementation Plan Workflow
 

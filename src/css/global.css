@@ -1,6 +1,83 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+
+@plugin '@tailwindcss/typography';
+
+@theme inline {
+  --color-primary: var(--color-signal-primary);
+  --color-surface-primary: var(--color-surface-primary);
+  --color-surface-secondary: var(--color-surface-secondary);
+  --color-surface-tertiary: var(--color-surface-tertiary);
+  --color-signal-primary: var(--color-signal-primary);
+  --color-signal-secondary: var(--color-signal-secondary);
+  --color-signal-warm: var(--color-signal-warm);
+  --color-text-primary: var(--color-text-primary);
+  --color-text-secondary: var(--color-text-secondary);
+  --color-text-inverse: var(--color-text-inverse);
+  --color-border: var(--color-border);
+  --color-status-success: var(--color-status-success);
+  --color-status-success-muted: var(--color-status-success-muted);
+  --color-status-error: var(--color-status-error);
+  --color-status-error-muted: var(--color-status-error-muted);
+
+  --font-display: Inter, sans-serif;
+  --font-mono: JetBrains Mono, monospace;
+
+  --text-hero: clamp(2rem, 5vw + 1rem, 5.5rem);
+  --text-hero--line-height: 1.05;
+  --text-hero--letter-spacing: -0.02em;
+  --text-hero--font-weight: 700;
+  --text-section: clamp(1.625rem, 2.5vw + 1rem, 3rem);
+  --text-section--line-height: 1.15;
+  --text-section--letter-spacing: -0.01em;
+  --text-section--font-weight: 600;
+  --text-label: clamp(0.875rem, 0.5vw + 0.75rem, 1.125rem);
+  --text-label--line-height: 1.4;
+  --text-label--letter-spacing: 0.02em;
+  --text-label--font-weight: 500;
+  --text-body: clamp(1rem, 0.25vw + 0.875rem, 1.25rem);
+  --text-body--line-height: 1.65;
+  --text-body--font-weight: 400;
+  --text-meta: clamp(0.75rem, 0.15vw + 0.7rem, 0.9375rem);
+  --text-meta--line-height: 1.5;
+  --text-meta--letter-spacing: 0.01em;
+  --text-meta--font-weight: 400;
+
+  --radius: 0.25rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
+  --radius-full: 9999px;
+
+  --animate-menu-slide-down: menu-slide-down 0.2s ease-out;
+
+  @keyframes menu-slide-down {
+    0% {
+      opacity: 0;
+      transform: translateY(-8px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
+}
 
 /* =============================================
    Design Tokens — Dual Theme System
@@ -374,6 +451,10 @@ html {
   border-radius: 0.25rem;
   background: var(--color-surface-secondary);
   font-size: 0.875em;
+}
+
+.prose-blog pre {
+  overflow-x: auto;
 }
 
 .prose-blog blockquote {
