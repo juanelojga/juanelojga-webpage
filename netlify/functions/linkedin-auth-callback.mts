@@ -104,13 +104,14 @@ export const handler: Handler = async event => {
 
     const profile = await profileResponse.json();
 
+    const expiresIn = tokenData.expires_in ?? 5184000; // 60 days default
+    const refreshExpiresIn = tokenData.refresh_token_expires_in ?? 31536000; // 365 days default
+
     await saveTokens({
       access_token: tokenData.access_token,
       refresh_token: tokenData.refresh_token,
-      expires_at: new Date(Date.now() + tokenData.expires_in * 1000).toISOString(),
-      refresh_expires_at: new Date(
-        Date.now() + tokenData.refresh_token_expires_in * 1000
-      ).toISOString(),
+      expires_at: new Date(Date.now() + expiresIn * 1000).toISOString(),
+      refresh_expires_at: new Date(Date.now() + refreshExpiresIn * 1000).toISOString(),
       person_id: `urn:li:person:${profile.sub}`,
     });
 
