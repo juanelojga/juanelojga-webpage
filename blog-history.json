@@ -17,6 +17,12 @@
       "slug": "why-your-rest-api-should-embrace-django-querysets-instead-of-raw-sql",
       "date": "2026-04-09",
       "category": "backend"
+    },
+    {
+      "topic": "Making Code Reviews Actually Useful in Remote Teams",
+      "slug": "making-code-reviews-actually-useful-in-remote-teams",
+      "date": "2026-04-09",
+      "category": "career"
     }
   ]
 }
