@@ -90,7 +90,7 @@ describe('addComment', () => {
     await addComment(accessToken, personId, postUrn, 'Read more: https://example.com');
 
     expect(mockFetch).toHaveBeenCalledWith(
-      'https://api.linkedin.com/rest/comments',
+      `https://api.linkedin.com/rest/socialActions/${encodeURIComponent('urn:li:share:12345')}/comments`,
       expect.objectContaining({
         method: 'POST',
         headers: expect.objectContaining({
