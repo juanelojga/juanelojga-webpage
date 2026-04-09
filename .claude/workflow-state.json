@@ -1,7 +1,32 @@
 {
-  "stage": "story_expansion",
+  "stage": "ship",
   "approved": true,
-  "feature": "AI-Generated Bilingual Blog — Add automated blog system with content collections, bilingual rendering, GitHub Actions automation, and AI-generated posts via GitHub Models API",
-  "started_at": "2026-04-08T00:00:00.000Z",
-  "history": []
+  "feature": "LinkedIn Publishing: Automatically generate and publish LinkedIn posts that summarize blog entries via Netlify Functions + GitHub Actions. Includes OAuth flow, token management via Netlify Blobs, AI post generation via GitHub Models, and LinkedIn API integration for posting + first comment.",
+  "started_at": "2026-04-08T00:00:00Z",
+  "history": [
+    {
+      "stage": "story_expansion",
+      "completed_at": "2026-04-08T00:00:00Z"
+    },
+    {
+      "stage": "plan_approval",
+      "completed_at": "2026-04-08T12:00:00Z"
+    },
+    {
+      "stage": "tdd",
+      "completed_at": "2026-04-08T21:27:00Z"
+    },
+    {
+      "stage": "code_generation",
+      "completed_at": "2026-04-08T22:00:00Z"
+    },
+    {
+      "stage": "verification",
+      "completed_at": "2026-04-08T21:42:00Z"
+    },
+    {
+      "stage": "code_review",
+      "completed_at": "2026-04-08T21:55:00Z"
+    }
+  ]
 }
