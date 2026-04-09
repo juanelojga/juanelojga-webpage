@@ -29,6 +29,12 @@
       "slug": "stop-overcomplicating-rag-pipelines-the-simple-architecture-that-scales",
       "date": "2026-04-09",
       "category": "ai"
+    },
+    {
+      "topic": "Why You’re Doing Dockerfile Optimization Wrong (And the Right Way to Build Lean Images)",
+      "slug": "why-youre-doing-dockerfile-optimization-wrong-and-the-right-way-to-build-lean-im",
+      "date": "2026-04-09",
+      "category": "devops"
     }
   ]
 }
