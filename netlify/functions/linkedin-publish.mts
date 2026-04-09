@@ -5,7 +5,7 @@ import { publishPost, addComment } from './lib/linkedin-client';
 import { generateLinkedInPost } from './lib/linkedin-post-generator';
 import { fetchBlogContent } from './lib/blog-fetcher';
 
-const SITE_URL = 'https://www.juanelojga.com';
+const SITE_URL = 'https://juanelojga.com';
 
 export const handler: Handler = async event => {
   // Auth check
