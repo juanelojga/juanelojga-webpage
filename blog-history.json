@@ -29,6 +29,12 @@
       "slug": "stop-overcomplicating-rag-pipelines-the-simple-architecture-that-scales",
       "date": "2026-04-09",
       "category": "ai"
+    },
+    {
+      "topic": "Stop Using Jenkins: Why GitHub Actions Is the CI/CD Tool You Actually Need",
+      "slug": "stop-using-jenkins-why-github-actions-is-the-cicd-tool-you-actually-need",
+      "date": "2026-04-09",
+      "category": "devops"
     }
   ]
 }
