@@ -142,6 +142,58 @@ Git hooks are automatically set up via Husky to run:
 - ESLint and Prettier checks before commits
 - Auto-formatting for staged files
 
+## 🎭 Playwright MCP (AI-Assisted Visual Verification)
+
+This project integrates [`@playwright/mcp`](https://github.com/anthropics/playwright-mcp) to give AI coding assistants (like Claude Code) direct browser control. This enables automated visual verification, responsive testing, and debugging during development.
+
+### How it works
+
+The Playwright MCP server runs as a headless Chromium instance that Claude Code can control through its tool system. When Claude makes UI changes, it can:
+
+- Navigate to pages and take screenshots to verify the result
+- Resize the viewport to test responsive breakpoints (desktop 1280px, mobile 375px)
+- Read console messages to catch runtime errors
+- Click elements, fill forms, and interact with the page to test functionality
+- Inspect network requests and evaluate JavaScript in the page context
+
+### Configuration
+
+The MCP server is configured in `.claude/settings.json`:
+
+```json
+{
+  "mcpServers": {
+    "playwright": {
+      "command": "npx",
+      "args": ["@playwright/mcp@latest", "--headless"]
+    }
+  }
+}
+```
+
+This is automatically picked up by Claude Code when working in this project. No manual setup is needed beyond having the dev dependencies installed (`pnpm install`).
+
+### Usage with Claude Code
+
+When working with Claude Code on UI changes, ask it to verify visually:
+
+- "Make this change and verify it looks correct"
+- "Check both English and Spanish pages"
+- "Test the mobile layout"
+- "Take screenshots before and after the change"
+
+Claude Code will use the Playwright MCP tools (`browser_navigate`, `browser_take_screenshot`, `browser_resize`, etc.) to open the dev server in a headless browser and verify changes in real time.
+
+### Standalone Playwright E2E tests
+
+For traditional E2E testing (without AI), use the existing Playwright test setup:
+
+| Command           | Action                                        |
+| :---------------- | :-------------------------------------------- |
+| `pnpm e2e`        | Run Playwright end-to-end tests               |
+| `pnpm e2e:headed` | Run Playwright tests in headed mode           |
+| `pnpm e2e:debug`  | Run Playwright tests in Playwright debug mode |
+
 ## 📋 Implementation Plan Workflow
 
 For complex, multi-phase work, use the `implementation-plan` skill with the following rules:

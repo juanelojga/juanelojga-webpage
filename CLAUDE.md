@@ -98,24 +98,49 @@ Netlify config in `netlify.toml`: builds with `pnpm run build`, publishes `dist/
 - Font Awesome icons via CDN (stylesheet in Layout.astro)
 - Material Symbols Outlined via Google Fonts
 
-## Visual Verification Workflow
+## Playwright MCP (Visual Verification & Browser Automation)
 
-When asked to verify UI, always use Playwright MCP (never bash).
+The project uses `@playwright/mcp` to give Claude Code direct browser control for visual verification, debugging, and development feedback loops. The MCP server is configured in `.claude/settings.json` and runs headless Chromium.
 
-### App
+### When to use Playwright MCP
 
-- Dev server: `pnpm dev` (port 4321)
-- Key pages to check: `/en/`, `/es/`
-- Root `/` redirects to `/en/`
+- **After any UI change**: verify the result visually before considering the task done
+- **Debugging layout/style issues**: inspect the live page instead of guessing from code
+- **Checking i18n**: navigate both `/en/` and `/es/` to confirm translations render correctly
+- **Validating responsive design**: resize the browser to test breakpoints
+- **Checking console errors**: use `browser_console_messages` after navigation to catch runtime issues
 
-### How to verify
+### Verification workflow
 
-Use Playwright MCP to open `localhost:4321`, navigate to the page that was just changed, and take a screenshot. Compare it to what was described and flag any visual issues.
+1. Ensure dev server is running (`pnpm dev` on port 4321)
+2. `browser_navigate` to `http://localhost:4321/en/` (or `/es/`)
+3. `browser_snapshot` to get the accessibility tree / DOM state
+4. `browser_take_screenshot` for visual verification
+5. `browser_resize` to 375px width, then screenshot again for mobile
+6. `browser_console_messages` to check for errors
+7. Compare against expected behavior and flag issues
+
+### Available Playwright MCP tools
+
+| Tool                       | Purpose                                   |
+| :------------------------- | :---------------------------------------- |
+| `browser_navigate`         | Go to a URL                               |
+| `browser_take_screenshot`  | Capture current viewport                  |
+| `browser_snapshot`         | Get page accessibility tree               |
+| `browser_resize`           | Change viewport dimensions                |
+| `browser_click`            | Click elements (use accessible selectors) |
+| `browser_fill_form`        | Fill input fields                         |
+| `browser_hover`            | Hover over elements                       |
+| `browser_press_key`        | Simulate keyboard input                   |
+| `browser_console_messages` | Read browser console output               |
+| `browser_network_requests` | Inspect network activity                  |
+| `browser_evaluate`         | Run JS in page context                    |
+| `browser_tabs`             | List open tabs                            |
+| `browser_close`            | Close the browser                         |
 
 ### Screenshot conventions
 
-- Always take full-page screenshots
-- Test at desktop (1280px) and mobile (375px) widths
+- Always take full-page screenshots at both desktop (1280px) and mobile (375px) widths
 - Save to `.screenshots/` with descriptive names like `navbar-desktop.png`, `hero-mobile-es.png`
 
 ### What to flag
@@ -125,3 +150,4 @@ Use Playwright MCP to open `localhost:4321`, navigate to the page that was just 
 - Console errors during navigation
 - Scroll-snap sections not aligning correctly
 - i18n content missing or displaying wrong locale
+- Network errors or failed resource loads
