@@ -35,11 +35,11 @@ jobs:
           BLOG_SLUG: ${{ steps.slug.outputs.slug }}
         run: |
           PAYLOAD=$(jq -n --arg slug "$BLOG_SLUG" '{slug: $slug}')
-          RESPONSE=$(curl -s -w "\n%{http_code}" -X POST \
+          RESPONSE=$(curl -sL -w "\n%{http_code}" -X POST \
             -H "Authorization: Bearer $LINKEDIN_PUBLISH_SECRET" \
             -H "Content-Type: application/json" \
             -d "$PAYLOAD" \
-            "https://www.juanelojga.com/api/linkedin/publish")
+            "https://juanelojga.com/api/linkedin/publish")
 
           HTTP_CODE=$(echo "$RESPONSE" | tail -1)
           BODY=$(echo "$RESPONSE" | head -n -1)
@@ -47,7 +47,7 @@ jobs:
           echo "HTTP Status: $HTTP_CODE"
           echo "Response: $BODY"
 
-          if [ "$HTTP_CODE" -ge 400 ]; then
+          if [ "$HTTP_CODE" -lt 200 ] || [ "$HTTP_CODE" -ge 300 ]; then
             echo "::error::LinkedIn publish failed with status $HTTP_CODE"
             exit 1
           fi

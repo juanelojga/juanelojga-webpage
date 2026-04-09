@@ -172,7 +172,7 @@ describe('linkedin-publish handler', () => {
 
       await handler(makeEvent());
 
-      expect(fetchBlogContent).toHaveBeenCalledWith('https://www.juanelojga.com', 'test-blog-post');
+      expect(fetchBlogContent).toHaveBeenCalledWith('https://juanelojga.com', 'test-blog-post');
       expect(generateLinkedInPost).toHaveBeenCalledWith(fakeBlog);
     });
 
