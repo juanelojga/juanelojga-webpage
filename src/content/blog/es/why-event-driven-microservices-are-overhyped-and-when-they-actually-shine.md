@@ -1,6 +1,6 @@
 ---
 title: 'Por qué los microservicios basados en eventos están sobrevalorados (y cuándo realmente brillan)'
-date: 2026-04-09
+date: 2026-03-25
 tags: ['arquitectura', 'eventos', 'microservicios']
 summary: 'Los microservicios basados en eventos suelen estar sobrevalorados y mal entendidos. Aunque son poderosos para casos como sistemas de alto volumen y event sourcing, también introducen complejidad y acoplamiento oculto que no siempre justifican su uso.'
 language: es
