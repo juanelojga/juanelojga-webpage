@@ -45,7 +45,10 @@ describe('generateLinkedInPost', () => {
       })
     );
 
-    const result = await generateLinkedInPost(sampleBlogContent);
+    const result = await generateLinkedInPost(
+      sampleBlogContent,
+      'https://juanelojga.com/en/blog/test'
+    );
 
     expect(createClient).toHaveBeenCalled();
     expect(chat).toHaveBeenCalledWith(
@@ -57,44 +60,47 @@ describe('generateLinkedInPost', () => {
     expect(result).toContain('React re-renders');
   });
 
-  it('should pass blog title, summary, and body to the AI prompt', async () => {
+  it('should pass blog title, summary, body, and URL to the AI prompt', async () => {
     vi.mocked(createClient).mockReturnValue({} as any);
     vi.mocked(chat).mockResolvedValue(JSON.stringify({ post: 'Generated post content' }));
 
-    await generateLinkedInPost(sampleBlogContent);
+    const blogUrl = 'https://juanelojga.com/en/blog/test';
+    await generateLinkedInPost(sampleBlogContent, blogUrl);
 
     const userPrompt = vi.mocked(chat).mock.calls[0][2];
     expect(userPrompt).toContain(sampleBlogContent.title);
     expect(userPrompt).toContain(sampleBlogContent.summary);
     expect(userPrompt).toContain('React');
+    expect(userPrompt).toContain(blogUrl);
   });
 
   it('should enforce post length between 100 and 300 words via system prompt', async () => {
     vi.mocked(createClient).mockReturnValue({} as any);
     vi.mocked(chat).mockResolvedValue(JSON.stringify({ post: 'Short post' }));
 
-    await generateLinkedInPost(sampleBlogContent);
+    await generateLinkedInPost(sampleBlogContent, 'https://juanelojga.com/en/blog/test');
 
     const systemPrompt = vi.mocked(chat).mock.calls[0][1];
     expect(systemPrompt).toMatch(/100/);
     expect(systemPrompt).toMatch(/300/);
   });
 
-  it('should instruct AI to not include URLs in the post body', async () => {
+  it('should instruct AI to include the blog URL in the post body', async () => {
     vi.mocked(createClient).mockReturnValue({} as any);
-    vi.mocked(chat).mockResolvedValue(JSON.stringify({ post: 'No URLs here' }));
+    vi.mocked(chat).mockResolvedValue(JSON.stringify({ post: 'Post with URL' }));
 
-    await generateLinkedInPost(sampleBlogContent);
+    await generateLinkedInPost(sampleBlogContent, 'https://juanelojga.com/en/blog/test');
 
     const systemPrompt = vi.mocked(chat).mock.calls[0][1];
     expect(systemPrompt.toLowerCase()).toContain('url');
+    expect(systemPrompt.toLowerCase()).toContain('include the blog url');
   });
 
   it('should instruct AI to end with a discussion question', async () => {
     vi.mocked(createClient).mockReturnValue({} as any);
     vi.mocked(chat).mockResolvedValue(JSON.stringify({ post: 'Post with question?' }));
 
-    await generateLinkedInPost(sampleBlogContent);
+    await generateLinkedInPost(sampleBlogContent, 'https://juanelojga.com/en/blog/test');
 
     const systemPrompt = vi.mocked(chat).mock.calls[0][1];
     expect(systemPrompt.toLowerCase()).toContain('question');
@@ -104,13 +110,17 @@ describe('generateLinkedInPost', () => {
     vi.mocked(createClient).mockReturnValue({} as any);
     vi.mocked(chat).mockResolvedValue(JSON.stringify({ post: '' }));
 
-    await expect(generateLinkedInPost(sampleBlogContent)).rejects.toThrow();
+    await expect(
+      generateLinkedInPost(sampleBlogContent, 'https://juanelojga.com/en/blog/test')
+    ).rejects.toThrow();
   });
 
   it('should throw if AI returns malformed JSON', async () => {
     vi.mocked(createClient).mockReturnValue({} as any);
     vi.mocked(chat).mockResolvedValue('not valid json');
 
-    await expect(generateLinkedInPost(sampleBlogContent)).rejects.toThrow();
+    await expect(
+      generateLinkedInPost(sampleBlogContent, 'https://juanelojga.com/en/blog/test')
+    ).rejects.toThrow();
   });
 });

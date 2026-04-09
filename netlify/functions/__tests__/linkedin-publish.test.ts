@@ -10,7 +10,6 @@ vi.mock('../lib/linkedin-tokens', () => ({
 
 vi.mock('../lib/linkedin-client', () => ({
   publishPost: vi.fn(),
-  addComment: vi.fn(),
 }));
 
 vi.mock('../lib/linkedin-post-generator', () => ({
@@ -22,7 +21,7 @@ vi.mock('../lib/blog-fetcher', () => ({
 }));
 
 import { getTokens, refreshAccessToken, isExpiringSoon } from '../lib/linkedin-tokens';
-import { publishPost, addComment } from '../lib/linkedin-client';
+import { publishPost } from '../lib/linkedin-client';
 import { generateLinkedInPost } from '../lib/linkedin-post-generator';
 import { fetchBlogContent } from '../lib/blog-fetcher';
 
@@ -163,7 +162,7 @@ describe('linkedin-publish handler', () => {
   });
 
   describe('publishing', () => {
-    it('should fetch blog content and pass it to AI generator', async () => {
+    it('should fetch blog content and pass it to AI generator with blog URL', async () => {
       vi.mocked(getTokens).mockResolvedValue(validTokens);
       vi.mocked(isExpiringSoon).mockReturnValue(false);
       vi.mocked(fetchBlogContent).mockResolvedValue(fakeBlog);
@@ -173,7 +172,10 @@ describe('linkedin-publish handler', () => {
       await handler(makeEvent());
 
       expect(fetchBlogContent).toHaveBeenCalledWith('https://juanelojga.com', 'test-blog-post');
-      expect(generateLinkedInPost).toHaveBeenCalledWith(fakeBlog);
+      expect(generateLinkedInPost).toHaveBeenCalledWith(
+        fakeBlog,
+        'https://juanelojga.com/en/blog/test-blog-post'
+      );
     });
 
     it('should return 404 if blog slug not found', async () => {
@@ -204,39 +206,6 @@ describe('linkedin-publish handler', () => {
         validTokens.person_id,
         'Amazing post content'
       );
-    });
-
-    it('should add first comment with blog URL by default', async () => {
-      vi.mocked(getTokens).mockResolvedValue(validTokens);
-      vi.mocked(isExpiringSoon).mockReturnValue(false);
-      vi.mocked(fetchBlogContent).mockResolvedValue(fakeBlog);
-      vi.mocked(generateLinkedInPost).mockResolvedValue('Post content');
-      vi.mocked(publishPost).mockResolvedValue('urn:li:share:123');
-
-      await handler(makeEvent());
-
-      expect(addComment).toHaveBeenCalledWith(
-        validTokens.access_token,
-        validTokens.person_id,
-        'urn:li:share:123',
-        expect.stringContaining('test-blog-post')
-      );
-    });
-
-    it('should skip first comment when noComment is true', async () => {
-      vi.mocked(getTokens).mockResolvedValue(validTokens);
-      vi.mocked(isExpiringSoon).mockReturnValue(false);
-      vi.mocked(fetchBlogContent).mockResolvedValue(fakeBlog);
-      vi.mocked(generateLinkedInPost).mockResolvedValue('Post content');
-      vi.mocked(publishPost).mockResolvedValue('urn:li:share:123');
-
-      await handler(
-        makeEvent({
-          body: JSON.stringify({ slug: 'test-blog-post', noComment: true }),
-        })
-      );
-
-      expect(addComment).not.toHaveBeenCalled();
     });
 
     it('should return post URN and generated content on success', async () => {

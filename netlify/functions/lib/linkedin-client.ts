@@ -44,35 +44,3 @@ export async function publishPost(
   const data = await response.json();
   return data.id;
 }
-
-export async function addComment(
-  accessToken: string,
-  personId: string,
-  postUrn: string,
-  text: string
-): Promise<void> {
-  const body = {
-    actor: personId,
-    object: postUrn,
-    message: { text },
-  };
-
-  const response = await fetch(
-    `${LINKEDIN_API}/socialActions/${encodeURIComponent(postUrn)}/comments`,
-    {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        'Content-Type': 'application/json',
-        'LinkedIn-Version': API_VERSION,
-        'X-Restli-Protocol-Version': '2.0.0',
-      },
-      body: JSON.stringify(body),
-    }
-  );
-
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(`LinkedIn comment failed (${response.status}): ${errorText}`);
-  }
-}

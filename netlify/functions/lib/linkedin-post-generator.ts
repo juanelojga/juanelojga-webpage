@@ -12,7 +12,7 @@ const SYSTEM_PROMPT = `You are a LinkedIn post writer for a software engineer's 
 
 Write a LinkedIn post that summarizes the given blog post. Follow these rules:
 - Length: between 100 and 300 words
-- Do NOT include any URL or link in the post body — the URL will be added as a first comment separately
+- Include the blog URL at the end of the post, right before the hashtags, on its own line
 - End with a discussion question to encourage engagement
 - Use a conversational, professional tone — not salesy or generic
 - Include relevant hashtags (3–5) at the end
@@ -20,12 +20,13 @@ Write a LinkedIn post that summarizes the given blog post. Follow these rules:
 
 Output format: { "post": "..." }`;
 
-export async function generateLinkedInPost(blog: BlogContent): Promise<string> {
+export async function generateLinkedInPost(blog: BlogContent, blogUrl: string): Promise<string> {
   const client = createClient();
 
   const userPrompt = `Blog title: ${blog.title}
 Summary: ${blog.summary}
 Tags: ${blog.tags.join(', ')}
+Blog URL: ${blogUrl}
 
 Full content:
 ${blog.body}`;
