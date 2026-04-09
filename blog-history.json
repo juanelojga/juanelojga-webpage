@@ -11,6 +11,12 @@
       "slug": "why-event-driven-microservices-are-overhyped-and-when-they-actually-shine",
       "date": "2026-04-09",
       "category": "architecture"
+    },
+    {
+      "topic": "Why Your REST API Should Embrace Django Querysets Instead of Raw SQL",
+      "slug": "why-your-rest-api-should-embrace-django-querysets-instead-of-raw-sql",
+      "date": "2026-04-09",
+      "category": "backend"
     }
   ]
 }
