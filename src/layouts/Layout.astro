@@ -6,6 +6,14 @@ import GoogleAnalytics from '../components/GoogleAnalytics.astro';
 import { useTranslations } from '../utils/translate';
 import '../css/global.css';
 
+interface ArticleMeta {
+  publishedTime: string;
+  modifiedTime?: string;
+  author: string;
+  section: string;
+  tags: string[];
+}
+
 interface Props {
   title?: string;
   description?: string;
@@ -13,6 +21,9 @@ interface Props {
   ogImage?: string;
   structuredData?: Record<string, unknown>[];
   variant?: 'homepage' | 'subpage';
+  ogType?: string;
+  articleMeta?: ArticleMeta;
+  keywords?: string;
 }
 
 const t = useTranslations(Astro);
@@ -34,6 +45,9 @@ const pageDescription = Astro.props.description ?? t('seo.description');
 const pageCanonicalUrl = Astro.props.canonicalUrl ?? defaultCanonicalUrl;
 const pageOgImage = Astro.props.ogImage ?? '/og-image.jpg';
 const structuredData = Astro.props.structuredData ?? [];
+const ogType = Astro.props.ogType ?? 'website';
+const articleMeta = Astro.props.articleMeta;
+const pageKeywords = Astro.props.keywords;
 
 const personSchema = {
   '@context': 'https://schema.org',
@@ -161,7 +175,7 @@ const profilePageSchema = isHomepage
     />
     <meta name="theme-color" content="#f5f5f0" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#1a1a1a" media="(prefers-color-scheme: dark)" />
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={ogType} />
     <meta property="og:url" content={pageCanonicalUrl} />
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={pageDescription} />
@@ -171,6 +185,21 @@ const profilePageSchema = isHomepage
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content={pageTitle} />
+    {
+      articleMeta && (
+        <>
+          <meta property="article:published_time" content={articleMeta.publishedTime} />
+          {articleMeta.modifiedTime && (
+            <meta property="article:modified_time" content={articleMeta.modifiedTime} />
+          )}
+          <meta property="article:author" content={articleMeta.author} />
+          <meta property="article:section" content={articleMeta.section} />
+          {articleMeta.tags.map(tag => (
+            <meta property="article:tag" content={tag} />
+          ))}
+        </>
+      )
+    }
     <meta name="twitter:title" content={pageTitle} />
     <meta name="twitter:description" content={pageDescription} />
     <meta name="twitter:site" content="@juanelojga" />
@@ -178,7 +207,8 @@ const profilePageSchema = isHomepage
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta
       name="keywords"
-      content="Juan Almeida, Full Stack Engineer, AI Engineer, Software Developer, JavaScript, Python, React, Astro, Django"
+      content={pageKeywords ??
+        'Juan Almeida, Full Stack Engineer, AI Engineer, Software Developer, JavaScript, Python, React, Astro, Django'}
     />
     <link rel="canonical" href={pageCanonicalUrl} />
     <link rel="alternate" href={enAlternate} hreflang="en" />

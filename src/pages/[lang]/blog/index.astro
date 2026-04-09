@@ -36,6 +36,27 @@ const breadcrumbSchema = {
   ],
 };
 
+const collectionPageSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  '@id': canonicalUrl,
+  name: blog.sectionTitle,
+  description: blog.subtitle,
+  url: canonicalUrl,
+  isPartOf: { '@id': `${canonicalBase}/#website` },
+  about: { '@id': `${canonicalBase}/#person` },
+  inLanguage: lang,
+  mainEntity: {
+    '@type': 'Blog',
+    blogPost: posts.slice(0, 10).map(p => ({
+      '@type': 'BlogPosting',
+      headline: p.data.title,
+      url: `${canonicalBase}/${lang}/blog/${p.data.slug}/`,
+      datePublished: p.data.date.toISOString(),
+    })),
+  },
+};
+
 // Serialize posts for the React island
 const serializedPosts = posts.map(p => ({
   title: p.data.title,
@@ -63,7 +84,7 @@ const blogLabels = {
   title={`Blog | Juan Almeida`}
   description={blog.subtitle}
   canonicalUrl={canonicalUrl}
-  structuredData={[breadcrumbSchema]}
+  structuredData={[breadcrumbSchema, collectionPageSchema]}
 >
   <div class="bg-surface-primary">
     <div class="mx-auto max-w-5xl px-6 pt-8">

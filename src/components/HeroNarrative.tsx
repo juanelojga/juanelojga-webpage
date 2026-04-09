@@ -263,7 +263,7 @@ export default function HeroNarrative({ labels, buildPortraitSrc, afterHoursPort
         {/* Portrait */}
         <div
           ref={portraitRef}
-          className={`relative flex aspect-[4/5] w-full items-center justify-center overflow-hidden rounded-xl lg:w-[340px] lg:shrink-0 xl:w-[380px] ${
+          className={`relative flex aspect-4/5 w-full items-center justify-center overflow-hidden rounded-xl lg:w-[340px] lg:shrink-0 xl:w-[380px] ${
             portraitRevealed || reducedMotion ? 'hero-portrait-revealed' : 'hero-portrait-hidden'
           }`}
           data-portrait-slot
@@ -277,7 +277,7 @@ export default function HeroNarrative({ labels, buildPortraitSrc, afterHoursPort
             width={760}
             height={950}
             loading="eager"
-            className="absolute inset-0 size-full object-cover [[data-theme='after-hours']_&]:hidden"
+            className="absolute inset-0 size-full object-cover in-data-[theme='after-hours']:hidden"
           />
           {/* After Hours portrait */}
           <img
@@ -286,7 +286,7 @@ export default function HeroNarrative({ labels, buildPortraitSrc, afterHoursPort
             width={760}
             height={950}
             loading="lazy"
-            className="absolute inset-0 hidden size-full object-cover [[data-theme='after-hours']_&]:block"
+            className="absolute inset-0 hidden size-full object-cover in-data-[theme='after-hours']:block"
           />
         </div>
       </div>

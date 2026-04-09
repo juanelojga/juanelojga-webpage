@@ -20,7 +20,7 @@ const { headings, label } = Astro.props;
           <li>
             <a
               href={`#${h2.slug}`}
-              class="toc-link block rounded px-2 py-1 font-mono text-sm text-text-secondary transition-colors hover:text-signal-primary"
+              class="toc-link block rounded-sm px-2 py-1 font-mono text-sm text-text-secondary transition-colors hover:text-signal-primary"
               data-slug={h2.slug}
             >
               {h2.text}
@@ -31,7 +31,7 @@ const { headings, label } = Astro.props;
                   <li>
                     <a
                       href={`#${h3.slug}`}
-                      class="toc-link block rounded px-2 py-1 font-mono text-xs text-text-secondary transition-colors hover:text-signal-primary"
+                      class="toc-link block rounded-sm px-2 py-1 font-mono text-xs text-text-secondary transition-colors hover:text-signal-primary"
                       data-slug={h3.slug}
                     >
                       {h3.text}

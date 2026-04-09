@@ -1,7 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import fs from 'fs';
 import path from 'path';
-import tailwindConfig from '../../../tailwind.config.mjs';
 
 /**
  * Parse relative luminance from a hex color per WCAG 2.x spec.
@@ -23,52 +22,63 @@ function contrastRatio(hex1: string, hex2: string): number {
   return (lighter + 0.05) / (darker + 0.05);
 }
 
-describe('Design tokens', () => {
-  const theme = tailwindConfig.theme?.extend;
+const cssPath = path.resolve(__dirname, '../../css/global.css');
+const css = fs.readFileSync(cssPath, 'utf-8');
 
+/**
+ * Extract the @theme inline block content from global.css.
+ */
+function getThemeBlock(): string {
+  const match = css.match(/@theme\s+inline\s*\{([\s\S]*?)\n\}/);
+  return match?.[1] ?? '';
+}
+
+const themeBlock = getThemeBlock();
+
+describe('Design tokens (@theme)', () => {
   describe('colors', () => {
-    const expectedColorKeys = [
-      'primary',
-      'surface-primary',
-      'surface-secondary',
-      'surface-tertiary',
-      'signal-primary',
-      'signal-secondary',
-      'signal-warm',
-      'text-primary',
-      'text-secondary',
-      'text-inverse',
-      'border',
-      'status-success',
-      'status-success-muted',
-      'status-error',
-      'status-error-muted',
+    const expectedColorVars = [
+      '--color-primary',
+      '--color-surface-primary',
+      '--color-surface-secondary',
+      '--color-surface-tertiary',
+      '--color-signal-primary',
+      '--color-signal-secondary',
+      '--color-signal-warm',
+      '--color-text-primary',
+      '--color-text-secondary',
+      '--color-text-inverse',
+      '--color-border',
+      '--color-status-success',
+      '--color-status-success-muted',
+      '--color-status-error',
+      '--color-status-error-muted',
     ];
 
-    it('should define all semantic color tokens', () => {
-      for (const key of expectedColorKeys) {
-        expect(theme?.colors).toHaveProperty(key);
+    it('should define all semantic color tokens in @theme', () => {
+      for (const key of expectedColorVars) {
+        expect(themeBlock).toContain(key);
       }
     });
 
     it('should reference CSS custom properties for theme switching', () => {
-      expect(theme?.colors?.['surface-primary']).toBe('var(--color-surface-primary)');
-      expect(theme?.colors?.['signal-primary']).toBe('var(--color-signal-primary)');
-      expect(theme?.colors?.['text-primary']).toBe('var(--color-text-primary)');
+      expect(themeBlock).toMatch(/--color-surface-primary:\s*var\(--color-surface-primary\)/);
+      expect(themeBlock).toMatch(/--color-signal-primary:\s*var\(--color-signal-primary\)/);
+      expect(themeBlock).toMatch(/--color-text-primary:\s*var\(--color-text-primary\)/);
     });
 
     it('should alias primary to signal-primary for backwards compatibility', () => {
-      expect(theme?.colors?.primary).toBe('var(--color-signal-primary)');
+      expect(themeBlock).toMatch(/--color-primary:\s*var\(--color-signal-primary\)/);
     });
   });
 
   describe('fontFamily', () => {
     it('should define display font with Inter', () => {
-      expect(theme?.fontFamily?.display).toEqual(['Inter', 'sans-serif']);
+      expect(themeBlock).toMatch(/--font-display:\s*Inter/);
     });
 
     it('should define mono font with JetBrains Mono', () => {
-      expect(theme?.fontFamily?.mono).toEqual(['JetBrains Mono', 'monospace']);
+      expect(themeBlock).toMatch(/--font-mono:\s*JetBrains Mono/);
     });
   });
 
@@ -77,65 +87,60 @@ describe('Design tokens', () => {
 
     it('should define all 5 typography scale levels', () => {
       for (const size of expectedSizes) {
-        expect(theme?.fontSize).toHaveProperty(size);
+        expect(themeBlock).toContain(`--text-${size}`);
       }
     });
 
     it('should use clamp() for responsive sizing', () => {
       for (const size of expectedSizes) {
-        const value = theme?.fontSize?.[size];
-        expect(Array.isArray(value)).toBe(true);
-        expect(value[0]).toMatch(/^clamp\(/);
+        const regex = new RegExp(`--text-${size}:\\s*clamp\\(`);
+        expect(themeBlock).toMatch(regex);
       }
     });
 
     it('hero should include tight line-height', () => {
-      const [, options] = theme?.fontSize?.hero ?? [];
-      expect(parseFloat(options?.lineHeight)).toBeLessThanOrEqual(1.1);
+      const match = themeBlock.match(/--text-hero--line-height:\s*([\d.]+)/);
+      expect(match).not.toBeNull();
+      expect(parseFloat(match![1])).toBeLessThanOrEqual(1.1);
     });
 
     it('body should include relaxed line-height', () => {
-      const [, options] = theme?.fontSize?.body ?? [];
-      expect(parseFloat(options?.lineHeight)).toBeGreaterThanOrEqual(1.5);
+      const match = themeBlock.match(/--text-body--line-height:\s*([\d.]+)/);
+      expect(match).not.toBeNull();
+      expect(parseFloat(match![1])).toBeGreaterThanOrEqual(1.5);
     });
   });
 
   describe('borderRadius', () => {
     it('should define default border-radius', () => {
-      expect(theme?.borderRadius?.DEFAULT).toBe('0.25rem');
+      expect(themeBlock).toMatch(/--radius:\s*0\.25rem/);
     });
 
     it('should define lg border-radius', () => {
-      expect(theme?.borderRadius?.lg).toBe('0.5rem');
+      expect(themeBlock).toMatch(/--radius-lg:\s*0\.5rem/);
     });
 
     it('should define xl border-radius', () => {
-      expect(theme?.borderRadius?.xl).toBe('0.75rem');
+      expect(themeBlock).toMatch(/--radius-xl:\s*0\.75rem/);
     });
 
     it('should define full border-radius', () => {
-      expect(theme?.borderRadius?.full).toBe('9999px');
+      expect(themeBlock).toMatch(/--radius-full:\s*9999px/);
     });
   });
 
   describe('animations', () => {
     it('should define menu-slide-down keyframes', () => {
-      expect(theme?.keyframes?.['menu-slide-down']).toEqual({
-        '0%': { opacity: '0', transform: 'translateY(-8px)' },
-        '100%': { opacity: '1', transform: 'translateY(0)' },
-      });
+      expect(themeBlock).toContain('@keyframes menu-slide-down');
     });
 
     it('should define menu-slide-down animation', () => {
-      expect(theme?.animation?.['menu-slide-down']).toBe('menu-slide-down 0.2s ease-out');
+      expect(themeBlock).toMatch(/--animate-menu-slide-down:\s*menu-slide-down 0\.2s ease-out/);
     });
   });
 });
 
 describe('CSS theme variables', () => {
-  const cssPath = path.resolve(__dirname, '../../css/global.css');
-  const css = fs.readFileSync(cssPath, 'utf-8');
-
   it('should define Build Mode theme', () => {
     expect(css).toContain("[data-theme='build']");
   });

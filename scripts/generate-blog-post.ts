@@ -67,6 +67,7 @@ async function main() {
     slug,
     category,
     readingTime: enReadingTime,
+    faq: enPost.faq,
   });
 
   const esFrontmatter = buildFrontmatter({
@@ -78,6 +79,7 @@ async function main() {
     slug,
     category,
     readingTime: esReadingTime,
+    faq: esPost.faq,
   });
 
   const enFile = buildMarkdownFile(enFrontmatter, enPost.content);
