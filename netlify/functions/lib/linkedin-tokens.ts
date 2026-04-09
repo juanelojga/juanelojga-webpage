@@ -11,15 +11,26 @@ export interface LinkedInCredentials {
 const STORE_NAME = 'linkedin-tokens';
 const KEY = 'credentials';
 
+function createStore() {
+  const siteID = process.env.NETLIFY_SITE_ID;
+  const token = process.env.NETLIFY_AUTH_TOKEN || process.env.NETLIFY_TOKEN;
+
+  if (siteID && token) {
+    return getStore({ name: STORE_NAME, siteID, token });
+  }
+
+  return getStore(STORE_NAME);
+}
+
 export async function getTokens(): Promise<LinkedInCredentials | null> {
-  const store = getStore(STORE_NAME);
+  const store = createStore();
   const raw = await store.get(KEY, { type: 'json' });
   if (!raw) return null;
   return typeof raw === 'string' ? JSON.parse(raw) : raw;
 }
 
 export async function saveTokens(credentials: LinkedInCredentials): Promise<void> {
-  const store = getStore(STORE_NAME);
+  const store = createStore();
   await store.setJSON(KEY, credentials);
 }
 
