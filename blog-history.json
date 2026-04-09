@@ -23,6 +23,12 @@
       "slug": "making-code-reviews-actually-useful-in-remote-teams",
       "date": "2026-04-09",
       "category": "career"
+    },
+    {
+      "topic": "Stop Overcomplicating RAG Pipelines: The Simple Architecture That Scales",
+      "slug": "stop-overcomplicating-rag-pipelines-the-simple-architecture-that-scales",
+      "date": "2026-04-09",
+      "category": "ai"
     }
   ]
 }
