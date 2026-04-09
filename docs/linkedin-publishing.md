@@ -54,6 +54,8 @@ Set these in **Netlify > Site settings > Environment variables**:
 | `LINKEDIN_OAUTH_STATE_SECRET` | Random string (e.g., `openssl rand -hex 32`) to validate OAuth state parameter                    |
 | `LINKEDIN_PUBLISH_SECRET`     | Random string (e.g., `openssl rand -hex 32`) used as bearer token to protect the publish endpoint |
 | `GITHUB_TOKEN`                | GitHub token for AI content generation via GitHub Models                                          |
+| `LINKEDIN_API_BASE_URL`       | _(Optional)_ LinkedIn REST API base URL. Default: `https://api.linkedin.com/rest`                 |
+| `LINKEDIN_API_VERSION`        | _(Optional)_ LinkedIn API version header value (`YYYYMM`). Default: `202601`                      |
 
 ### Environment Variables — GitHub Secrets
 
@@ -203,8 +205,8 @@ netlify/
 
 ### LinkedIn API details
 
-- **Base URL:** `https://api.linkedin.com/rest/`
-- **API version header:** `LinkedIn-Version: 202401`
+- **Base URL:** `https://api.linkedin.com/rest/` (override with `LINKEDIN_API_BASE_URL` env var)
+- **API version header:** `LinkedIn-Version: 202601` (override with `LINKEDIN_API_VERSION` env var — LinkedIn retires versions after ~12 months; update this when you get a `426 NONEXISTENT_VERSION` error)
 - **Protocol header:** `X-Restli-Protocol-Version: 2.0.0`
 - **Post endpoint:** `POST /posts`
 - **Comment endpoint:** `POST /socialActions/{postUrn}/comments`
@@ -255,12 +257,13 @@ For manual control:
 
 ## Troubleshooting
 
-| Error                                   | Cause                                     | Fix                                                                                                         |
-| --------------------------------------- | ----------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
-| `GITHUB_TOKEN is required`              | Missing GitHub token for AI generation    | Set `GITHUB_TOKEN` in Netlify env vars                                                                      |
-| `No tokens found`                       | No credentials in Netlify Blobs           | Visit `/api/linkedin/auth/start` to authorize                                                               |
-| `401 Unauthorized` + auto-refresh fails | Refresh token expired                     | Re-visit `/api/linkedin/auth/start` to re-authorize                                                         |
-| `403 Forbidden`                         | App lacks `w_member_social` scope         | Check LinkedIn Developer Portal > Products                                                                  |
-| `403` on publish endpoint               | Wrong or missing bearer token             | Verify `LINKEDIN_PUBLISH_SECRET` matches in Netlify env vars and GitHub secrets                             |
-| `Blog post not found`                   | Wrong slug or post not bundled            | Verify the slug matches a file in `src/content/blog/en/` and that `included_files` is set in `netlify.toml` |
-| GitHub Action doesn't trigger           | PR didn't modify `src/content/blog/en/**` | Check the workflow path filter matches                                                                      |
+| Error                                   | Cause                                     | Fix                                                                                                                                                                              |
+| --------------------------------------- | ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `GITHUB_TOKEN is required`              | Missing GitHub token for AI generation    | Set `GITHUB_TOKEN` in Netlify env vars                                                                                                                                           |
+| `No tokens found`                       | No credentials in Netlify Blobs           | Visit `/api/linkedin/auth/start` to authorize                                                                                                                                    |
+| `401 Unauthorized` + auto-refresh fails | Refresh token expired                     | Re-visit `/api/linkedin/auth/start` to re-authorize                                                                                                                              |
+| `403 Forbidden`                         | App lacks `w_member_social` scope         | Check LinkedIn Developer Portal > Products                                                                                                                                       |
+| `403` on publish endpoint               | Wrong or missing bearer token             | Verify `LINKEDIN_PUBLISH_SECRET` matches in Netlify env vars and GitHub secrets                                                                                                  |
+| `Blog post not found`                   | Wrong slug or post not bundled            | Verify the slug matches a file in `src/content/blog/en/` and that `included_files` is set in `netlify.toml`                                                                      |
+| `426 NONEXISTENT_VERSION`               | LinkedIn retired the API version          | Set `LINKEDIN_API_VERSION` in Netlify env vars to a current `YYYYMM` version (check [LinkedIn versioning docs](https://learn.microsoft.com/en-us/linkedin/marketing/versioning)) |
+| GitHub Action doesn't trigger           | PR didn't modify `src/content/blog/en/**` | Check the workflow path filter matches                                                                                                                                           |
