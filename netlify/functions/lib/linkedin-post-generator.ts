@@ -11,6 +11,7 @@ export interface BlogContent {
 const SYSTEM_PROMPT = `You are a LinkedIn post writer for a software engineer's personal brand.
 
 Write a LinkedIn post that summarizes the given blog post. Follow these rules:
+- Write in the FIRST person from the author's perspective (e.g., "I wrote...", "I explored...", "In my latest post I cover..."). Never refer to the author in the third person.
 - Length: between 100 and 300 words
 - Include the blog URL at the end of the post, right before the hashtags, on its own line
 - End with a discussion question to encourage engagement

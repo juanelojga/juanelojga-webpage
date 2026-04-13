@@ -74,6 +74,16 @@ describe('generateLinkedInPost', () => {
     expect(userPrompt).toContain(blogUrl);
   });
 
+  it('should instruct AI to write in first person', async () => {
+    vi.mocked(createClient).mockReturnValue({} as any);
+    vi.mocked(chat).mockResolvedValue(JSON.stringify({ post: 'Test post' }));
+
+    await generateLinkedInPost(sampleBlogContent, 'https://juanelojga.com/en/blog/test');
+
+    const systemPrompt = vi.mocked(chat).mock.calls[0][1];
+    expect(systemPrompt.toLowerCase()).toContain('first person');
+  });
+
   it('should enforce post length between 100 and 300 words via system prompt', async () => {
     vi.mocked(createClient).mockReturnValue({} as any);
     vi.mocked(chat).mockResolvedValue(JSON.stringify({ post: 'Short post' }));
