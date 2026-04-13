@@ -41,6 +41,12 @@
       "slug": "why-youre-doing-dockerfile-optimization-wrong-and-the-right-way-to-build-lean-im",
       "date": "2026-04-09",
       "category": "devops"
+    },
+    {
+      "topic": "Serverless Is Cheap Until You Ignore Concurrency Limits",
+      "slug": "serverless-is-cheap-until-you-ignore-concurrency-limits",
+      "date": "2026-04-13",
+      "category": "ai"
     }
   ]
 }
