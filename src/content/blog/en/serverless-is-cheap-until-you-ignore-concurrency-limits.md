@@ -1,207 +1,196 @@
 ---
 title: 'Serverless Is Cheap Until You Ignore Concurrency Limits'
-date: 2026-04-13
-tags: ['serverless', 'aws lambda', 'concurrency']
-summary: 'Serverless is cost-effective, but ignoring concurrency limits can lead to throttling, dropped requests, and unexpected costs in high-volume workloads.'
+date: 2026-04-16
+tags: ['serverless', 'concurrency', 'aws']
+summary: 'Serverless computing is cost-effective but ignoring concurrency limits can lead to throttling, degraded performance, and unexpected costs.'
 language: en
 slug: serverless-is-cheap-until-you-ignore-concurrency-limits
 category: ai
 draft: false
-readingTime: 6
+readingTime: 5
 faq:
-  - question: 'What happens when serverless concurrency limits are exceeded?'
-    answer: 'Requests may be throttled (queued for later processing) or dropped entirely, depending on the platform.'
-  - question: 'How can I monitor serverless concurrency usage?'
-    answer: 'Use cloud provider tools like AWS CloudWatch or Azure Monitor to track metrics such as `ConcurrentExecutions` and `Throttles`.'
-  - question: 'Is serverless a good choice for high-concurrency workloads?'
-    answer: 'Yes, but only if you manage concurrency limits carefully and optimize your function duration and architecture.'
-  - question: 'Can I increase serverless concurrency limits?'
-    answer: 'Yes, you can request higher limits from cloud providers like AWS, though justification may be required.'
-  - question: 'Is reserved concurrency worth the cost?'
-    answer: 'Reserved concurrency is cost-effective for critical workloads, but over-provisioning can lead to unnecessary expenses.'
----
-
-## Introduction to Serverless Costs and Concurrency
-
-Serverless computing is great for scalability, cost-effectiveness, and development speed—until you hit concurrency limits. For many developers, the promise of pay-for-what-you-use pricing is irresistible, but the devil is in the details when it comes to how your workloads scale under the hood. Whether you're deploying APIs, ML models, or event-driven pipelines, concurrency limits can quickly turn cheap serverless solutions into expensive bottlenecks.
-
-In this post, I'll break down how serverless concurrency works, why you need to care about it, and how to avoid unexpected costs and performance degradation.
-
+  - question: 'What happens when a serverless function hits concurrency limits?'
+    answer: 'Requests are throttled, queued, or may fail outright, leading to degraded user experience and potential system bottlenecks.'
+  - question: 'How can I monitor concurrency in AWS Lambda?'
+    answer: 'Use CloudWatch metrics like `ConcurrentExecutions` and `Throttles`. AWS Lambda Insights provides deeper visibility into function performance.'
+  - question: 'Can I increase the default concurrency limit in AWS Lambda?'
+    answer: 'Yes, you can request a quota increase via the AWS Support Center, but higher limits can lead to increased costs.'
+  - question: 'Are containers better than serverless for high-concurrency workloads?'
+    answer: 'Containers provide finer control over resources and are often more cost-effective for sustained high-concurrency workloads.'
+  - question: 'What are reserved concurrency and provisioned concurrency in AWS Lambda?'
+    answer: 'Reserved concurrency guarantees execution slots for critical functions, while provisioned concurrency reduces cold start latency by pre-warming instances.'
 ---
 
 ## Key Takeaways
 
-- **Concurrency limits** cap how many simultaneous function executions can run at once. Exceeding them triggers throttling, which can slow critical workloads.
-- Mismanaging concurrency can lead to **unexpected costs**, especially with high request volumes or long-running functions.
-- Solutions include **optimizing function duration**, using **queue-based architectures**, and tuning **reserved concurrency** settings.
-- AWS Lambda, Azure Functions, and Google Cloud Functions each have unique concurrency behaviors to understand before deployment.
+- Serverless architectures are cost-effective for many use cases but often misunderstood when it comes to concurrency limits.
+- Ignoring concurrency can lead to throttling, degraded performance, and unexpected costs.
+- Solutions include better monitoring, optimizing code execution, and leveraging alternative architectures like containers for high-concurrency workloads.
 
 ---
 
-## What is Serverless Concurrency?
+## Why is concurrency important in serverless architectures?
 
-Concurrency in serverless computing refers to how many function instances can execute in parallel at any given time. For instance, if you have 500 incoming HTTP requests within a second, your serverless platform (e.g., AWS Lambda) will attempt to spin up 500 concurrent function executions. But here’s the catch: platforms impose concurrency limits.
+Concurrency refers to the number of function executions happening simultaneously in a serverless environment. It’s a hidden ceiling that can drastically affect performance. For example, AWS Lambda has a default concurrency limit of 1,000 executions per region. If your application exceeds this limit, you’ll experience throttling, which slows down or queues requests, impacting both user experience and system scalability.
 
-### How does Concurrency Work?
+Here’s a concrete example: Imagine you’re running an AI inference workload where each request triggers a Lambda function to process a machine learning model. If 2,000 requests come in simultaneously, only 1,000 will execute immediately. The other 1,000 will sit in a throttling queue or fail—depending on configurations.
 
-Most serverless providers define two types of concurrency:
+### A quick test: hitting concurrency limits
 
-- **Default Concurrency**: This is the total number of function invocations your account or function can handle simultaneously. AWS Lambda, for example, defaults to a limit of 1,000 concurrent executions per region.
-- **Reserved Concurrency**: You can define a fixed concurrency limit for specific functions to ensure critical workloads always have resources available.
-
-If your function tries to exceed these limits, one of two things happens:
-
-1. **Throttling**: Requests queue up until the platform can process them.
-2. **Dropped Requests**: If the queue fills up or expires, requests fail.
-
-Here’s a quick example in AWS Lambda:
+To better understand this, let’s trigger a simple Lambda function with high concurrency.
 
 ```python
+import boto3
 import json
+from concurrent.futures import ThreadPoolExecutor
 
-def lambda_handler(event, context):
-    # Simulate a long-running process
-    import time
-    time.sleep(5)
+# Initialize AWS Lambda client
+lambda_client = boto3.client('lambda')
 
-    return {
-        'statusCode': 200,
-        'body': json.dumps('Hello from Lambda!')
-    }
+# Function to invoke Lambda
+def invoke_lambda(payload):
+    response = lambda_client.invoke(
+        FunctionName='MyLambdaFunction',
+        InvocationType='RequestResponse',
+        Payload=json.dumps(payload),
+    )
+    return response
+
+# Simulate concurrency
+payload = {'key': 'value'}
+with ThreadPoolExecutor(max_workers=1500) as executor:
+    futures = [executor.submit(invoke_lambda, payload) for _ in range(1500)]
+
+# Collect results
+results = [future.result() for future in futures]
+print(results)
 ```
 
-If you deploy this function and hit it with 1,000 requests in one second, AWS Lambda can handle it as long as your account has enough concurrency available (default: 1,000). At 1,001 requests, the 1 extra request gets throttled or dropped unless you’ve adjusted reserved concurrency settings.
+When executed, AWS will throttle requests once you hit the concurrency limit. You might notice increased latency or outright failures.
 
 ---
 
-## Why Concurrency Limits Impact Costs
+## How does concurrency affect costs in serverless?
 
-Concurrency limits can lead to hidden costs in several ways. Let’s break it down:
+Concurrency doesn’t just impact performance—it can also balloon your costs. Here’s why:
 
-### Long Function Duration = Higher Costs
+1. **Cold Starts:** When a serverless function is invoked for the first time or after a period of inactivity, it incurs a cold start. If your concurrency spikes suddenly, you may trigger hundreds of cold starts at once.
 
-Serverless platforms charge per invocation **and** duration. If your function is long-running (e.g., 10 seconds per execution) and you hit concurrency limits, requests start throttling, causing delays. This slows everything down and may force you to over-provision reserved concurrency to handle peak usage.
+2. **Queued Invocations:** Once you hit concurrency limits, AWS may queue requests, leading to delayed execution. You’re still paying for queued invocations, even though they hurt your application’s responsiveness.
 
-### Cold Starts Amplify Costs at Scale
+3. **Overprovisioned Resources:** Organizations often raise the concurrency limit pre-emptively (e.g., from 1,000 to 3,000). However, higher limits can lead to paying for excess capacity that you rarely use.
 
-Every time a serverless platform creates a new instance of a function, it incurs a cold start. These cold starts add latency and increase the duration of your function execution. If you’re operating at high concurrency, the accumulation of cold start delays can significantly impact both performance and billing.
-
-### Over-Provisioning Reserved Concurrency
-
-Reserved concurrency lets you guarantee resources for critical functions, but it comes at a cost. AWS charges you for reserving concurrency—even if it goes unused. For example, reserving 500 concurrent requests for a function that typically uses 50 might result in unnecessary expenses.
+To illustrate, let’s say your Lambda function costs $0.00001667 per invocation and runs for 200ms on average. At 1,000 concurrent executions for 60 seconds, you’d pay roughly $1. While this seems cheap, doubling the concurrency and handling spikes inefficiently could push costs above $10—or worse, into the hundreds if cold starts and retries pile up.
 
 ---
 
-## How to Avoid Concurrency Pitfalls
+## Strategies for managing serverless concurrency
 
-### Optimize Function Duration
+Managing concurrency effectively means embracing architecture patterns and tools that help you scale responsibly. Here are practical strategies:
 
-Shorter functions reduce the likelihood of hitting concurrency limits since they free up resources faster. For example, refactor long-running functions to use asynchronous processing, or split monolithic logic into smaller, focused functions.
+### 1. Monitor and set realistic limits
+
+AWS provides metrics like `ConcurrentExecutions` and `Throttles` in CloudWatch. Use them to detect when your workload is approaching the concurrency ceiling.
+
+You can also set reserved concurrency for critical functions to ensure they always have capacity. For example:
+
+```bash
+aws lambda put-function-concurrency \
+    --function-name MyCriticalFunction \
+    --reserved-concurrent-executions 300
+```
+
+This ensures your most important workload doesn’t get crowded out by less critical invocations.
+
+### 2. Optimize your code execution
+
+Reduce the runtime of your serverless functions to maximize throughput. For AI workloads, this might mean optimizing your model size, switching to a faster framework, or using hardware acceleration with services like AWS Inferentia.
+
+A simple optimization could look like this:
 
 ```python
-# Before: Long-running function
-
-def process_data(event, context):
-    # Process 1,000 records in one execution
-    for record in event['records']:
-        process_record(record)
-    return "Done"
-
-# After: Break into smaller chunks
-
-def process_data(event, context):
-    # Process 100 records per execution
-    for record in event['records'][:100]:
-        process_record(record)
-    return "Partial processing complete"
+# Example: Reduce payload size
+original_payload = {'large_key': 'a' * 1000000}  # 1MB payload
+optimized_payload = json.dumps({'small_key': 'value'})  # 100B payload
 ```
 
-Splitting tasks into smaller chunks reduces execution time and improves concurrency.
+Smaller payloads reduce execution time and memory usage, minimizing cost and concurrency impact.
 
-### Use Queue-Based Architectures
+### 3. Leverage event-driven architectures
 
-If your workload requires high concurrency, consider decoupling it using a queue system like AWS SQS or Google Pub/Sub. Instead of processing thousands of requests in parallel, you can buffer them in a queue and process them incrementally.
+Break down tasks into smaller, asynchronous workflows using services like AWS Step Functions or Amazon SQS. This reduces the need for high concurrency since tasks can execute independently in smaller batches.
 
-Here’s an SQS-based example:
+Here’s an example of chaining Lambda functions via SQS:
 
 ```python
 import boto3
 
-sqs = boto3.client('sqs')
+sqs_client = boto3.client('sqs')
 queue_url = 'https://sqs.amazonaws.com/123456789012/MyQueue'
 
-def lambda_handler(event, context):
-    messages = sqs.receive_message(
+# Publish messages to SQS
+for i in range(1000):
+    sqs_client.send_message(
         QueueUrl=queue_url,
-        MaxNumberOfMessages=10
+        MessageBody=json.dumps({'task_id': i})
     )
-
-    for message in messages['Messages']:
-        process_message(message)
-
-    return "Batch processed"
 ```
 
-### Monitor and Adjust Reserved Concurrency
+Instead of invoking 1,000 Lambdas simultaneously, distribute workloads across SQS messages for controlled scaling.
 
-AWS Lambda lets you set reserved concurrency on specific functions. Use this feature to isolate critical workloads and avoid throttling during traffic spikes.
+### 4. Consider a hybrid architecture
 
-```bash
-# AWS CLI example
-aws lambda put-function-concurrency \
-    --function-name MyCriticalFunction \
-    --reserved-concurrent-executions 100
+Serverless isn’t always the best solution. For workloads with high concurrency or long execution times, consider using containers (e.g., AWS Fargate) or traditional EC2 instances. These provide more control over resource allocation and scalability.
+
+For example, you could containerize your AI model inference:
+
+```dockerfile
+FROM python:3.9
+WORKDIR /app
+COPY model.pkl ./
+COPY app.py ./
+RUN pip install -r requirements.txt
+CMD ["python", "app.py"]
 ```
+
+Deploy this container with Fargate to handle sustained high-concurrency workloads.
 
 ---
 
-## What About ML Models on Serverless?
+## When is serverless worth it despite concurrency limits?
 
-Machine learning workloads are particularly sensitive to concurrency limits because they often involve resource-intensive operations. For example, serving a TensorFlow model on AWS Lambda could lead to long cold start times and high memory usage, exacerbating concurrency issues.
+Serverless is ideal for:
 
-### Strategies for ML on Serverless
+- **Low-latency, bursty workloads:** Applications where traffic spikes are short-lived.
+- **Prototype or development environments:** Quickly iterate without worrying about server management.
+- **Event-driven use cases:** Functions triggered by specific events like file uploads or API calls.
 
-1. **Optimize Model Size**: Use lightweight models like MobileNet or convert large models into TensorFlow Lite.
-2. **Preload Models**: Load models outside the function handler to reduce cold start time.
-3. **Batch Inference**: Instead of handling one prediction per request, batch multiple requests into a single function invocation.
-
-Example:
-
-```python
-import numpy as np
-
-def lambda_handler(event, context):
-    # Batch inference for 10 inputs
-    predictions = model.predict(np.array(event['inputs']))
-    return predictions.tolist()
-```
+However, once concurrency becomes a bottleneck, it’s time to reconsider your architecture.
 
 ---
 
 ## Frequently Asked Questions
 
-### What happens when serverless concurrency limits are exceeded?
+### What happens when a serverless function hits concurrency limits?
 
-When concurrency limits are exceeded, requests may be throttled (queued for later processing) or dropped entirely, depending on the platform.
+If concurrency limits are exceeded, requests are throttled. They may queue or fail outright, depending on the configuration, impacting user experience.
 
-### How can I monitor serverless concurrency usage?
+### How can I monitor concurrency in AWS Lambda?
 
-Use your cloud provider’s monitoring tools (e.g., AWS CloudWatch or Azure Monitor) to track metrics like `ConcurrentExecutions` and `Throttles` for your functions.
+Use CloudWatch metrics like `ConcurrentExecutions` and `Throttles`. Additionally, enable AWS Lambda Insights for deeper visibility into function performance.
 
-### Is serverless a good choice for high-concurrency workloads?
+### Can I increase the default concurrency limit in AWS Lambda?
 
-Serverless can handle high-concurrency workloads, but you need to manage concurrency limits carefully and optimize for function duration and architecture.
+Yes, you can request a quota increase via the AWS Support Center. However, increasing limits may also increase costs if not managed properly.
 
-### Can I increase serverless concurrency limits?
+### Are containers better than serverless for high-concurrency workloads?
 
-Yes, you can request higher limits from cloud providers like AWS, but this might require justification based on your use case.
+Containers offer finer control over resources and are often more cost-effective for sustained high-concurrency workloads compared to serverless.
 
-### Is reserved concurrency worth the cost?
+### What are reserved concurrency and provisioned concurrency in AWS Lambda?
 
-Reserved concurrency is worth it for critical workloads where throttling or dropped requests would cause major issues, but it can be expensive if over-provisioned.
+Reserved concurrency ensures a specific number of executions for critical functions. Provisioned concurrency pre-warms functions, reducing cold start latency.
 
 ---
 
-## Conclusion
-
-Serverless computing is a powerful tool, but ignoring concurrency limits can turn your cost-efficient solution into an unreliable mess. By understanding how concurrency works, optimizing your functions, and leveraging queue-based architectures, you can avoid pitfalls and make the most out of serverless platforms. Whether you're serving an ML model or handling HTTP requests, always keep an eye on concurrency metrics—your wallet will thank you.
+Serverless architectures offer unparalleled simplicity and scalability—until you forget about concurrency limits. By understanding the mechanics and proactively managing your workloads, you can avoid costly mistakes and build systems that truly scale.
