@@ -47,6 +47,12 @@
       "slug": "serverless-is-cheap-until-you-ignore-concurrency-limits",
       "date": "2026-04-13",
       "category": "ai"
+    },
+    {
+      "topic": "What AI Agents Actually Need From Your Backend APIs",
+      "slug": "what-ai-agents-actually-need-from-your-backend-apis",
+      "date": "2026-04-16",
+      "category": "ai"
     }
   ]
 }

@@ -133,8 +133,6 @@
     }
   ],
   "topicQueue": [
-    "Serverless Is Cheap Until You Ignore Concurrency Limits",
-    "What AI Agents Actually Need From Your Backend APIs",
     "Why Most RAG Pipelines Fail Before Retrieval",
     "The Cloud Cost Fix That Starts With Better Architecture, Not Discounts",
     "How I Decide Between a Queue, a Cron Job, and an Event Bus",
