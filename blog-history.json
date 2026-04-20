@@ -53,6 +53,12 @@
       "slug": "what-ai-agents-actually-need-from-your-backend-apis",
       "date": "2026-04-16",
       "category": "ai"
+    },
+    {
+      "topic": "Why Most RAG Pipelines Fail Before Retrieval",
+      "slug": "why-most-rag-pipelines-fail-before-retrieval",
+      "date": "2026-04-20",
+      "category": "ai"
     }
   ]
 }
