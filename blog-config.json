@@ -133,7 +133,6 @@
     }
   ],
   "topicQueue": [
-    "The Cloud Cost Fix That Starts With Better Architecture, Not Discounts",
     "How I Decide Between a Queue, a Cron Job, and an Event Bus",
     "Stop Treating Observability as a Dashboard Problem",
     "Refactoring Legacy Code Without Freezing Feature Delivery",
