@@ -33,22 +33,6 @@
   status = 301
   force = true
 
-# LinkedIn publishing functions
-[[redirects]]
-  from = "/api/linkedin/auth/start"
-  to = "/.netlify/functions/linkedin-auth-start"
-  status = 200
-
-[[redirects]]
-  from = "/api/linkedin/auth/callback"
-  to = "/.netlify/functions/linkedin-auth-callback"
-  status = 200
-
-[[redirects]]
-  from = "/api/linkedin/publish"
-  to = "/.netlify/functions/linkedin-publish"
-  status = 200
-
 # Security headers (all pages)
 [[headers]]
   for = "/*"
