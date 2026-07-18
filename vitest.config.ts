@@ -4,7 +4,11 @@ import { getViteConfig } from 'astro/config';
 export default getViteConfig({
   test: {
     environment: 'happy-dom',
-    include: ['src/**/*.{test,spec}.{ts,tsx}', 'netlify/**/*.{test,spec}.{ts,tsx}'],
+    include: [
+      'src/**/*.{test,spec}.{ts,tsx}',
+      'scripts/**/*.{test,spec}.{ts,tsx}',
+      'netlify/**/*.{test,spec}.{ts,tsx}',
+    ],
     mockReset: true,
   },
 });

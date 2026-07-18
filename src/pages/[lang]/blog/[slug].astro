@@ -196,6 +196,38 @@ const breadcrumbSchema = {
       <!-- Main content -->
       <article class="prose-blog prose max-w-none flex-1 overflow-hidden">
         <Content />
+
+        {
+          post.data.sources?.length && (
+            <section
+              class="not-prose mt-12 border-t border-border pt-8"
+              aria-labelledby="research-sources"
+            >
+              <h2
+                id="research-sources"
+                class="mb-4 font-mono text-label font-bold text-text-primary"
+              >
+                {blog.sources}
+              </h2>
+              <ul class="space-y-3">
+                {post.data.sources.map(source => (
+                  <li class="text-meta leading-relaxed text-text-secondary">
+                    <a
+                      href={source.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="font-medium text-signal-primary hover:underline"
+                    >
+                      {source.title}
+                    </a>
+                    <span> — {source.publisher}</span>
+                    {source.publishedAt && <span> ({source.publishedAt})</span>}
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )
+        }
       </article>
 
       <!-- Sticky TOC sidebar (desktop) -->

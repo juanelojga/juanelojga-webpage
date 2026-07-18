@@ -1,7 +1,12 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { createClient } from './lib/github-models';
-import { selectTopic, selectTopicWithAI, popTopicQueue } from './lib/topic-selector';
+import { createOpenRouterClient } from './lib/openrouter';
+import {
+  categoryForStory,
+  discoverWeeklyNews,
+  researchSelectedStory,
+  selectRandomStory,
+} from './lib/research';
 import { generateEnglishPost, generateSpanishPost } from './lib/post-generator';
 import {
   generateSlug,
@@ -15,111 +20,106 @@ const CONFIG_PATH = path.join(ROOT, 'blog-config.json');
 const HISTORY_PATH = path.join(ROOT, 'blog-history.json');
 const BLOG_DIR = path.join(ROOT, 'src', 'content', 'blog');
 const SLUG_OUTPUT = '/tmp/blog-generated-slug.txt';
+const RESEARCH_OUTPUT = '/tmp/blog-generated-research.md';
 
 async function main() {
-  console.log('🔄 Starting blog post generation...');
+  console.log('🔄 Starting research-first blog generation...');
 
   const config = JSON.parse(fs.readFileSync(CONFIG_PATH, 'utf-8'));
   const history = JSON.parse(fs.readFileSync(HISTORY_PATH, 'utf-8'));
-  const manualTopic = process.env.MANUAL_TOPIC?.trim() || undefined;
+  const client = createOpenRouterClient();
+  console.log(`🧠 Model: ${client.model}`);
 
-  const client = createClient();
+  console.log('📰 Researching the latest weekly news...');
+  const candidates = await discoverWeeklyNews(client, history.generated, config.newsResearch);
+  candidates.forEach((candidate, index) => {
+    console.log(`  ${index + 1}. ${candidate.headline} (${candidate.publishedAt})`);
+  });
 
-  // 1. Select topic
-  const selection = selectTopic(config, history, manualTopic);
-  let topic: string;
-  let category: string;
+  const selected = selectRandomStory(candidates);
+  const category = categoryForStory(selected.category);
+  console.log(`🎲 Selected: ${selected.headline}`);
 
-  if (selection.needsAI) {
-    console.log('🤖 Selecting topic with AI...');
-    const aiSelection = await selectTopicWithAI(client, config, history);
-    topic = aiSelection.topic;
-    category = aiSelection.category;
-  } else {
-    topic = selection.topic;
-    category = selection.category || config.categories[0].id;
-  }
+  console.log('🔎 Investigating the selected story in depth...');
+  const brief = await researchSelectedStory(client, selected, config.newsResearch.minimumSources);
+  console.log(`📚 Validated ${brief.sources.length} independent research sources`);
 
-  console.log(`📝 Topic: ${topic}`);
-  console.log(`📂 Category: ${category}`);
+  console.log('🇺🇸 Generating grounded English post...');
+  const enPost = await generateEnglishPost(client, brief, category, config.generationRules);
 
-  // 2. Generate English post
-  console.log('🇺🇸 Generating English post...');
-  const enPost = await generateEnglishPost(client, topic, category, config.generationRules);
+  console.log('🇪🇸 Generating grounded Spanish adaptation...');
+  const esPost = await generateSpanishPost(client, enPost, brief, config.generationRules);
 
-  // 3. Generate Spanish post
-  console.log('🇪🇸 Generating Spanish post...');
-  const esPost = await generateSpanishPost(client, enPost, config.generationRules);
-
-  // 4. Build files
   const slug = generateSlug(enPost.title);
   const today = new Date().toISOString().split('T')[0];
-
-  const enReadingTime = calculateReadingTime(enPost.content);
-  const esReadingTime = calculateReadingTime(esPost.content);
+  const sharedFrontmatter = {
+    date: today,
+    slug,
+    category,
+    sources: brief.sources,
+  };
 
   const enFrontmatter = buildFrontmatter({
+    ...sharedFrontmatter,
     title: enPost.title,
-    date: today,
     tags: enPost.tags,
     summary: enPost.summary,
     language: 'en',
-    slug,
-    category,
-    readingTime: enReadingTime,
+    readingTime: calculateReadingTime(enPost.content),
     faq: enPost.faq,
   });
 
   const esFrontmatter = buildFrontmatter({
+    ...sharedFrontmatter,
     title: esPost.title,
-    date: today,
     tags: esPost.tags,
     summary: esPost.summary,
     language: 'es',
-    slug,
-    category,
-    readingTime: esReadingTime,
+    readingTime: calculateReadingTime(esPost.content),
     faq: esPost.faq,
   });
 
-  const enFile = buildMarkdownFile(enFrontmatter, enPost.content);
-  const esFile = buildMarkdownFile(esFrontmatter, esPost.content);
-
-  // 5. Write files
   const enPath = path.join(BLOG_DIR, 'en', `${slug}.md`);
   const esPath = path.join(BLOG_DIR, 'es', `${slug}.md`);
-
   fs.mkdirSync(path.dirname(enPath), { recursive: true });
   fs.mkdirSync(path.dirname(esPath), { recursive: true });
+  fs.writeFileSync(enPath, buildMarkdownFile(enFrontmatter, enPost.content), 'utf-8');
+  fs.writeFileSync(esPath, buildMarkdownFile(esFrontmatter, esPost.content), 'utf-8');
 
-  fs.writeFileSync(enPath, enFile, 'utf-8');
-  fs.writeFileSync(esPath, esFile, 'utf-8');
-
-  console.log(`✅ Written: ${enPath}`);
-  console.log(`✅ Written: ${esPath}`);
-
-  // 6. Update history
   history.generated.push({
     topic: enPost.title,
     slug,
     date: today,
     category,
+    newsHeadline: selected.headline,
+    newsPublishedAt: selected.publishedAt,
+    sourceUrls: brief.sources.map(source => source.url),
+    candidateHeadlines: candidates.map(candidate => candidate.headline),
   });
-  fs.writeFileSync(HISTORY_PATH, JSON.stringify(history, null, 2) + '\n', 'utf-8');
+  fs.writeFileSync(HISTORY_PATH, `${JSON.stringify(history, null, 2)}\n`, 'utf-8');
 
-  // 7. Pop topic queue if used
-  if (!selection.needsAI && !manualTopic && config.topicQueue.length > 0) {
-    const updatedConfig = popTopicQueue(config);
-    fs.writeFileSync(CONFIG_PATH, JSON.stringify(updatedConfig, null, 2) + '\n', 'utf-8');
-  }
+  const researchSummary = `## Selected weekly story
 
-  // 8. Write slug for workflow
+[${selected.headline}](${selected.sourceUrl}) — ${selected.publishedAt}
+
+${selected.whyItMatters}
+
+## Research sources
+
+${brief.sources.map(source => `- [${source.title}](${source.url}) — ${source.publisher}`).join('\n')}
+
+The generated English and Spanish posts use only this validated research brief. Review all claims and citations before merging.
+`;
+
   fs.writeFileSync(SLUG_OUTPUT, slug, 'utf-8');
+  fs.writeFileSync(RESEARCH_OUTPUT, researchSummary, 'utf-8');
 
+  console.log(`✅ Written: ${enPath}`);
+  console.log(`✅ Written: ${esPath}`);
   console.log(`🎉 Done! Slug: ${slug}`);
 }
 
-main().catch(err => {
-  console.error('❌ Generation failed:', err);
+main().catch(error => {
+  console.error('❌ Generation failed:', error);
   process.exit(1);
 });

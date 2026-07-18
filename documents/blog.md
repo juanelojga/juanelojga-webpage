@@ -1,248 +1,139 @@
-# Bilingual Blog System
+# Research-First Bilingual Blog System
 
-An automated blog system with AI-generated bilingual posts, Astro content collections, and GitHub Actions automation.
+The blog publishes static Astro pages, but every new article starts with live weekly news research. A scheduled GitHub Actions workflow discovers current stories, investigates one in depth, generates English and Spanish posts, and opens a pull request for human review.
 
-## How It Works
+## Scheduled process
 
-### Content Architecture
+The workflow in `.github/workflows/generate-blog.yml` runs every Monday at 09:00 UTC. It can also be started manually from **GitHub → Actions → Generate Blog Post → Run workflow**.
 
-Blog posts are markdown files stored in `src/content/blog/`, organized by language:
+Each run:
 
+1. Checks out the repository and installs dependencies.
+2. Searches the latest seven calendar days of news about software development, AI, coding, and software architecture.
+3. Validates exactly four distinct stories and rejects stale, uncited, repeated, or previously covered stories.
+4. Selects one of the four stories uniformly at random.
+5. Searches again, reads source pages, and builds a research brief with at least three independent domains and one primary source.
+6. Generates a cited English article using only the validated research brief.
+7. Adapts the article into natural Spanish while preserving the evidence and links.
+8. Writes both Markdown files, updates `blog-history.json`, creates a branch, and opens a pull request containing the selected story and research sources.
+
+The workflow deliberately fails if it cannot find sufficiently fresh or well-supported material. A failed run does not create or publish a post.
+
+## OpenRouter configuration
+
+The generator uses OpenRouter's current `openrouter:web_search` and `openrouter:web_fetch` server tools. It does not use the deprecated online-model suffix or web-search plugin.
+
+Required environment variable:
+
+```bash
+OPENROUTER_API_KEY=sk-or-v1-...
 ```
+
+Optional model override:
+
+```bash
+OPENROUTER_MODEL=provider/model-slug
+```
+
+When `OPENROUTER_MODEL` is unset or blank, the generator uses `openai/gpt-5.2`.
+
+For scheduled runs, add `OPENROUTER_API_KEY` as a GitHub Actions repository secret:
+
+1. Open **Settings → Secrets and variables → Actions**.
+2. Under **Repository secrets**, create `OPENROUTER_API_KEY`.
+3. Optionally, under **Repository variables**, create `OPENROUTER_MODEL` to override the default model without changing code.
+
+The built-in `GITHUB_TOKEN` is used only to push the generated branch and open the pull request.
+
+## Running locally
+
+```bash
+OPENROUTER_API_KEY=sk-or-v1-... pnpm generate:blog
+```
+
+To test another model:
+
+```bash
+OPENROUTER_API_KEY=sk-or-v1-... \
+OPENROUTER_MODEL=provider/model-slug \
+pnpm generate:blog
+```
+
+Local generation makes real model, search, and page-fetch requests and therefore consumes OpenRouter credits.
+
+## Research safeguards
+
+The research pipeline enforces:
+
+- Exactly four candidate stories from the configured seven-day window.
+- HTTPS sources returned by OpenRouter's web tools.
+- No duplicate candidate URLs.
+- No URLs or exact headlines already recorded in `blog-history.json`.
+- At least five source-backed facts in the deeper research brief.
+- At least three source domains, including one primary source.
+- Inline article citations limited to URLs from the validated brief.
+- English and Spanish word count, summary, tag, and FAQ constraints.
+- A bounded second attempt when discovery, research, or writing validation fails.
+
+Research settings and writing rules live in `blog-config.json`.
+
+## Content architecture
+
+Posts are stored as bilingual Markdown pairs sharing one slug:
+
+```text
 src/content/blog/
-├── en/
-│   └── building-rag-pipelines-that-actually-work.md
-└── es/
-    └── building-rag-pipelines-that-actually-work.md
+├── en/<slug>.md
+└── es/<slug>.md
 ```
 
-Posts sharing the same `slug` across `en/` and `es/` form bilingual pairs. Each post has YAML frontmatter:
+Each generated post contains normal metadata plus structured research sources:
 
 ```yaml
 ---
-title: 'Building RAG Pipelines That Actually Work'
-date: 2026-04-01
-tags: ['rag', 'ai', 'python', 'vector-databases']
-summary: 'Most RAG tutorials skip the hard parts...'
+title: 'Example title'
+date: 2026-07-18
+tags: ['ai', 'architecture', 'agents']
+summary: 'A concise 120–160 character description.'
 language: en
-slug: building-rag-pipelines-that-actually-work
+slug: example-title
 category: ai
 draft: false
 readingTime: 8
+sources:
+  - title: 'Primary announcement'
+    url: 'https://example.com/announcement'
+    publisher: 'Example'
+    publishedAt: '2026-07-17'
+    sourceType: primary
 ---
 ```
 
-The `language` field determines which locale the post appears in. The `slug` field creates the URL path. Setting `draft: true` hides the post from both the index and RSS feed.
+The post page renders these sources after the article. Inline links connect specific claims to the same source allowlist.
 
-### Content Collection Schema
+## Publishing
 
-Defined in `src/content.config.ts` using Astro's glob loader. A custom `generateId` function prefixes entry IDs with the language (`en/slug`, `es/slug`) to prevent collisions between bilingual pairs.
+Generation does not publish directly. The GitHub Actions job opens a pull request, and a person reviews the story, claims, citations, English copy, and Spanish adaptation. Merging the PR triggers the normal Netlify deployment.
 
-### Rendering Pipeline
+Astro then generates:
 
+- `/en/blog/` and `/es/blog/`
+- `/en/blog/<slug>/` and `/es/blog/<slug>/`
+- `/en/blog/rss.xml` and `/es/blog/rss.xml`
+
+Setting `draft: true` excludes a post from indexes, article routes, navigation, and RSS.
+
+## Relevant files
+
+```text
+.github/workflows/generate-blog.yml     # Weekly schedule, secret, PR creation
+blog-config.json                        # Research and writing constraints
+blog-history.json                       # Previous topics and source URLs
+scripts/generate-blog-post.ts           # Pipeline orchestration
+scripts/lib/openrouter.ts               # OpenRouter JSON client
+scripts/lib/research.ts                 # Discovery, validation, random choice, deep research
+scripts/lib/post-generator.ts           # Grounded English and Spanish writing
+scripts/lib/frontmatter.ts              # Markdown/frontmatter generation
+src/content.config.ts                   # Astro content schema
+src/pages/[lang]/blog/[slug].astro      # Article and research-source rendering
 ```
-Markdown files → Astro Content Collections → getStaticPaths() → Static HTML
-```
-
-- **Blog index** (`/[lang]/blog/`) — Server-rendered page with a React island (`BlogIndex.tsx`) for client-side tag filtering and pagination
-- **Blog post** (`/[lang]/blog/[slug]/`) — Astro renders markdown via `<Content />` with `prose-blog` typography classes
-- **RSS feed** (`/[lang]/blog/rss.xml`) — Per-language feed using `@astrojs/rss`
-
-### Theme Integration
-
-Blog prose styles use the site's CSS custom properties (`--color-text-primary`, `--color-signal-primary`, etc.) so content automatically respects Build Mode and After Hours themes.
-
-Code blocks use Shiki with dual themes (`github-light` / `github-dark`). The active theme is toggled via CSS:
-
-```css
-[data-theme='build'] .shiki .dark {
-  display: none;
-}
-[data-theme='after-hours'] .shiki .light {
-  display: none;
-}
-```
-
-### AI Generation (GitHub Actions)
-
-A scheduled workflow generates posts twice per week:
-
-1. **Topic selection** — Checks `MANUAL_TOPIC` env var → `topicQueue` in `blog-config.json` → AI picks from a random category (excluding recently used ones via `blog-history.json`)
-2. **English generation** — Calls GitHub Models API (OpenAI-compatible) with persona and tone rules from `blog-config.json`
-3. **Spanish adaptation** — Uses the English post as context for a natural Spanish adaptation (not literal translation)
-4. **PR creation** — Commits both `.md` files to a new branch and opens a pull request for review
-
-## Pages & Routes
-
-| Route              | Description                                                 |
-| ------------------ | ----------------------------------------------------------- |
-| `/en/blog/`        | English blog index with tag filters and pagination          |
-| `/es/blog/`        | Spanish blog index                                          |
-| `/en/blog/[slug]/` | English post detail with TOC, bilingual link, prev/next nav |
-| `/es/blog/[slug]/` | Spanish post detail                                         |
-| `/en/blog/rss.xml` | English RSS feed                                            |
-| `/es/blog/rss.xml` | Spanish RSS feed                                            |
-
-## File Structure
-
-### Pages & Components
-
-```
-src/
-├── content.config.ts                    # Blog collection schema
-├── content/blog/{en,es}/*.md            # Blog posts
-├── pages/[lang]/blog/
-│   ├── index.astro                      # Blog index page
-│   ├── [slug].astro                     # Post detail page
-│   └── rss.xml.ts                       # RSS feed
-├── components/blog/
-│   ├── BlogIndex.tsx                    # React island: filtering + pagination
-│   ├── BlogCard.tsx                     # Post card component
-│   └── TableOfContents.astro            # Sticky TOC with scroll-spy
-└── utils/blog.ts                        # Helpers: pagination, TOC, reading time
-```
-
-### Automation
-
-```
-scripts/
-├── generate-blog-post.ts                # Main orchestrator
-└── lib/
-    ├── github-models.ts                 # OpenAI SDK client (GitHub Models)
-    ├── topic-selector.ts                # Queue → config → AI topic selection
-    ├── post-generator.ts                # Bilingual post generation prompts
-    └── frontmatter.ts                   # YAML frontmatter + slug builder
-
-blog-config.json                         # Categories, themes, generation rules
-blog-history.json                        # Generated topics log (prevents repeats)
-.github/workflows/generate-blog.yml      # Scheduled workflow + manual trigger
-```
-
-### Tests
-
-```
-src/utils/__tests__/blog.test.ts         # Reading time, TOC, pagination, tags
-scripts/__tests__/topic-selector.test.ts # Queue popping, history exclusion
-e2e/blog.spec.ts                         # Blog index, post detail, a11y
-```
-
-## Deploying to Production
-
-### 1. Merge this branch
-
-The blog is fully static — it builds and deploys like the rest of the site via Netlify. No server-side runtime needed.
-
-```bash
-git checkout main
-git merge feat/add-blog-post
-git push origin main
-```
-
-Netlify will automatically build and deploy. The blog pages will be available at `/en/blog/` and `/es/blog/`.
-
-### 2. Verify the deployment
-
-After deploy, check:
-
-- [ ] `/en/blog/` — Blog index renders with the sample post
-- [ ] `/es/blog/` — Spanish index renders
-- [ ] `/en/blog/building-rag-pipelines-that-actually-work/` — Post detail renders with TOC
-- [ ] `/en/blog/rss.xml` — RSS feed is valid
-- [ ] Navbar "Blog" link appears on all subpages
-- [ ] Both themes (Build Mode / After Hours) render blog correctly
-- [ ] Code blocks switch theme with the site theme
-
-### 3. Enable automated post generation
-
-The GitHub Actions workflow at `.github/workflows/generate-blog.yml` is already configured. It requires:
-
-**No additional secrets needed** — the workflow uses `GITHUB_TOKEN` which is automatically available. The `models: read` permission grants access to GitHub Models API.
-
-The workflow will:
-
-- Run automatically every Monday and Thursday at 9am UTC
-- Generate a bilingual blog post
-- Open a pull request for your review
-
-**Email notifications**: The workflow creates a pull request on each run, so GitHub will email you automatically when a new post is ready for review. To ensure you receive these notifications:
-
-1. Go to your repository on GitHub and click **Watch** → **All Activity** (or at minimum **Participating and @mentions**)
-2. In GitHub **Settings → Notifications**, confirm email delivery is enabled under "Default notifications email"
-
-For workflow failure alerts, go to **Actions → Generate Blog Post → ⋯ menu** and enable "Send workflow notifications."
-
-To verify it works, trigger it manually:
-
-1. Go to the repository on GitHub
-2. Navigate to **Actions** → **Generate Blog Post**
-3. Click **Run workflow**
-4. Optionally enter a specific topic, or leave blank for AI selection
-5. Wait for the PR to appear
-
-### 4. Review and publish posts
-
-Each generated post arrives as a pull request. Review the content, then merge to publish. The Netlify deploy will automatically include the new post.
-
-## Managing the Blog
-
-### Writing a post manually
-
-Create matching files in `src/content/blog/en/` and `src/content/blog/es/` with the same `slug`. Use the frontmatter template above. The post will appear after the next build.
-
-### Queueing specific topics
-
-Add topics to the `topicQueue` array in `blog-config.json`:
-
-```json
-{
-  "topicQueue": ["Why I migrated from Next.js to Astro", "Building voice AI agents with WebRTC"]
-}
-```
-
-Queued topics are used in order before AI selects from categories.
-
-### Adjusting categories and tone
-
-Edit `blog-config.json` to add/remove categories, change themes, or adjust generation rules:
-
-```json
-{
-  "categories": [{ "id": "ai", "themes": ["RAG pipelines", "prompt engineering"] }],
-  "generationRules": {
-    "wordsMin": 1200,
-    "wordsMax": 2000,
-    "tone": "practical, opinionated, conversational",
-    "persona": "Juan Almeida, a full-stack & AI engineer",
-    "avoid": ["generic advice", "listicle format"]
-  }
-}
-```
-
-### Hiding a post
-
-Set `draft: true` in the post's frontmatter. It will be excluded from the index, RSS feed, and prev/next navigation.
-
-### Changing the schedule
-
-Edit the cron expression in `.github/workflows/generate-blog.yml`:
-
-```yaml
-schedule:
-  - cron: '0 9 * * 1,4' # Monday & Thursday 9am UTC
-```
-
-### Pagination
-
-Posts per page is set to 6 in `src/utils/blog.ts` (`POSTS_PER_PAGE`). Change the constant to adjust.
-
-## Modified Existing Files
-
-| File                          | Change                                             |
-| ----------------------------- | -------------------------------------------------- |
-| `astro.config.mjs`            | Added `markdown.shikiConfig` with dual themes      |
-| `tailwind.config.mjs`         | Added `@tailwindcss/typography` plugin             |
-| `src/css/global.css`          | Added `.prose-blog` overrides and Shiki toggle CSS |
-| `src/i18n/en.json`            | Added `blog.*` and `navbar.blog` keys              |
-| `src/i18n/es.json`            | Added `blog.*` and `navbar.blog` keys              |
-| `src/components/Navbar.astro` | Added "Blog" link to desktop and mobile nav        |
-| `package.json`                | Added dependencies + `generate:blog` script        |
