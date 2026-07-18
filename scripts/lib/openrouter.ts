@@ -16,6 +16,7 @@ interface CompletionOptions {
   systemPrompt: string;
   userPrompt: string;
   tools?: OpenRouterTool[];
+  toolChoice?: 'auto' | 'required' | 'none';
   temperature?: number;
   maxTokens?: number;
 }
@@ -74,6 +75,7 @@ export class OpenRouterClient {
         ],
         response_format: { type: 'json_object' },
         ...(options.tools?.length ? { tools: options.tools } : {}),
+        ...(options.tools?.length && options.toolChoice ? { tool_choice: options.toolChoice } : {}),
         temperature: options.temperature ?? 0.3,
         max_tokens: options.maxTokens ?? 8192,
       }),

@@ -1,5 +1,12 @@
-import { describe, expect, it } from 'vitest';
-import { selectRandomStory, validateNewsCandidates, validateResearchBrief } from '../lib/research';
+import { describe, expect, it, vi } from 'vitest';
+import type { OpenRouterClient } from '../lib/openrouter';
+import {
+  discoverWeeklyNews,
+  researchSelectedStory,
+  selectRandomStory,
+  validateNewsCandidates,
+  validateResearchBrief,
+} from '../lib/research';
 import type { NewsCandidate, ResearchBrief } from '../lib/types';
 
 const now = new Date('2026-07-18T12:00:00.000Z');
@@ -107,5 +114,67 @@ describe('validateResearchBrief', () => {
 
     const citations = sources.map(source => ({ url: source.url, title: source.title }));
     expect(validateResearchBrief(brief, selected, citations, 3)).toEqual(brief);
+  });
+});
+
+describe('research tool execution', () => {
+  it('requires web search during weekly discovery', async () => {
+    const stories = [story(1), story(2), story(3), story(4)];
+    const completeJson = vi.fn().mockResolvedValue({
+      data: { stories },
+      citations: citationsFor(stories),
+      webSearchRequests: 1,
+    });
+    const client = { completeJson } as unknown as OpenRouterClient;
+
+    await discoverWeeklyNews(client, [], options, now);
+
+    expect(completeJson).toHaveBeenCalledWith(expect.objectContaining({ toolChoice: 'required' }));
+  });
+
+  it('requires server tools during deeper research', async () => {
+    const selected = story(1);
+    const sources = [
+      {
+        title: 'Primary announcement',
+        url: selected.sourceUrl,
+        publisher: 'Vendor',
+        sourceType: 'primary' as const,
+      },
+      {
+        title: 'Independent report',
+        url: 'https://report.example/story',
+        publisher: 'Reporter',
+        sourceType: 'reporting' as const,
+      },
+      {
+        title: 'Technical analysis',
+        url: 'https://analysis.example/story',
+        publisher: 'Analyst',
+        sourceType: 'analysis' as const,
+      },
+    ];
+    const brief: ResearchBrief = {
+      story: selected,
+      angle: 'A grounded engineering angle',
+      context: 'Verified context',
+      keyFacts: Array.from({ length: 5 }, (_, index) => ({
+        claim: `Fact ${index}`,
+        sourceUrls: [sources[index % sources.length].url],
+      })),
+      technicalImplications: ['Implication'],
+      openQuestions: ['Question'],
+      sources,
+    };
+    const completeJson = vi.fn().mockResolvedValue({
+      data: brief,
+      citations: sources.map(source => ({ url: source.url, title: source.title })),
+      webSearchRequests: 1,
+    });
+    const client = { completeJson } as unknown as OpenRouterClient;
+
+    await researchSelectedStory(client, selected, 3, now);
+
+    expect(completeJson).toHaveBeenCalledWith(expect.objectContaining({ toolChoice: 'required' }));
   });
 });

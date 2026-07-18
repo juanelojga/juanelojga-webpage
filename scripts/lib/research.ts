@@ -158,8 +158,13 @@ Return each story with: headline, summary, category (one of ${NEWS_CATEGORIES.jo
           },
         },
       ],
+      toolChoice: 'required',
       maxTokens: 5000,
     });
+
+    console.log(
+      `🔍 Discovery attempt ${attempt}: ${response.webSearchRequests} web search request(s), ${response.citations.length} citation(s)`
+    );
 
     try {
       if (response.webSearchRequests < 1) throw new Error('The model did not perform web search');
@@ -277,8 +282,13 @@ Return: story, angle, context, at least five keyFacts ({claim, sourceUrls}), tec
           },
         },
       ],
+      toolChoice: 'required',
       maxTokens: 8000,
     });
+
+    console.log(
+      `🔍 Research attempt ${attempt}: ${response.webSearchRequests} web search request(s), ${response.citations.length} citation(s)`
+    );
 
     try {
       if (response.webSearchRequests < 1)

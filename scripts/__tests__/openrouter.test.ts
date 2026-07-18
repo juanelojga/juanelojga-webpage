@@ -58,4 +58,29 @@ describe('OpenRouterClient', () => {
     expect(result.citations[0].url).toBe('https://example.com/news');
     expect(result.webSearchRequests).toBe(2);
   });
+
+  it('forces server tool execution when requested', async () => {
+    const fetchMock = vi.fn(
+      async () =>
+        new Response(
+          JSON.stringify({
+            choices: [{ message: { content: '{"ok":true}' } }],
+          }),
+          { status: 200, headers: { 'Content-Type': 'application/json' } }
+        )
+    );
+    const client = new OpenRouterClient('key', 'model', fetchMock as typeof fetch);
+
+    await client.completeJson<{ ok: boolean }>({
+      systemPrompt: 'System',
+      userPrompt: 'User',
+      tools: [{ type: 'openrouter:web_search' }],
+      toolChoice: 'required',
+    });
+
+    const request = fetchMock.mock.calls[0][1];
+    const body = JSON.parse(String(request?.body));
+    expect(body.tool_choice).toBe('required');
+    expect(body.tools).toEqual([{ type: 'openrouter:web_search' }]);
+  });
 });
