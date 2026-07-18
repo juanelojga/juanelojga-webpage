@@ -83,4 +83,46 @@ describe('OpenRouterClient', () => {
     expect(body.tool_choice).toBe('required');
     expect(body.tools).toEqual([{ type: 'openrouter:web_search' }]);
   });
+
+  it('retries an empty response once', async () => {
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce(
+        new Response(JSON.stringify({ choices: [{ message: { content: '' } }] }), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' },
+        })
+      )
+      .mockResolvedValueOnce(
+        new Response(JSON.stringify({ choices: [{ message: { content: '{"ok":true}' } }] }), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' },
+        })
+      );
+    const client = new OpenRouterClient('key', 'model', fetchMock as typeof fetch);
+
+    const result = await client.completeJson<{ ok: boolean }>({
+      systemPrompt: 'System',
+      userPrompt: 'User',
+    });
+
+    expect(result.data.ok).toBe(true);
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+  });
+
+  it('stops after two empty responses', async () => {
+    const fetchMock = vi.fn(
+      async () =>
+        new Response(JSON.stringify({ choices: [{ message: { content: null } }] }), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' },
+        })
+    );
+    const client = new OpenRouterClient('key', 'model', fetchMock as typeof fetch);
+
+    await expect(
+      client.completeJson({ systemPrompt: 'System', userPrompt: 'User' })
+    ).rejects.toThrow('OpenRouter returned no content after 2 attempts');
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+  });
 });
