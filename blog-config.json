@@ -1,157 +1,26 @@
 {
-  "categories": [
-    {
-      "id": "ai",
-      "themes": [
-        "RAG pipelines",
-        "prompt engineering",
-        "AI agents",
-        "ML in production",
-        "LLM evaluation",
-        "AI product guardrails"
-      ]
-    },
-    {
-      "id": "frontend",
-      "themes": [
-        "React performance",
-        "Astro patterns",
-        "CSS architecture",
-        "design systems",
-        "progressive enhancement"
-      ]
-    },
-    {
-      "id": "backend",
-      "themes": [
-        "API design",
-        "database optimization",
-        "Python/Django",
-        "background jobs",
-        "service reliability"
-      ]
-    },
-    {
-      "id": "architecture",
-      "themes": [
-        "system design",
-        "microservices",
-        "event-driven",
-        "distributed systems",
-        "tradeoff analysis"
-      ]
-    },
-    {
-      "id": "devops",
-      "themes": [
-        "CI/CD",
-        "Docker",
-        "infrastructure as code",
-        "release engineering",
-        "deployment safety"
-      ]
-    },
-    {
-      "id": "career",
-      "themes": [
-        "engineering leadership",
-        "code review",
-        "remote work",
-        "technical mentoring",
-        "staff-level impact"
-      ]
-    },
-    {
-      "id": "serverless",
-      "themes": [
-        "Lambda cold starts",
-        "event-driven workflows",
-        "function orchestration",
-        "edge handlers",
-        "cost-aware design"
-      ]
-    },
-    {
-      "id": "cloud",
-      "themes": [
-        "managed services tradeoffs",
-        "multi-environment strategy",
-        "observability in cloud-native systems",
-        "tenancy boundaries",
-        "cloud cost optimization"
-      ]
-    },
-    {
-      "id": "programming",
-      "themes": [
-        "debugging heuristics",
-        "refactoring legacy code",
-        "typed system tradeoffs",
-        "concurrency pitfalls",
-        "codebase maintainability"
-      ]
-    },
-    {
-      "id": "data-engineering",
-      "themes": [
-        "ingestion pipelines",
-        "data contracts",
-        "stream vs batch systems",
-        "warehouse modeling",
-        "operational data quality"
-      ]
-    },
-    {
-      "id": "platform",
-      "themes": [
-        "internal developer platforms",
-        "golden paths",
-        "deployment ergonomics",
-        "environment consistency",
-        "reducing cognitive load"
-      ]
-    },
-    {
-      "id": "security",
-      "themes": [
-        "secrets management",
-        "least privilege in cloud systems",
-        "auth boundaries",
-        "supply-chain risk",
-        "secure defaults"
-      ]
-    },
-    {
-      "id": "testing",
-      "themes": [
-        "integration testing strategy",
-        "flaky test reduction",
-        "contract testing",
-        "test economics",
-        "CI feedback quality"
-      ]
-    }
-  ],
-  "topicQueue": [
-    "The Cloud Cost Fix That Starts With Better Architecture, Not Discounts",
-    "How I Decide Between a Queue, a Cron Job, and an Event Bus",
-    "Stop Treating Observability as a Dashboard Problem",
-    "Refactoring Legacy Code Without Freezing Feature Delivery",
-    "The Hidden Tax of Over-Abstracted TypeScript",
-    "When Managed Services Make Your System Harder to Operate",
-    "Designing APIs for Humans, SDKs, and AI Consumers at the Same Time",
-    "Why CI Pipelines Get Slower as Teams Get Better",
-    "What Broke After We Moved Business Logic Into Serverless Functions",
-    "Practical Guardrails for Shipping LLM Features to Production",
-    "The Case Against Microservices for Small Engineering Teams",
-    "How to Debug Distributed Systems Without Guessing",
-    "Your IaC Is Not a Platform Strategy"
-  ],
+  "newsResearch": {
+    "lookbackDays": 7,
+    "candidateCount": 4,
+    "minimumSources": 3,
+    "subjects": [
+      "software development",
+      "artificial intelligence",
+      "coding",
+      "software architecture"
+    ]
+  },
   "generationRules": {
     "wordsMin": 1200,
     "wordsMax": 2000,
     "tone": "practical, opinionated, conversational — like a senior engineer explaining to a peer",
     "persona": "Juan Almeida, a full-stack & AI engineer",
-    "avoid": ["generic advice", "listicle format", "corporate jargon", "overly academic tone"]
+    "avoid": [
+      "generic advice",
+      "listicle format",
+      "corporate jargon",
+      "overly academic tone",
+      "unsupported speculation"
+    ]
   }
 }

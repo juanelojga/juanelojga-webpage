@@ -2,18 +2,12 @@ name: Generate Blog Post
 
 on:
   schedule:
-    - cron: '0 9 * * 1,4' # Monday & Thursday 9am UTC
+    - cron: '0 9 * * 1' # Monday 9am UTC
   workflow_dispatch:
-    inputs:
-      topic:
-        description: 'Optional specific topic'
-        required: false
-        type: string
 
 permissions:
   contents: write
   pull-requests: write
-  models: read
 
 jobs:
   generate:
@@ -30,11 +24,11 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      - name: Generate blog post
+      - name: Research and generate blog post
         run: pnpm generate:blog
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          MANUAL_TOPIC: ${{ inputs.topic || '' }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          OPENROUTER_MODEL: ${{ vars.OPENROUTER_MODEL || 'openai/gpt-5.2' }}
 
       - name: Create branch and PR
         env:
@@ -46,8 +40,8 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git checkout -b "$BRANCH"
           git add src/content/blog/ blog-history.json
-          git commit -m "blog: add post '${SLUG}'"
+          git commit -m "blog: add researched post '${SLUG}'"
           git push origin "$BRANCH"
           gh pr create \
             --title "blog: ${SLUG}" \
-            --body "Auto-generated bilingual blog post. Review and merge to publish."
+            --body-file /tmp/blog-generated-research.md

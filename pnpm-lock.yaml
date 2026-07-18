@@ -120,9 +120,6 @@ importers:
       lint-staged:
         specifier: ^16.3.2
         version: 16.4.0
-      openai:
-        specifier: ^6.33.0
-        version: 6.34.0(ws@8.20.0)(zod@4.3.6)
       prettier:
         specifier: ^3.8.1
         version: 3.8.1
@@ -2873,18 +2870,6 @@ packages:
 
   oniguruma-to-es@4.3.5:
     resolution: {integrity: sha512-Zjygswjpsewa0NLTsiizVuMQZbp0MDyM6lIt66OxsF21npUDlzpHi1Mgb/qhQdkb+dWFTzJmFbEWdvZgRho8eQ==}
-
-  openai@6.34.0:
-    resolution: {integrity: sha512-yEr2jdGf4tVFYG6ohmr3pF6VJuveP0EA/sS8TBx+4Eq5NT10alu5zg2dmxMXMgqpihRDQlFGpRt2XwsGj+Fyxw==}
-    hasBin: true
-    peerDependencies:
-      ws: ^8.18.0
-      zod: ^3.25 || ^4.0
-    peerDependenciesMeta:
-      ws:
-        optional: true
-      zod:
-        optional: true
 
   optionator@0.9.4:
     resolution: {integrity: sha512-6IpQ7mKUxRcZNLIObR0hz7lxsapSSIYNZJwXPGeF0mTVqGKFIXj1DQcMoT22S3ROcLyY/rz0PWaWZ9ayWmad9g==}
@@ -6851,11 +6836,6 @@ snapshots:
       oniguruma-parser: 0.12.1
       regex: 6.1.0
       regex-recursion: 6.0.2
-
-  openai@6.34.0(ws@8.20.0)(zod@4.3.6):
-    optionalDependencies:
-      ws: 8.20.0
-      zod: 4.3.6
 
   optionator@0.9.4:
     dependencies:

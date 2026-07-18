@@ -24,6 +24,17 @@ const blog = defineCollection({
     readingTime: z.number().optional(),
     dateModified: z.coerce.date().optional(),
     faq: z.array(z.object({ question: z.string(), answer: z.string() })).optional(),
+    sources: z
+      .array(
+        z.object({
+          title: z.string(),
+          url: z.string().url(),
+          publisher: z.string(),
+          publishedAt: z.string().optional(),
+          sourceType: z.enum(['primary', 'reporting', 'analysis']),
+        })
+      )
+      .optional(),
   }),
 });
 

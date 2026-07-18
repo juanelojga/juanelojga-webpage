@@ -1,7 +1,4 @@
-interface FaqItem {
-  question: string;
-  answer: string;
-}
+import type { FaqItem, ResearchSource } from './types';
 
 interface FrontmatterData {
   title: string;
@@ -13,6 +10,11 @@ interface FrontmatterData {
   category: string;
   readingTime: number;
   faq?: FaqItem[];
+  sources?: ResearchSource[];
+}
+
+function yamlQuote(value: string): string {
+  return JSON.stringify(value);
 }
 
 export function generateSlug(title: string): string {
@@ -31,23 +33,36 @@ export function calculateReadingTime(content: string): number {
 }
 
 export function buildFrontmatter(data: FrontmatterData): string {
-  const tags = data.tags.map(t => `"${t}"`).join(', ');
+  const tags = data.tags.map(yamlQuote).join(', ');
   let frontmatter = `---
-title: "${data.title.replace(/"/g, '\\"')}"
+title: ${yamlQuote(data.title)}
 date: ${data.date}
 tags: [${tags}]
-summary: "${data.summary.replace(/"/g, '\\"')}"
+summary: ${yamlQuote(data.summary)}
 language: ${data.language}
 slug: ${data.slug}
 category: ${data.category}
 draft: false
 readingTime: ${data.readingTime}`;
 
-  if (data.faq && data.faq.length > 0) {
+  if (data.faq?.length) {
     frontmatter += '\nfaq:';
     for (const item of data.faq) {
-      frontmatter += `\n  - question: "${item.question.replace(/"/g, '\\"')}"`;
-      frontmatter += `\n    answer: "${item.answer.replace(/"/g, '\\"')}"`;
+      frontmatter += `\n  - question: ${yamlQuote(item.question)}`;
+      frontmatter += `\n    answer: ${yamlQuote(item.answer)}`;
+    }
+  }
+
+  if (data.sources?.length) {
+    frontmatter += '\nsources:';
+    for (const source of data.sources) {
+      frontmatter += `\n  - title: ${yamlQuote(source.title)}`;
+      frontmatter += `\n    url: ${yamlQuote(source.url)}`;
+      frontmatter += `\n    publisher: ${yamlQuote(source.publisher)}`;
+      if (source.publishedAt) {
+        frontmatter += `\n    publishedAt: ${yamlQuote(source.publishedAt)}`;
+      }
+      frontmatter += `\n    sourceType: ${source.sourceType}`;
     }
   }
 
