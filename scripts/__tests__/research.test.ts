@@ -118,21 +118,22 @@ describe('validateResearchBrief', () => {
 });
 
 describe('research tool execution', () => {
-  it('requires web search during weekly discovery', async () => {
+  it('accepts cited weekly discovery when the usage counter is unavailable', async () => {
     const stories = [story(1), story(2), story(3), story(4)];
     const completeJson = vi.fn().mockResolvedValue({
       data: { stories },
       citations: citationsFor(stories),
-      webSearchRequests: 1,
+      webSearchRequests: 0,
     });
     const client = { completeJson } as unknown as OpenRouterClient;
 
     await discoverWeeklyNews(client, [], options, now);
 
     expect(completeJson).toHaveBeenCalledWith(expect.objectContaining({ toolChoice: 'required' }));
+    expect(completeJson).toHaveBeenCalledTimes(1);
   });
 
-  it('requires server tools during deeper research', async () => {
+  it('accepts cited deeper research when the usage counter is unavailable', async () => {
     const selected = story(1);
     const sources = [
       {
@@ -169,12 +170,13 @@ describe('research tool execution', () => {
     const completeJson = vi.fn().mockResolvedValue({
       data: brief,
       citations: sources.map(source => ({ url: source.url, title: source.title })),
-      webSearchRequests: 1,
+      webSearchRequests: 0,
     });
     const client = { completeJson } as unknown as OpenRouterClient;
 
     await researchSelectedStory(client, selected, 3, now);
 
     expect(completeJson).toHaveBeenCalledWith(expect.objectContaining({ toolChoice: 'required' }));
+    expect(completeJson).toHaveBeenCalledTimes(1);
   });
 });

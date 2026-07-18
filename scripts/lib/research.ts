@@ -167,7 +167,6 @@ Return each story with: headline, summary, category (one of ${NEWS_CATEGORIES.jo
     );
 
     try {
-      if (response.webSearchRequests < 1) throw new Error('The model did not perform web search');
       return validateNewsCandidates(
         response.data.stories,
         response.citations,
@@ -291,8 +290,6 @@ Return: story, angle, context, at least five keyFacts ({claim, sourceUrls}), tec
     );
 
     try {
-      if (response.webSearchRequests < 1)
-        throw new Error('The model did not perform deeper web search');
       return validateResearchBrief(response.data, story, response.citations, minimumSources);
     } catch (error) {
       lastError = error instanceof Error ? error.message : String(error);
