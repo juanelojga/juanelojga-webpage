@@ -1,4 +1,5 @@
 const OPENROUTER_URL = 'https://openrouter.ai/api/v1/chat/completions';
+const MAX_EMPTY_RESPONSE_ATTEMPTS = 2;
 export const DEFAULT_OPENROUTER_MODEL = 'openai/gpt-5.2';
 
 export interface UrlCitation {
@@ -59,51 +60,67 @@ export class OpenRouterClient {
   ) {}
 
   async completeJson<T>(options: CompletionOptions): Promise<CompletionResult<T>> {
-    const response = await this.fetchImpl(OPENROUTER_URL, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${this.apiKey}`,
-        'Content-Type': 'application/json',
-        'HTTP-Referer': 'https://www.juanelojga.com',
-        'X-OpenRouter-Title': 'Juan Almeida Blog Research',
-      },
-      body: JSON.stringify({
-        model: this.model,
-        messages: [
-          { role: 'system', content: options.systemPrompt },
-          { role: 'user', content: options.userPrompt },
-        ],
-        response_format: { type: 'json_object' },
-        ...(options.tools?.length ? { tools: options.tools } : {}),
-        ...(options.tools?.length && options.toolChoice ? { tool_choice: options.toolChoice } : {}),
-        temperature: options.temperature ?? 0.3,
-        max_tokens: options.maxTokens ?? 8192,
-      }),
-    });
+    for (let attempt = 1; attempt <= MAX_EMPTY_RESPONSE_ATTEMPTS; attempt += 1) {
+      const response = await this.fetchImpl(OPENROUTER_URL, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${this.apiKey}`,
+          'Content-Type': 'application/json',
+          'HTTP-Referer': 'https://www.juanelojga.com',
+          'X-OpenRouter-Title': 'Juan Almeida Blog Research',
+        },
+        body: JSON.stringify({
+          model: this.model,
+          messages: [
+            { role: 'system', content: options.systemPrompt },
+            { role: 'user', content: options.userPrompt },
+          ],
+          response_format: { type: 'json_object' },
+          ...(options.tools?.length ? { tools: options.tools } : {}),
+          ...(options.tools?.length && options.toolChoice
+            ? { tool_choice: options.toolChoice }
+            : {}),
+          temperature: options.temperature ?? 0.3,
+          max_tokens: options.maxTokens ?? 8192,
+        }),
+      });
 
-    const payload = (await response.json()) as OpenRouterResponse;
-    if (!response.ok) {
-      throw new Error(
-        `OpenRouter request failed (${response.status}): ${payload.error?.message ?? 'unknown error'}`
-      );
+      const payload = (await response.json()) as OpenRouterResponse;
+      if (!response.ok) {
+        throw new Error(
+          `OpenRouter request failed (${response.status}): ${payload.error?.message ?? 'unknown error'}`
+        );
+      }
+
+      const message = payload.choices?.[0]?.message;
+      if (!message?.content) {
+        if (attempt < MAX_EMPTY_RESPONSE_ATTEMPTS) {
+          console.warn(
+            `OpenRouter returned no content (attempt ${attempt}/${MAX_EMPTY_RESPONSE_ATTEMPTS}); retrying`
+          );
+          continue;
+        }
+        throw new Error(
+          `OpenRouter returned no content after ${MAX_EMPTY_RESPONSE_ATTEMPTS} attempts`
+        );
+      }
+
+      const citations = (message.annotations ?? [])
+        .filter(annotation => annotation.type === 'url_citation' && annotation.url_citation?.url)
+        .map(annotation => ({
+          url: annotation.url_citation!.url!,
+          title: annotation.url_citation!.title ?? annotation.url_citation!.url!,
+          content: annotation.url_citation!.content,
+        }));
+
+      return {
+        data: parseJson<T>(message.content),
+        citations,
+        webSearchRequests: payload.usage?.server_tool_use?.web_search_requests ?? 0,
+      };
     }
 
-    const message = payload.choices?.[0]?.message;
-    if (!message?.content) throw new Error('OpenRouter returned no content');
-
-    const citations = (message.annotations ?? [])
-      .filter(annotation => annotation.type === 'url_citation' && annotation.url_citation?.url)
-      .map(annotation => ({
-        url: annotation.url_citation!.url!,
-        title: annotation.url_citation!.title ?? annotation.url_citation!.url!,
-        content: annotation.url_citation!.content,
-      }));
-
-    return {
-      data: parseJson<T>(message.content),
-      citations,
-      webSearchRequests: payload.usage?.server_tool_use?.web_search_requests ?? 0,
-    };
+    throw new Error('OpenRouter completion failed unexpectedly');
   }
 }
 
