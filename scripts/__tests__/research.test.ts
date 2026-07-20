@@ -176,7 +176,16 @@ describe('research tool execution', () => {
 
     await researchSelectedStory(client, selected, 3, now);
 
-    expect(completeJson).toHaveBeenCalledWith(expect.objectContaining({ toolChoice: 'required' }));
+    const request = completeJson.mock.calls[0][0];
+    expect(request).not.toHaveProperty('toolChoice');
+    expect(request.tools).toContainEqual({
+      type: 'openrouter:web_fetch',
+      parameters: {
+        engine: 'openrouter',
+        max_uses: 6,
+        max_content_tokens: 12000,
+      },
+    });
     expect(completeJson).toHaveBeenCalledTimes(1);
   });
 });
