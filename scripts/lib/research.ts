@@ -1,106 +1,27 @@
 import { randomInt } from 'node:crypto';
 import type { OpenRouterClient, UrlCitation } from './openrouter';
+import { repairNewsCandidates, repairResearchBrief } from './repair';
+import { DISCOVERY_SCHEMA, RESEARCH_BRIEF_SCHEMA } from './schemas';
+import { citationUrls, isHttpsUrl, normalizeUrl } from './urls';
 import {
   NEWS_CATEGORIES,
+  type BlogHistoryEntry,
   type NewsCandidate,
   type ResearchBrief,
+  type ResearchOptions,
   type ResearchSource,
 } from './types';
-
-interface BlogHistoryEntry {
-  topic: string;
-  sourceUrls?: string[];
-}
 
 interface DiscoveryResponse {
   stories: NewsCandidate[];
 }
 
-interface ResearchOptions {
-  lookbackDays: number;
-  candidateCount: number;
-  minimumSources: number;
-  subjects: string[];
-}
-
 const MAX_VALIDATION_ATTEMPTS = 3;
-
-function isHttpsUrl(value: string): boolean {
-  try {
-    return new URL(value).protocol === 'https:';
-  } catch {
-    return false;
-  }
-}
-
-function normalizeUrl(value: string): string {
-  const url = new URL(value);
-  url.hash = '';
-  url.search = '';
-  return url.toString().replace(/\/$/, '');
-}
-
-function startOfLookbackWindow(now: Date, lookbackDays: number): Date {
-  const start = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
-  start.setUTCDate(start.getUTCDate() - (lookbackDays - 1));
-  return start;
-}
-
-function citationUrls(citations: UrlCitation[]): Set<string> {
-  return new Set(citations.filter(c => isHttpsUrl(c.url)).map(c => normalizeUrl(c.url)));
-}
-
-export function validateNewsCandidates(
-  stories: NewsCandidate[],
-  citations: UrlCitation[],
-  history: BlogHistoryEntry[],
-  now: Date,
-  options: ResearchOptions
-): NewsCandidate[] {
-  if (!Array.isArray(stories) || stories.length !== options.candidateCount) {
-    throw new Error(`Expected exactly ${options.candidateCount} news stories`);
-  }
-
-  const earliest = startOfLookbackWindow(now, options.lookbackDays).getTime();
-  const latest = now.getTime() + 24 * 60 * 60 * 1000;
-  const seen = new Set<string>();
-  const cited = citationUrls(citations);
-  const pastUrls = new Set(
-    history
-      .flatMap(item => item.sourceUrls ?? [])
-      .filter(isHttpsUrl)
-      .map(normalizeUrl)
-  );
-  const pastTopics = new Set(history.map(item => item.topic.trim().toLowerCase()));
-
-  for (const story of stories) {
-    if (!NEWS_CATEGORIES.includes(story.category)) {
-      throw new Error(`Unsupported news category: ${story.category}`);
-    }
-    if (!isHttpsUrl(story.sourceUrl)) throw new Error('Every story needs a valid HTTPS source');
-
-    const normalizedUrl = normalizeUrl(story.sourceUrl);
-    if (seen.has(normalizedUrl)) throw new Error('News stories must have distinct source URLs');
-    if (pastUrls.has(normalizedUrl)) throw new Error('A discovered story was already covered');
-    if (pastTopics.has(story.headline.trim().toLowerCase())) {
-      throw new Error('A discovered headline was already covered');
-    }
-    if (!cited.has(normalizedUrl)) {
-      throw new Error(`Story source was not returned by web research: ${story.sourceUrl}`);
-    }
-
-    const publishedAt = Date.parse(story.publishedAt);
-    if (!Number.isFinite(publishedAt) || publishedAt < earliest || publishedAt > latest) {
-      throw new Error(`Story is outside the ${options.lookbackDays}-day window: ${story.headline}`);
-    }
-    if (!story.headline.trim() || !story.summary.trim() || !story.whyItMatters.trim()) {
-      throw new Error('Every story needs a headline, summary, and relevance explanation');
-    }
-    seen.add(normalizedUrl);
-  }
-
-  return stories;
-}
+// A batch this size keeps some randomness in story selection; below it we keep
+// retrying, but a smaller non-empty batch still beats a failed run.
+const PREFERRED_MIN_CANDIDATES = 2;
+// When other candidates remain as fallbacks, give each story fewer attempts.
+const FALLBACK_STORY_ATTEMPTS = 2;
 
 export function selectRandomStory(
   stories: NewsCandidate[],
@@ -131,6 +52,7 @@ export async function discoverWeeklyNews(
   now = new Date()
 ): Promise<NewsCandidate[]> {
   let lastError = '';
+  let bestBatch: NewsCandidate[] = [];
 
   for (let attempt = 1; attempt <= MAX_VALIDATION_ATTEMPTS; attempt += 1) {
     const response = await client.completeJson<DiscoveryResponse>({
@@ -162,24 +84,36 @@ Return each story with: headline, summary, category (one of ${NEWS_CATEGORIES.jo
       ],
       maxTokens: 16000,
       reasoningEffort: 'low',
+      schema: DISCOVERY_SCHEMA,
     });
 
     console.log(
       `🔍 Discovery attempt ${attempt}: ${response.webSearchRequests} web search request(s), ${response.citations.length} citation(s)`
     );
 
-    try {
-      return validateNewsCandidates(
-        response.data.stories,
-        response.citations,
-        history,
-        now,
-        options
-      );
-    } catch (error) {
-      lastError = error instanceof Error ? error.message : String(error);
-      console.warn(`⚠️ Discovery attempt ${attempt} failed validation: ${lastError}`);
-    }
+    const { valid, rejected } = repairNewsCandidates(
+      response.data?.stories,
+      response.citations,
+      history,
+      now,
+      options
+    );
+    rejected.forEach(item => console.warn(`⚠️ Dropped candidate: ${item.reason}`));
+
+    if (valid.length >= Math.min(PREFERRED_MIN_CANDIDATES, options.candidateCount)) return valid;
+
+    if (valid.length > bestBatch.length) bestBatch = valid;
+    lastError = `only ${valid.length} of ${options.candidateCount} candidates survived validation${
+      rejected.length ? `: ${rejected.map(item => item.reason).join('; ')}` : ''
+    }`;
+    console.warn(`⚠️ Discovery attempt ${attempt} came up short: ${lastError}`);
+  }
+
+  if (bestBatch.length > 0) {
+    console.warn(
+      `⚠️ Proceeding with ${bestBatch.length} validated candidate(s) after ${MAX_VALIDATION_ATTEMPTS} attempts`
+    );
+    return bestBatch;
   }
 
   throw new Error(
@@ -254,11 +188,13 @@ export async function researchSelectedStory(
   client: OpenRouterClient,
   story: NewsCandidate,
   minimumSources: number,
-  now = new Date()
+  now = new Date(),
+  attempts = MAX_VALIDATION_ATTEMPTS
 ): Promise<ResearchBrief> {
   let lastError = '';
+  let lastBriefJson = '';
 
-  for (let attempt = 1; attempt <= MAX_VALIDATION_ATTEMPTS; attempt += 1) {
+  for (let attempt = 1; attempt <= attempts; attempt += 1) {
     const response = await client.completeJson<ResearchBrief>({
       systemPrompt: `You are a technical research analyst. Use web search and web fetch extensively before answering.
 Verify claims against the fetched pages. Separate facts from interpretation. Prefer primary material and corroborate it with independent reporting or analysis.
@@ -270,7 +206,15 @@ ${JSON.stringify(story, null, 2)}
 Read the original source, find the best primary source, and find independent sources that add technical context or corroboration.
 Use at least ${minimumSources} sources from different domains, including at least one primary source.
 Do not use social posts, search-result pages, scraped copies, or sources you did not actually read.
-${lastError ? `The previous result failed validation: ${lastError}\nCorrect every issue.` : ''}
+${
+  lastError
+    ? `A previous attempt produced this brief (possibly truncated):
+${lastBriefJson}
+It failed validation: ${lastError}
+Repair it: keep everything that was correct and fix only the listed problems.
+If a source could not be verified by your web tools, replace it with one you actually searched or fetched in this conversation.`
+    : ''
+}
 
 Return: angle, context, at least five keyFacts ({claim, sourceUrls}), technicalImplications, openQuestions, and sources ({title, url, publisher, publishedAt when known, sourceType as primary/reporting/analysis}).`,
       tools: [
@@ -292,30 +236,63 @@ Return: angle, context, at least five keyFacts ({claim, sourceUrls}), technicalI
           },
         },
       ],
-      maxTokens: 16000,
+      maxTokens: 24000,
       reasoningEffort: 'low',
+      schema: RESEARCH_BRIEF_SCHEMA,
     });
 
     console.log(
       `🔍 Research attempt ${attempt}: ${response.webSearchRequests} web search request(s), ${response.citations.length} citation(s)`
     );
 
+    const { brief, dropped } = repairResearchBrief(response.data, story, response.citations);
+    dropped.forEach(reason => console.warn(`⚠️ Dropped from brief: ${reason}`));
+
     try {
-      return validateResearchBrief(
-        { ...response.data, story },
-        story,
-        response.citations,
-        minimumSources
-      );
+      return validateResearchBrief(brief, story, response.citations, minimumSources);
     } catch (error) {
       lastError = error instanceof Error ? error.message : String(error);
+      lastBriefJson = JSON.stringify(response.data).slice(0, 4000);
       console.warn(`⚠️ Research attempt ${attempt} failed validation: ${lastError}`);
     }
   }
 
   throw new Error(
-    `Could not build a valid research brief after ${MAX_VALIDATION_ATTEMPTS} attempts: ${lastError}`
+    `Could not build a valid research brief after ${attempts} attempts: ${lastError}`
   );
+}
+
+export async function researchAnyStory(
+  client: OpenRouterClient,
+  candidates: NewsCandidate[],
+  minimumSources: number,
+  now = new Date(),
+  pickIndex: (length: number) => number = length => randomInt(length)
+): Promise<ResearchBrief> {
+  const remaining = [...candidates];
+  const failures: string[] = [];
+
+  while (remaining.length > 0) {
+    const story = selectRandomStory(remaining, pickIndex);
+    remaining.splice(remaining.indexOf(story), 1);
+    console.log(`🎲 Selected: ${story.headline}`);
+    console.log('🔎 Investigating the selected story in depth...');
+
+    const attempts = remaining.length > 0 ? FALLBACK_STORY_ATTEMPTS : MAX_VALIDATION_ATTEMPTS;
+    try {
+      return await researchSelectedStory(client, story, minimumSources, now, attempts);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      failures.push(`${story.headline}: ${message}`);
+      if (remaining.length > 0) {
+        console.warn(
+          `⚠️ Story could not be researched; falling back to another candidate: ${message}`
+        );
+      }
+    }
+  }
+
+  throw new Error(`Could not research any candidate story:\n${failures.join('\n')}`);
 }
 
 export function categoryForStory(category: NewsCandidate['category']): string {

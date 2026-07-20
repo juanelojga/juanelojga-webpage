@@ -1,12 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { createOpenRouterClient } from './lib/openrouter';
-import {
-  categoryForStory,
-  discoverWeeklyNews,
-  researchSelectedStory,
-  selectRandomStory,
-} from './lib/research';
+import { categoryForStory, discoverWeeklyNews, researchAnyStory } from './lib/research';
 import { generateEnglishPost, generateSpanishPost } from './lib/post-generator';
 import {
   generateSlug,
@@ -22,8 +17,11 @@ const BLOG_DIR = path.join(ROOT, 'src', 'content', 'blog');
 const SLUG_OUTPUT = '/tmp/blog-generated-slug.txt';
 const RESEARCH_OUTPUT = '/tmp/blog-generated-research.md';
 
+const dryRun = process.argv.includes('--dry-run') || process.env.BLOG_DRY_RUN === '1';
+
 async function main() {
   console.log('🔄 Starting research-first blog generation...');
+  if (dryRun) console.log('🧪 Dry run: no files will be written');
 
   const config = JSON.parse(fs.readFileSync(CONFIG_PATH, 'utf-8'));
   const history = JSON.parse(fs.readFileSync(HISTORY_PATH, 'utf-8'));
@@ -36,12 +34,9 @@ async function main() {
     console.log(`  ${index + 1}. ${candidate.headline} (${candidate.publishedAt})`);
   });
 
-  const selected = selectRandomStory(candidates);
+  const brief = await researchAnyStory(client, candidates, config.newsResearch.minimumSources);
+  const selected = brief.story;
   const category = categoryForStory(selected.category);
-  console.log(`🎲 Selected: ${selected.headline}`);
-
-  console.log('🔎 Investigating the selected story in depth...');
-  const brief = await researchSelectedStory(client, selected, config.newsResearch.minimumSources);
   console.log(`📚 Validated ${brief.sources.length} independent research sources`);
 
   console.log('🇺🇸 Generating grounded English post...');
@@ -81,6 +76,18 @@ async function main() {
 
   const enPath = path.join(BLOG_DIR, 'en', `${slug}.md`);
   const esPath = path.join(BLOG_DIR, 'es', `${slug}.md`);
+
+  if (dryRun) {
+    console.log(`🧪 Slug: ${slug}`);
+    console.log(`🧪 EN: "${enPost.title}" (${enPost.content.trim().split(/\s+/).length} words)`);
+    console.log(`🧪 ES: "${esPost.title}" (${esPost.content.trim().split(/\s+/).length} words)`);
+    console.log('🧪 Sources:');
+    brief.sources.forEach(source => console.log(`  - [${source.sourceType}] ${source.url}`));
+    console.log(`🧪 EN preview:\n${enPost.content.slice(0, 500)}\n...`);
+    console.log('🎉 Dry run complete — nothing written');
+    return;
+  }
+
   fs.mkdirSync(path.dirname(enPath), { recursive: true });
   fs.mkdirSync(path.dirname(esPath), { recursive: true });
   fs.writeFileSync(enPath, buildMarkdownFile(enFrontmatter, enPost.content), 'utf-8');

@@ -2,9 +2,9 @@ import { describe, expect, it, vi } from 'vitest';
 import type { OpenRouterClient } from '../lib/openrouter';
 import {
   discoverWeeklyNews,
+  researchAnyStory,
   researchSelectedStory,
   selectRandomStory,
-  validateNewsCandidates,
   validateResearchBrief,
 } from '../lib/research';
 import type { NewsCandidate, ResearchBrief } from '../lib/types';
@@ -34,36 +34,42 @@ function citationsFor(stories: NewsCandidate[]) {
   return stories.map(item => ({ url: item.sourceUrl, title: item.headline }));
 }
 
-describe('validateNewsCandidates', () => {
-  it('accepts exactly four fresh, distinct, cited stories', () => {
-    const stories = [story(1), story(2), story(3), story(4)];
-    expect(validateNewsCandidates(stories, citationsFor(stories), [], now, options)).toEqual(
-      stories
-    );
-  });
+function sourcesFor(selected: NewsCandidate) {
+  return [
+    {
+      title: 'Primary announcement',
+      url: selected.sourceUrl,
+      publisher: 'Vendor',
+      sourceType: 'primary' as const,
+    },
+    {
+      title: 'Independent report',
+      url: 'https://report.example/story',
+      publisher: 'Reporter',
+      sourceType: 'reporting' as const,
+    },
+    {
+      title: 'Technical analysis',
+      url: 'https://analysis.example/story',
+      publisher: 'Analyst',
+      sourceType: 'analysis' as const,
+    },
+  ];
+}
 
-  it('rejects stale stories', () => {
-    const stories = [story(1, { publishedAt: '2026-07-01' }), story(2), story(3), story(4)];
-    expect(() => validateNewsCandidates(stories, citationsFor(stories), [], now, options)).toThrow(
-      'outside the 7-day window'
-    );
-  });
-
-  it('rejects sources not returned by web research', () => {
-    const stories = [story(1), story(2), story(3), story(4)];
-    expect(() =>
-      validateNewsCandidates(stories, citationsFor(stories.slice(1)), [], now, options)
-    ).toThrow('was not returned by web research');
-  });
-
-  it('rejects a source URL already recorded in history', () => {
-    const stories = [story(1), story(2), story(3), story(4)];
-    const history = [{ topic: 'Older article', sourceUrls: [stories[0].sourceUrl] }];
-    expect(() =>
-      validateNewsCandidates(stories, citationsFor(stories), history, now, options)
-    ).toThrow('already covered');
-  });
-});
+function briefWithoutStory(sources: ReturnType<typeof sourcesFor>) {
+  return {
+    angle: 'A grounded engineering angle',
+    context: 'Verified context',
+    keyFacts: Array.from({ length: 5 }, (_, index) => ({
+      claim: `Fact ${index}`,
+      sourceUrls: [sources[index % sources.length].url],
+    })),
+    technicalImplications: ['Implication'],
+    openQuestions: ['Question'],
+    sources,
+  };
+}
 
 describe('selectRandomStory', () => {
   it('uses the supplied random index', () => {
@@ -79,38 +85,8 @@ describe('selectRandomStory', () => {
 describe('validateResearchBrief', () => {
   it('requires primary and independent cited sources', () => {
     const selected = story(1);
-    const sources = [
-      {
-        title: 'Primary announcement',
-        url: selected.sourceUrl,
-        publisher: 'Vendor',
-        sourceType: 'primary' as const,
-      },
-      {
-        title: 'Independent report',
-        url: 'https://report.example/story',
-        publisher: 'Reporter',
-        sourceType: 'reporting' as const,
-      },
-      {
-        title: 'Technical analysis',
-        url: 'https://analysis.example/story',
-        publisher: 'Analyst',
-        sourceType: 'analysis' as const,
-      },
-    ];
-    const brief: ResearchBrief = {
-      story: selected,
-      angle: 'What working engineers should understand',
-      context: 'The technical and historical context.',
-      keyFacts: Array.from({ length: 5 }, (_, index) => ({
-        claim: `Verified fact ${index}`,
-        sourceUrls: [sources[index % sources.length].url],
-      })),
-      technicalImplications: ['One implication'],
-      openQuestions: ['One open question'],
-      sources,
-    };
+    const sources = sourcesFor(selected);
+    const brief: ResearchBrief = { story: selected, ...briefWithoutStory(sources) };
 
     const citations = sources.map(source => ({ url: source.url, title: source.title }));
     expect(validateResearchBrief(brief, selected, citations, 3)).toEqual(brief);
@@ -118,36 +94,11 @@ describe('validateResearchBrief', () => {
 
   it('names the offending source URL instead of throwing a bare Invalid URL error', () => {
     const selected = story(1);
-    const sources = [
-      {
-        title: 'Primary announcement',
-        url: selected.sourceUrl,
-        publisher: 'Vendor',
-        sourceType: 'primary' as const,
-      },
-      {
-        title: 'Broken source',
-        url: 'not-a-url',
-        publisher: 'Reporter',
-        sourceType: 'reporting' as const,
-      },
-      {
-        title: 'Technical analysis',
-        url: 'https://analysis.example/story',
-        publisher: 'Analyst',
-        sourceType: 'analysis' as const,
-      },
-    ];
+    const sources = sourcesFor(selected);
+    sources[1] = { ...sources[1], url: 'not-a-url' };
     const brief: ResearchBrief = {
       story: selected,
-      angle: 'Angle',
-      context: 'Context',
-      keyFacts: Array.from({ length: 5 }, (_, index) => ({
-        claim: `Fact ${index}`,
-        sourceUrls: [selected.sourceUrl],
-      })),
-      technicalImplications: ['Implication'],
-      openQuestions: ['Question'],
+      ...briefWithoutStory(sourcesFor(selected)),
       sources,
     };
 
@@ -174,7 +125,7 @@ describe('validateResearchBrief', () => {
   });
 });
 
-describe('research tool execution', () => {
+describe('discoverWeeklyNews', () => {
   it('accepts cited weekly discovery when the usage counter is unavailable', async () => {
     const stories = [story(1), story(2), story(3), story(4)];
     const completeJson = vi.fn().mockResolvedValue({
@@ -189,47 +140,70 @@ describe('research tool execution', () => {
     const request = completeJson.mock.calls[0][0];
     expect(request).not.toHaveProperty('toolChoice');
     expect(request.reasoningEffort).toBe('low');
+    expect(request.schema).toMatchObject({ name: 'discovery_response' });
     expect(request.tools).toContainEqual(
       expect.objectContaining({ type: 'openrouter:web_search' })
     );
     expect(completeJson).toHaveBeenCalledTimes(1);
   });
 
+  it('filters invalid candidates instead of rejecting the whole batch', async () => {
+    const stories = [story(1, { publishedAt: '2026-07-01' }), story(2), story(3), story(4)];
+    const completeJson = vi.fn().mockResolvedValue({
+      data: { stories },
+      citations: citationsFor(stories),
+      webSearchRequests: 0,
+    });
+    const client = { completeJson } as unknown as OpenRouterClient;
+
+    const result = await discoverWeeklyNews(client, [], options, now);
+
+    expect(result).toEqual(stories.slice(1));
+    expect(completeJson).toHaveBeenCalledTimes(1);
+  });
+
+  it('falls back to the best surviving batch after exhausting attempts', async () => {
+    const stories = [
+      story(1),
+      story(2, { publishedAt: '2026-07-01' }),
+      story(3, { publishedAt: '2026-07-01' }),
+      story(4, { publishedAt: '2026-07-01' }),
+    ];
+    const completeJson = vi.fn().mockResolvedValue({
+      data: { stories },
+      citations: citationsFor(stories),
+      webSearchRequests: 0,
+    });
+    const client = { completeJson } as unknown as OpenRouterClient;
+
+    const result = await discoverWeeklyNews(client, [], options, now);
+
+    expect(result).toEqual([stories[0]]);
+    expect(completeJson).toHaveBeenCalledTimes(3);
+  });
+
+  it('throws when no candidate ever survives', async () => {
+    const stories = [story(1, { publishedAt: '2026-07-01' })];
+    const completeJson = vi.fn().mockResolvedValue({
+      data: { stories },
+      citations: citationsFor(stories),
+      webSearchRequests: 0,
+    });
+    const client = { completeJson } as unknown as OpenRouterClient;
+
+    await expect(discoverWeeklyNews(client, [], options, now)).rejects.toThrow(
+      'Could not discover valid weekly news after 3 attempts'
+    );
+    expect(completeJson).toHaveBeenCalledTimes(3);
+  });
+});
+
+describe('researchSelectedStory', () => {
   it('accepts cited deeper research when the usage counter is unavailable', async () => {
     const selected = story(1);
-    const sources = [
-      {
-        title: 'Primary announcement',
-        url: selected.sourceUrl,
-        publisher: 'Vendor',
-        sourceType: 'primary' as const,
-      },
-      {
-        title: 'Independent report',
-        url: 'https://report.example/story',
-        publisher: 'Reporter',
-        sourceType: 'reporting' as const,
-      },
-      {
-        title: 'Technical analysis',
-        url: 'https://analysis.example/story',
-        publisher: 'Analyst',
-        sourceType: 'analysis' as const,
-      },
-    ];
-    const briefWithoutStory = {
-      angle: 'A grounded engineering angle',
-      context: 'Verified context',
-      keyFacts: Array.from({ length: 5 }, (_, index) => ({
-        claim: `Fact ${index}`,
-        sourceUrls: [sources[index % sources.length].url],
-      })),
-      technicalImplications: ['Implication'],
-      openQuestions: ['Question'],
-      sources,
-    };
+    const sources = sourcesFor(selected);
     const completeJson = vi.fn().mockResolvedValue({
-      data: briefWithoutStory,
+      data: briefWithoutStory(sources),
       citations: sources.map(source => ({ url: source.url, title: source.title })),
       webSearchRequests: 0,
     });
@@ -241,6 +215,7 @@ describe('research tool execution', () => {
     const request = completeJson.mock.calls[0][0];
     expect(request.userPrompt).not.toMatch(/Return: story/);
     expect(request).not.toHaveProperty('toolChoice');
+    expect(request.schema).toMatchObject({ name: 'research_brief' });
     expect(request.tools).toContainEqual({
       type: 'openrouter:web_fetch',
       parameters: {
@@ -250,5 +225,78 @@ describe('research tool execution', () => {
       },
     });
     expect(completeJson).toHaveBeenCalledTimes(1);
+  });
+
+  it('feeds the failed brief back into the retry prompt for repair', async () => {
+    const selected = story(1);
+    const sources = sourcesFor(selected);
+    const thinSources = sources.slice(0, 2);
+    const completeJson = vi
+      .fn()
+      .mockResolvedValueOnce({
+        data: {
+          ...briefWithoutStory(sources),
+          sources: thinSources,
+          keyFacts: Array.from({ length: 5 }, (_, index) => ({
+            claim: `Fact ${index}`,
+            sourceUrls: [thinSources[index % thinSources.length].url],
+          })),
+        },
+        citations: thinSources.map(source => ({ url: source.url, title: source.title })),
+        webSearchRequests: 0,
+      })
+      .mockResolvedValueOnce({
+        data: briefWithoutStory(sources),
+        citations: sources.map(source => ({ url: source.url, title: source.title })),
+        webSearchRequests: 0,
+      });
+    const client = { completeJson } as unknown as OpenRouterClient;
+
+    const brief = await researchSelectedStory(client, selected, 3, now);
+
+    expect(brief.story).toEqual(selected);
+    expect(completeJson).toHaveBeenCalledTimes(2);
+    const retryPrompt = completeJson.mock.calls[1][0].userPrompt;
+    expect(retryPrompt).toContain('It failed validation:');
+    expect(retryPrompt).toContain('needs at least 3 sources');
+    expect(retryPrompt).toContain('A previous attempt produced this brief');
+  });
+});
+
+describe('researchAnyStory', () => {
+  it('falls back to another candidate when one cannot be researched', async () => {
+    const storyA = story(1);
+    const storyB = story(2);
+    const sources = sourcesFor(storyB);
+    const completeJson = vi.fn().mockImplementation(async ({ userPrompt }) => {
+      if (userPrompt.includes(storyA.headline)) {
+        return { data: {}, citations: [], webSearchRequests: 0 };
+      }
+      return {
+        data: briefWithoutStory(sources),
+        citations: sources.map(source => ({ url: source.url, title: source.title })),
+        webSearchRequests: 0,
+      };
+    });
+    const client = { completeJson } as unknown as OpenRouterClient;
+
+    const brief = await researchAnyStory(client, [storyA, storyB], 3, now, () => 0);
+
+    expect(brief.story).toEqual(storyB);
+  });
+
+  it('aggregates failures when no candidate can be researched', async () => {
+    const completeJson = vi.fn().mockResolvedValue({
+      data: {},
+      citations: [],
+      webSearchRequests: 0,
+    });
+    const client = { completeJson } as unknown as OpenRouterClient;
+
+    await expect(researchAnyStory(client, [story(1), story(2)], 3, now, () => 0)).rejects.toThrow(
+      'Could not research any candidate story'
+    );
+    // 2 attempts for the first candidate (a fallback remained), 3 for the last.
+    expect(completeJson).toHaveBeenCalledTimes(5);
   });
 });
