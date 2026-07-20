@@ -84,6 +84,49 @@ describe('OpenRouterClient', () => {
     expect(body.tools).toEqual([{ type: 'openrouter:web_search' }]);
   });
 
+  it('sends the unified reasoning parameter when an effort is set', async () => {
+    const fetchMock = vi.fn(
+      async () =>
+        new Response(
+          JSON.stringify({
+            choices: [{ message: { content: '{"ok":true}' } }],
+          }),
+          { status: 200, headers: { 'Content-Type': 'application/json' } }
+        )
+    );
+    const client = new OpenRouterClient('key', 'model', fetchMock as typeof fetch);
+
+    await client.completeJson<{ ok: boolean }>({
+      systemPrompt: 'System',
+      userPrompt: 'User',
+      reasoningEffort: 'low',
+    });
+
+    const body = JSON.parse(String(fetchMock.mock.calls[0][1]?.body));
+    expect(body.reasoning).toEqual({ effort: 'low' });
+  });
+
+  it('omits the reasoning parameter by default', async () => {
+    const fetchMock = vi.fn(
+      async () =>
+        new Response(
+          JSON.stringify({
+            choices: [{ message: { content: '{"ok":true}' } }],
+          }),
+          { status: 200, headers: { 'Content-Type': 'application/json' } }
+        )
+    );
+    const client = new OpenRouterClient('key', 'model', fetchMock as typeof fetch);
+
+    await client.completeJson<{ ok: boolean }>({
+      systemPrompt: 'System',
+      userPrompt: 'User',
+    });
+
+    const body = JSON.parse(String(fetchMock.mock.calls[0][1]?.body));
+    expect(body).not.toHaveProperty('reasoning');
+  });
+
   it('retries an empty response once', async () => {
     const fetchMock = vi
       .fn()
@@ -110,19 +153,25 @@ describe('OpenRouterClient', () => {
     expect(fetchMock).toHaveBeenCalledTimes(2);
   });
 
-  it('stops after two empty responses', async () => {
+  it('stops after three empty responses and reports the finish reason', async () => {
     const fetchMock = vi.fn(
       async () =>
-        new Response(JSON.stringify({ choices: [{ message: { content: null } }] }), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        })
+        new Response(
+          JSON.stringify({
+            choices: [{ finish_reason: 'length', message: { content: null } }],
+            usage: {
+              completion_tokens: 5000,
+              completion_tokens_details: { reasoning_tokens: 5000 },
+            },
+          }),
+          { status: 200, headers: { 'Content-Type': 'application/json' } }
+        )
     );
     const client = new OpenRouterClient('key', 'model', fetchMock as typeof fetch);
 
     await expect(
       client.completeJson({ systemPrompt: 'System', userPrompt: 'User' })
-    ).rejects.toThrow('OpenRouter returned no content after 2 attempts');
-    expect(fetchMock).toHaveBeenCalledTimes(2);
+    ).rejects.toThrow(/no content after 3 attempts \(finish_reason=length/);
+    expect(fetchMock).toHaveBeenCalledTimes(3);
   });
 });
