@@ -69,13 +69,15 @@ async function generateWithRetry(
           : ''
       }`,
       temperature: 0.6,
-      maxTokens: 10000,
+      maxTokens: 16000,
+      reasoningEffort: 'low',
     });
 
     try {
       return validateGeneratedPost(response.data, brief, rules);
     } catch (error) {
       validationError = error instanceof Error ? error.message : String(error);
+      console.warn(`⚠️ Generation attempt ${attempt} failed validation: ${validationError}`);
     }
   }
 

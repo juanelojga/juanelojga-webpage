@@ -1,5 +1,5 @@
 const OPENROUTER_URL = 'https://openrouter.ai/api/v1/chat/completions';
-const MAX_EMPTY_RESPONSE_ATTEMPTS = 2;
+const MAX_EMPTY_RESPONSE_ATTEMPTS = 3;
 export const DEFAULT_OPENROUTER_MODEL = 'openai/gpt-5.2';
 
 export interface UrlCitation {
@@ -20,6 +20,7 @@ interface CompletionOptions {
   toolChoice?: 'auto' | 'required' | 'none';
   temperature?: number;
   maxTokens?: number;
+  reasoningEffort?: 'none' | 'minimal' | 'low' | 'medium' | 'high';
 }
 
 export interface CompletionResult<T> {
@@ -30,6 +31,8 @@ export interface CompletionResult<T> {
 
 interface OpenRouterResponse {
   choices?: Array<{
+    finish_reason?: string;
+    native_finish_reason?: string;
     message?: {
       content?: string;
       annotations?: Array<{
@@ -38,7 +41,12 @@ interface OpenRouterResponse {
       }>;
     };
   }>;
-  usage?: { server_tool_use?: { web_search_requests?: number } };
+  usage?: {
+    prompt_tokens?: number;
+    completion_tokens?: number;
+    completion_tokens_details?: { reasoning_tokens?: number };
+    server_tool_use?: { web_search_requests?: number };
+  };
   error?: { message?: string };
 }
 
@@ -80,6 +88,7 @@ export class OpenRouterClient {
           ...(options.tools?.length && options.toolChoice
             ? { tool_choice: options.toolChoice }
             : {}),
+          ...(options.reasoningEffort ? { reasoning: { effort: options.reasoningEffort } } : {}),
           temperature: options.temperature ?? 0.3,
           max_tokens: options.maxTokens ?? 8192,
         }),
@@ -92,16 +101,20 @@ export class OpenRouterClient {
         );
       }
 
-      const message = payload.choices?.[0]?.message;
+      const choice = payload.choices?.[0];
+      const message = choice?.message;
+      const finishInfo = `finish_reason=${choice?.finish_reason ?? 'unknown'} (native: ${choice?.native_finish_reason ?? 'unknown'}), completion_tokens=${payload.usage?.completion_tokens ?? '?'}, reasoning_tokens=${payload.usage?.completion_tokens_details?.reasoning_tokens ?? '?'}`;
+      console.log(`📡 OpenRouter response: ${finishInfo}`);
+
       if (!message?.content) {
         if (attempt < MAX_EMPTY_RESPONSE_ATTEMPTS) {
           console.warn(
-            `OpenRouter returned no content (attempt ${attempt}/${MAX_EMPTY_RESPONSE_ATTEMPTS}); retrying`
+            `OpenRouter returned no content (attempt ${attempt}/${MAX_EMPTY_RESPONSE_ATTEMPTS}, ${finishInfo}); retrying`
           );
           continue;
         }
         throw new Error(
-          `OpenRouter returned no content after ${MAX_EMPTY_RESPONSE_ATTEMPTS} attempts`
+          `OpenRouter returned no content after ${MAX_EMPTY_RESPONSE_ATTEMPTS} attempts (${finishInfo})`
         );
       }
 

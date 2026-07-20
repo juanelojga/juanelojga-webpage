@@ -158,8 +158,8 @@ Return each story with: headline, summary, category (one of ${NEWS_CATEGORIES.jo
           },
         },
       ],
-      toolChoice: 'required',
-      maxTokens: 5000,
+      maxTokens: 16000,
+      reasoningEffort: 'low',
     });
 
     console.log(
@@ -176,6 +176,7 @@ Return each story with: headline, summary, category (one of ${NEWS_CATEGORIES.jo
       );
     } catch (error) {
       lastError = error instanceof Error ? error.message : String(error);
+      console.warn(`⚠️ Discovery attempt ${attempt} failed validation: ${lastError}`);
     }
   }
 
@@ -281,7 +282,8 @@ Return: story, angle, context, at least five keyFacts ({claim, sourceUrls}), tec
           },
         },
       ],
-      maxTokens: 8000,
+      maxTokens: 16000,
+      reasoningEffort: 'low',
     });
 
     console.log(
@@ -292,6 +294,7 @@ Return: story, angle, context, at least five keyFacts ({claim, sourceUrls}), tec
       return validateResearchBrief(response.data, story, response.citations, minimumSources);
     } catch (error) {
       lastError = error instanceof Error ? error.message : String(error);
+      console.warn(`⚠️ Research attempt ${attempt} failed validation: ${lastError}`);
     }
   }
 
