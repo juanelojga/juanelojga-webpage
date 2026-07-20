@@ -23,6 +23,8 @@ interface ResearchOptions {
   subjects: string[];
 }
 
+const MAX_VALIDATION_ATTEMPTS = 3;
+
 function isHttpsUrl(value: string): boolean {
   try {
     return new URL(value).protocol === 'https:';
@@ -130,7 +132,7 @@ export async function discoverWeeklyNews(
 ): Promise<NewsCandidate[]> {
   let lastError = '';
 
-  for (let attempt = 1; attempt <= 2; attempt += 1) {
+  for (let attempt = 1; attempt <= MAX_VALIDATION_ATTEMPTS; attempt += 1) {
     const response = await client.completeJson<DiscoveryResponse>({
       systemPrompt: `You are a meticulous technology news editor. You must use web search before answering.
 Find distinct, consequential news—not evergreen tutorials, rumors, opinion-only posts, or minor product marketing.
@@ -180,7 +182,9 @@ Return each story with: headline, summary, category (one of ${NEWS_CATEGORIES.jo
     }
   }
 
-  throw new Error(`Could not discover valid weekly news after two attempts: ${lastError}`);
+  throw new Error(
+    `Could not discover valid weekly news after ${MAX_VALIDATION_ATTEMPTS} attempts: ${lastError}`
+  );
 }
 
 function distinctDomains(sources: ResearchSource[]): number {
@@ -254,7 +258,7 @@ export async function researchSelectedStory(
 ): Promise<ResearchBrief> {
   let lastError = '';
 
-  for (let attempt = 1; attempt <= 2; attempt += 1) {
+  for (let attempt = 1; attempt <= MAX_VALIDATION_ATTEMPTS; attempt += 1) {
     const response = await client.completeJson<ResearchBrief>({
       systemPrompt: `You are a technical research analyst. Use web search and web fetch extensively before answering.
 Verify claims against the fetched pages. Separate facts from interpretation. Prefer primary material and corroborate it with independent reporting or analysis.
@@ -268,7 +272,7 @@ Use at least ${minimumSources} sources from different domains, including at leas
 Do not use social posts, search-result pages, scraped copies, or sources you did not actually read.
 ${lastError ? `The previous result failed validation: ${lastError}\nCorrect every issue.` : ''}
 
-Return: story, angle, context, at least five keyFacts ({claim, sourceUrls}), technicalImplications, openQuestions, and sources ({title, url, publisher, publishedAt when known, sourceType as primary/reporting/analysis}).`,
+Return: angle, context, at least five keyFacts ({claim, sourceUrls}), technicalImplications, openQuestions, and sources ({title, url, publisher, publishedAt when known, sourceType as primary/reporting/analysis}).`,
       tools: [
         {
           type: 'openrouter:web_search',
@@ -297,14 +301,21 @@ Return: story, angle, context, at least five keyFacts ({claim, sourceUrls}), tec
     );
 
     try {
-      return validateResearchBrief(response.data, story, response.citations, minimumSources);
+      return validateResearchBrief(
+        { ...response.data, story },
+        story,
+        response.citations,
+        minimumSources
+      );
     } catch (error) {
       lastError = error instanceof Error ? error.message : String(error);
       console.warn(`⚠️ Research attempt ${attempt} failed validation: ${lastError}`);
     }
   }
 
-  throw new Error(`Could not build a valid research brief after two attempts: ${lastError}`);
+  throw new Error(
+    `Could not build a valid research brief after ${MAX_VALIDATION_ATTEMPTS} attempts: ${lastError}`
+  );
 }
 
 export function categoryForStory(category: NewsCandidate['category']): string {
