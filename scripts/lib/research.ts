@@ -193,10 +193,12 @@ export function validateResearchBrief(
   citations: UrlCitation[],
   minimumSources: number
 ): ResearchBrief {
-  if (
-    !brief?.story ||
-    normalizeUrl(brief.story.sourceUrl) !== normalizeUrl(selectedStory.sourceUrl)
-  ) {
+  if (!brief?.story || !isHttpsUrl(brief.story.sourceUrl)) {
+    throw new Error(
+      `Research brief story is missing a valid HTTPS source URL: ${brief?.story?.sourceUrl ?? 'none'}`
+    );
+  }
+  if (normalizeUrl(brief.story.sourceUrl) !== normalizeUrl(selectedStory.sourceUrl)) {
     throw new Error('Research brief does not match the selected story');
   }
   if (!brief.angle?.trim() || !brief.context?.trim()) {
@@ -211,6 +213,11 @@ export function validateResearchBrief(
   if (!brief.sources.some(source => source.sourceType === 'primary')) {
     throw new Error('Research brief needs at least one primary source');
   }
+  for (const source of brief.sources) {
+    if (!isHttpsUrl(source.url)) {
+      throw new Error(`Research sources must use valid HTTPS URLs: ${source.url}`);
+    }
+  }
   if (distinctDomains(brief.sources) < minimumSources) {
     throw new Error(`Research brief needs ${minimumSources} independent source domains`);
   }
@@ -218,7 +225,6 @@ export function validateResearchBrief(
   const cited = citationUrls(citations);
   const sourceUrls = new Set<string>();
   for (const source of brief.sources) {
-    if (!isHttpsUrl(source.url)) throw new Error('Research sources must use HTTPS URLs');
     const normalized = normalizeUrl(source.url);
     if (!cited.has(normalized)) {
       throw new Error(`Research source was not returned by web tools: ${source.url}`);

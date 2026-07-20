@@ -127,6 +127,71 @@ describe('OpenRouterClient', () => {
     expect(body).not.toHaveProperty('reasoning');
   });
 
+  it('parses the first JSON object when the model appends trailing text', async () => {
+    const fetchMock = vi.fn(
+      async () =>
+        new Response(
+          JSON.stringify({
+            choices: [
+              {
+                message: {
+                  content: '{"ok":true,"note":"a } inside a string"}\n\nHere is some explanation.',
+                },
+              },
+            ],
+          }),
+          { status: 200, headers: { 'Content-Type': 'application/json' } }
+        )
+    );
+    const client = new OpenRouterClient('key', 'model', fetchMock as typeof fetch);
+
+    const result = await client.completeJson<{ ok: boolean }>({
+      systemPrompt: 'System',
+      userPrompt: 'User',
+    });
+
+    expect(result.data.ok).toBe(true);
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('uses the first object when the model returns concatenated JSON objects', async () => {
+    const fetchMock = vi.fn(
+      async () =>
+        new Response(
+          JSON.stringify({
+            choices: [{ message: { content: '{"ok":true}\n{"ok":false}' } }],
+          }),
+          { status: 200, headers: { 'Content-Type': 'application/json' } }
+        )
+    );
+    const client = new OpenRouterClient('key', 'model', fetchMock as typeof fetch);
+
+    const result = await client.completeJson<{ ok: boolean }>({
+      systemPrompt: 'System',
+      userPrompt: 'User',
+    });
+
+    expect(result.data.ok).toBe(true);
+  });
+
+  it('retries unparseable content and throws a descriptive error after three attempts', async () => {
+    const fetchMock = vi.fn(
+      async () =>
+        new Response(
+          JSON.stringify({
+            choices: [{ message: { content: 'not json at all' } }],
+          }),
+          { status: 200, headers: { 'Content-Type': 'application/json' } }
+        )
+    );
+    const client = new OpenRouterClient('key', 'model', fetchMock as typeof fetch);
+
+    await expect(
+      client.completeJson({ systemPrompt: 'System', userPrompt: 'User' })
+    ).rejects.toThrow(/unparseable JSON after 3 attempts.*not json at all/);
+    expect(fetchMock).toHaveBeenCalledTimes(3);
+  });
+
   it('retries an empty response once', async () => {
     const fetchMock = vi
       .fn()

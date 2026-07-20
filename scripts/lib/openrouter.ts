@@ -50,13 +50,38 @@ interface OpenRouterResponse {
   error?: { message?: string };
 }
 
+function extractFirstJsonObject(content: string): string | null {
+  const start = content.indexOf('{');
+  if (start === -1) return null;
+
+  let depth = 0;
+  let inString = false;
+  let escaped = false;
+  for (let i = start; i < content.length; i += 1) {
+    const char = content[i];
+    if (inString) {
+      if (escaped) escaped = false;
+      else if (char === '\\') escaped = true;
+      else if (char === '"') inString = false;
+      continue;
+    }
+    if (char === '"') inString = true;
+    else if (char === '{') depth += 1;
+    else if (char === '}') {
+      depth -= 1;
+      if (depth === 0) return content.slice(start, i + 1);
+    }
+  }
+  return null;
+}
+
 function parseJson<T>(content: string): T {
   try {
     return JSON.parse(content) as T;
   } catch {
-    const match = content.match(/\{[\s\S]*\}/);
-    if (!match) throw new Error('OpenRouter returned invalid JSON');
-    return JSON.parse(match[0]) as T;
+    const candidate = extractFirstJsonObject(content);
+    if (!candidate) throw new Error('OpenRouter returned invalid JSON');
+    return JSON.parse(candidate) as T;
   }
 }
 
@@ -126,8 +151,26 @@ export class OpenRouterClient {
           content: annotation.url_citation!.content,
         }));
 
+      let data: T;
+      try {
+        data = parseJson<T>(message.content);
+      } catch (error) {
+        const reason = error instanceof Error ? error.message : String(error);
+        const snippet = message.content.slice(0, 200);
+        if (attempt < MAX_EMPTY_RESPONSE_ATTEMPTS) {
+          console.warn(
+            `OpenRouter returned unparseable JSON (attempt ${attempt}/${MAX_EMPTY_RESPONSE_ATTEMPTS}): ${reason}; content starts with: ${snippet}`
+          );
+          continue;
+        }
+        throw new Error(
+          `OpenRouter returned unparseable JSON after ${MAX_EMPTY_RESPONSE_ATTEMPTS} attempts: ${reason}; content starts with: ${snippet}`,
+          { cause: error }
+        );
+      }
+
       return {
-        data: parseJson<T>(message.content),
+        data,
         citations,
         webSearchRequests: payload.usage?.server_tool_use?.web_search_requests ?? 0,
       };

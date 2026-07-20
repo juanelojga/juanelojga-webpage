@@ -115,6 +115,63 @@ describe('validateResearchBrief', () => {
     const citations = sources.map(source => ({ url: source.url, title: source.title }));
     expect(validateResearchBrief(brief, selected, citations, 3)).toEqual(brief);
   });
+
+  it('names the offending source URL instead of throwing a bare Invalid URL error', () => {
+    const selected = story(1);
+    const sources = [
+      {
+        title: 'Primary announcement',
+        url: selected.sourceUrl,
+        publisher: 'Vendor',
+        sourceType: 'primary' as const,
+      },
+      {
+        title: 'Broken source',
+        url: 'not-a-url',
+        publisher: 'Reporter',
+        sourceType: 'reporting' as const,
+      },
+      {
+        title: 'Technical analysis',
+        url: 'https://analysis.example/story',
+        publisher: 'Analyst',
+        sourceType: 'analysis' as const,
+      },
+    ];
+    const brief: ResearchBrief = {
+      story: selected,
+      angle: 'Angle',
+      context: 'Context',
+      keyFacts: Array.from({ length: 5 }, (_, index) => ({
+        claim: `Fact ${index}`,
+        sourceUrls: [selected.sourceUrl],
+      })),
+      technicalImplications: ['Implication'],
+      openQuestions: ['Question'],
+      sources,
+    };
+
+    expect(() => validateResearchBrief(brief, selected, [], 3)).toThrow(
+      'Research sources must use valid HTTPS URLs: not-a-url'
+    );
+  });
+
+  it('rejects a brief whose story has a malformed source URL', () => {
+    const selected = story(1);
+    const brief = {
+      story: { ...selected, sourceUrl: 'nonsense' },
+      angle: 'Angle',
+      context: 'Context',
+      keyFacts: [],
+      technicalImplications: [],
+      openQuestions: [],
+      sources: [],
+    } as unknown as ResearchBrief;
+
+    expect(() => validateResearchBrief(brief, selected, [], 3)).toThrow(
+      'Research brief story is missing a valid HTTPS source URL: nonsense'
+    );
+  });
 });
 
 describe('research tool execution', () => {
