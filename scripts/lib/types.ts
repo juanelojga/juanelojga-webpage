@@ -40,6 +40,18 @@ export interface ResearchBrief {
   sources: ResearchSource[];
 }
 
+export interface BlogHistoryEntry {
+  topic: string;
+  sourceUrls?: string[];
+}
+
+export interface ResearchOptions {
+  lookbackDays: number;
+  candidateCount: number;
+  minimumSources: number;
+  subjects: string[];
+}
+
 export interface FaqItem {
   question: string;
   answer: string;
