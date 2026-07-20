@@ -217,8 +217,7 @@ describe('research tool execution', () => {
         sourceType: 'analysis' as const,
       },
     ];
-    const brief: ResearchBrief = {
-      story: selected,
+    const briefWithoutStory = {
       angle: 'A grounded engineering angle',
       context: 'Verified context',
       keyFacts: Array.from({ length: 5 }, (_, index) => ({
@@ -230,15 +229,17 @@ describe('research tool execution', () => {
       sources,
     };
     const completeJson = vi.fn().mockResolvedValue({
-      data: brief,
+      data: briefWithoutStory,
       citations: sources.map(source => ({ url: source.url, title: source.title })),
       webSearchRequests: 0,
     });
     const client = { completeJson } as unknown as OpenRouterClient;
 
-    await researchSelectedStory(client, selected, 3, now);
+    const brief = await researchSelectedStory(client, selected, 3, now);
 
+    expect(brief.story).toEqual(selected);
     const request = completeJson.mock.calls[0][0];
+    expect(request.userPrompt).not.toMatch(/Return: story/);
     expect(request).not.toHaveProperty('toolChoice');
     expect(request.tools).toContainEqual({
       type: 'openrouter:web_fetch',
