@@ -276,12 +276,11 @@ Return: story, angle, context, at least five keyFacts ({claim, sourceUrls}), tec
           type: 'openrouter:web_fetch',
           parameters: {
             engine: 'openrouter',
-            max_uses: 10,
-            max_content_tokens: 50000,
+            max_uses: 6,
+            max_content_tokens: 12000,
           },
         },
       ],
-      toolChoice: 'required',
       maxTokens: 8000,
     });
 
