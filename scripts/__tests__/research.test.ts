@@ -182,6 +182,69 @@ describe('discoverWeeklyNews', () => {
     expect(completeJson).toHaveBeenCalledTimes(3);
   });
 
+  it('grounds the retry prompt with URLs the web searches actually returned', async () => {
+    const realStories = [story(1), story(2), story(3), story(4)];
+    const hallucinated = realStories.map((item, index) => ({
+      ...item,
+      sourceUrl: `https://hallucinated${index}.example/post`,
+    }));
+    const completeJson = vi
+      .fn()
+      .mockResolvedValueOnce({
+        data: { stories: hallucinated },
+        citations: citationsFor(realStories),
+        webSearchRequests: 1,
+      })
+      .mockResolvedValueOnce({
+        data: { stories: realStories },
+        citations: citationsFor(realStories),
+        webSearchRequests: 1,
+      });
+    const client = { completeJson } as unknown as OpenRouterClient;
+
+    const result = await discoverWeeklyNews(client, [], options, now);
+
+    expect(result).toEqual(realStories);
+    expect(completeJson).toHaveBeenCalledTimes(2);
+    const firstPrompt = completeJson.mock.calls[0][0].userPrompt;
+    expect(firstPrompt).toContain('MUST be copied verbatim');
+    expect(firstPrompt).not.toContain('Your earlier web searches returned these pages');
+    const retryPrompt = completeJson.mock.calls[1][0].userPrompt;
+    expect(retryPrompt).toContain('Your earlier web searches returned these pages');
+    expect(retryPrompt).toContain(realStories[0].sourceUrl);
+    expect(retryPrompt).toContain(realStories[3].sourceUrl);
+  });
+
+  it('accumulates retry citations across attempts without duplicates', async () => {
+    const hallucinated = [story(1, { sourceUrl: 'https://hallucinated.example/post' })];
+    const shared = { url: 'https://cited1.example/news', title: 'Cited story 1' };
+    const completeJson = vi
+      .fn()
+      .mockResolvedValueOnce({
+        data: { stories: hallucinated },
+        citations: [shared],
+        webSearchRequests: 1,
+      })
+      .mockResolvedValueOnce({
+        data: { stories: hallucinated },
+        citations: [shared, { url: 'https://cited2.example/news', title: 'Cited story 2' }],
+        webSearchRequests: 1,
+      })
+      .mockResolvedValue({
+        data: { stories: hallucinated },
+        citations: [],
+        webSearchRequests: 1,
+      });
+    const client = { completeJson } as unknown as OpenRouterClient;
+
+    await expect(discoverWeeklyNews(client, [], options, now)).rejects.toThrow(
+      'Could not discover valid weekly news after 3 attempts'
+    );
+    const thirdPrompt = completeJson.mock.calls[2][0].userPrompt;
+    expect(thirdPrompt.split(shared.url).length - 1).toBe(1);
+    expect(thirdPrompt).toContain('https://cited2.example/news');
+  });
+
   it('throws when no candidate ever survives', async () => {
     const stories = [story(1, { publishedAt: '2026-07-01' })];
     const completeJson = vi.fn().mockResolvedValue({

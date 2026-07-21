@@ -22,6 +22,15 @@ const MAX_VALIDATION_ATTEMPTS = 3;
 const PREFERRED_MIN_CANDIDATES = 2;
 // When other candidates remain as fallbacks, give each story fewer attempts.
 const FALLBACK_STORY_ATTEMPTS = 2;
+// Keeps retry prompts and diagnostics bounded when searches return many pages.
+const MAX_LISTED_CITATIONS = 30;
+
+function citationListPrompt(citations: UrlCitation[]): string {
+  return citations
+    .slice(0, MAX_LISTED_CITATIONS)
+    .map(citation => `- ${citation.title.slice(0, 120)} — ${citation.url}`)
+    .join('\n');
+}
 
 export function selectRandomStory(
   stories: NewsCandidate[],
@@ -53,22 +62,39 @@ export async function discoverWeeklyNews(
 ): Promise<NewsCandidate[]> {
   let lastError = '';
   let bestBatch: NewsCandidate[] = [];
+  const citationsSeen = new Map<string, UrlCitation>();
 
   for (let attempt = 1; attempt <= MAX_VALIDATION_ATTEMPTS; attempt += 1) {
+    const retryGuidance = lastError
+      ? [
+          `The previous result failed validation: ${lastError}`,
+          'Correct every issue.',
+          ...(citationsSeen.size > 0
+            ? [
+                'Your earlier web searches returned these pages (title — URL):',
+                citationListPrompt([...citationsSeen.values()]),
+                'Choose stories whose sourceUrl is one of these exact URLs, or run new searches and use only URLs those searches return.',
+              ]
+            : []),
+        ].join('\n')
+      : '';
+
     const response = await client.completeJson<DiscoveryResponse>({
       systemPrompt: `You are a meticulous technology news editor. You must use web search before answering.
 Find distinct, consequential news—not evergreen tutorials, rumors, opinion-only posts, or minor product marketing.
 Prefer primary sources such as official announcements, release notes, repositories, standards, papers, and incident reports.
+Cite only URLs that your web searches actually returned in this conversation — never URLs recalled from memory.
 Return JSON only with a "stories" array.`,
       userPrompt: `Today is ${now.toISOString()}.
 Find exactly ${options.candidateCount} important stories published during the latest ${options.lookbackDays} calendar days.
 The allowed subjects are: ${options.subjects.join(', ')}.
 Search broadly across all subjects. Each story must describe a different event and cite the canonical article URL used to verify its publication date.
+Every sourceUrl MUST be copied verbatim from a URL returned by your web search results in this conversation. Stories whose URLs the searches did not return are discarded.
 
 Do not repeat these previously covered stories or URLs:
 ${historyPrompt(history)}
 
-${lastError ? `The previous result failed validation: ${lastError}\nCorrect every issue.` : ''}
+${retryGuidance}
 
 Return each story with: headline, summary, category (one of ${NEWS_CATEGORIES.join(', ')}), publishedAt (ISO date), sourceUrl (HTTPS), sourceName, and whyItMatters.`,
       tools: [
@@ -91,6 +117,12 @@ Return each story with: headline, summary, category (one of ${NEWS_CATEGORIES.jo
       `🔍 Discovery attempt ${attempt}: ${response.webSearchRequests} web search request(s), ${response.citations.length} citation(s)`
     );
 
+    for (const citation of response.citations) {
+      if (!isHttpsUrl(citation.url)) continue;
+      const normalized = normalizeUrl(citation.url);
+      if (!citationsSeen.has(normalized)) citationsSeen.set(normalized, citation);
+    }
+
     const { valid, rejected } = repairNewsCandidates(
       response.data?.stories,
       response.citations,
@@ -99,6 +131,11 @@ Return each story with: headline, summary, category (one of ${NEWS_CATEGORIES.jo
       options
     );
     rejected.forEach(item => console.warn(`⚠️ Dropped candidate: ${item.reason}`));
+    if (valid.length === 0 && response.citations.length > 0) {
+      console.warn(
+        `⚠️ URLs the web research actually returned this attempt:\n${citationListPrompt(response.citations)}`
+      );
+    }
 
     if (valid.length >= Math.min(PREFERRED_MIN_CANDIDATES, options.candidateCount)) return valid;
 
